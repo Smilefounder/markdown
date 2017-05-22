@@ -67,6 +67,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\CodeSnippet\CodeRange.cs" />
+    <Compile Include="Extensions\CodeSnippet\HtmlCodeSnippetRenderer.cs" />
+    <Compile Include="Extensions\CodeSnippet\CodeSnippet.cs" />
+    <Compile Include="Extensions\CodeSnippet\CodeSnippetExtension.cs" />
+    <Compile Include="Extensions\CodeSnippet\CodeSnippetParser.cs" />
     <Compile Include="MarkdigMarkdownService.cs" />
     <Compile Include="MarkdigServiceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -75,4 +80,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(SolutionDir)$(OutDir)*.* $(SolutionDir)drop\plugins /y</PostBuildEvent>
+  </PropertyGroup>
 </Project>
