@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkdigEngine", "MarkdigEngine.csproj", "{ED4D7B44-31F0-4C8C-85EE-7545B0C893D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkdigEngine.Tests", "MarkdigEngineTest\MarkdigEngine.Tests.csproj", "{A97B5A9F-8186-49CC-B9AB-CC0EF1B46EB7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkdigEngine", "MarkdigEngine\MarkdigEngine.csproj", "{ED4D7B44-31F0-4C8C-85EE-7545B0C893D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,6 +13,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A97B5A9F-8186-49CC-B9AB-CC0EF1B46EB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A97B5A9F-8186-49CC-B9AB-CC0EF1B46EB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A97B5A9F-8186-49CC-B9AB-CC0EF1B46EB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A97B5A9F-8186-49CC-B9AB-CC0EF1B46EB7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ED4D7B44-31F0-4C8C-85EE-7545B0C893D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ED4D7B44-31F0-4C8C-85EE-7545B0C893D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED4D7B44-31F0-4C8C-85EE-7545B0C893D9}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -67,8 +67,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\IncludeFile\HtmlIncludeFileRenderer.cs" />
+    <Compile Include="Extensions\IncludeFile\IncludeFile.cs" />
+    <Compile Include="Extensions\IncludeFile\IncludeFileBlockParser.cs" />
+    <Compile Include="Extensions\IncludeFile\IncludeFileExtension.cs" />
     <Compile Include="MarkdigMarkdownService.cs" />
+    <Compile Include="MarkdigMarked.cs" />
     <Compile Include="MarkdigServiceProvider.cs" />
+    <Compile Include="MarkdownExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
