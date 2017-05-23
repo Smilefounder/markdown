@@ -1,0 +1,26 @@
+-
+  branches:
+    only:
+      - master
+  version: 1.0.{build}
+  image: Visual Studio 2017
+  build_script:
+    - nuget restore MarkdigEngine.sln
+    - msbuild MarkdigEngine.sln /p:Configuration=Release
+  test: off
+  on_success:
+    - nuget pack Microsoft.DocAsCode.MarkdigEngine.nuspec -version %APPVEYOR_BUILD_VERSION% -Prop Configuration=Release
+    - nuget push ./Microsoft.DocAsCode.MarkdigEngine.%APPVEYOR_BUILD_VERSION%.nupkg %mygetKey% -Source %mygetMasterUrl%
+-
+  branches:
+    only:
+      - dev
+  version: 1.0.{build}
+  image: Visual Studio 2017
+  build_script:
+    - nuget restore MarkdigEngine.sln
+    - msbuild MarkdigEngine.sln /p:Configuration=Release
+  test: off
+  on_success:
+    - nuget pack Microsoft.DocAsCode.MarkdigEngine.nuspec -version %APPVEYOR_BUILD_VERSION% -Prop Configuration=Release
+    - nuget push ./Microsoft.DocAsCode.MarkdigEngine.%APPVEYOR_BUILD_VERSION%.nupkg %mygetKey% -Source %mygetDevUrl%
