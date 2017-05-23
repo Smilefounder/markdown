@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
+using Markdig;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
-using Markdig;
 
 namespace MarkdigEngine.Extensions.IncludeFile
 {
@@ -24,9 +24,7 @@ namespace MarkdigEngine.Extensions.IncludeFile
                 throw new Exception("file path can't be empty or null in IncludeFile");
             }
 
-            var currentFilePath = Path.Combine(_context.BasePath, _context.FilePath);
-            var currentDir = Path.GetDirectoryName(currentFilePath);
-            var includeFilePath = Path.Combine(currentDir, obj.FilePath);
+            var includeFilePath = ExtensionsHelper.GetAbsolutlyPath(_context.BasePath, _context.FilePath, obj.FilePath);
 
             if (!File.Exists(includeFilePath))
             {

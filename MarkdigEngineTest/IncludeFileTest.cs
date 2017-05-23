@@ -36,7 +36,8 @@ This is a file A included by another file.
 
             var context = new MarkdownContext
             {
-                FilePath = "r/root.md"
+                FilePath = "r/root.md",
+                BasePath = Directory.GetCurrentDirectory()
             };
             var marked = MarkdigMarked.Markup(root, context);
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
@@ -72,7 +73,44 @@ This is a file A included by another file.
 
             var context = new MarkdownContext
             {
-                FilePath = "r/root.md"
+                FilePath = "r/root.md",
+                BasePath = Directory.GetCurrentDirectory()
+            };
+            var marked = MarkdigMarked.Markup(root, context);
+            var expected = @"<h1 id=""hello-world"">Hello World</h1>
+<p>Test Include File</p>
+<h1 id=""hello-include-file-a"">Hello Include File A</h1>
+<p>This is a file A included by another file.</p>
+";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        [Trait("Related", "IncludeFile")]
+        public void TestBlockLevelInclusion_RelativePath()
+        {
+            var root = @"
+# Hello World
+
+Test Include File
+
+[!include[refa](~/r/a.md)]
+
+";
+
+            var refa = @"
+# Hello Include File A
+
+This is a file A included by another file.
+";
+
+            WriteToFile("r/root.md", root);
+            WriteToFile("r/a.md", refa);
+
+            var context = new MarkdownContext
+            {
+                FilePath = "r/root.md",
+                BasePath = Directory.GetCurrentDirectory()
             };
             var marked = MarkdigMarked.Markup(root, context);
             var expected = @"<h1 id=""hello-world"">Hello World</h1>

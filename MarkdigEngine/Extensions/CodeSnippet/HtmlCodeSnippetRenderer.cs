@@ -1,11 +1,12 @@
-﻿using Markdig.Renderers.Html;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Markdig.Renderers;
 using System.IO;
+
+using MarkdigEngine.Extensions;
+using Markdig.Renderers;
+using Markdig.Renderers.Html;
 
 namespace MarkdigEngine
 {
@@ -40,7 +41,7 @@ namespace MarkdigEngine
 
         private string GetContent(CodeSnippet obj)
         {
-            var allLines = File.ReadAllLines(GetAbsolutlyPath(obj.CodePath));
+            var allLines = File.ReadAllLines(ExtensionsHelper.GetAbsolutlyPath(m_BasePath, m_Path, obj.CodePath));
             var allCodeRanges = obj.CodeRanges ?? new List<CodeRange>();
 
             if (!string.IsNullOrEmpty(obj.TagName))
@@ -48,7 +49,7 @@ namespace MarkdigEngine
                 var codeRange = new CodeRange();
                 var startTag = string.Format(m_CSharpCodeSnippetCommentStartLineTemplate, obj.TagName).ToUpper();
                 var endTag = string.Format(m_CSharpCodeSnippetCommentEndLineTemplate, obj.TagName).ToUpper();
-                
+
                 allCodeRanges.Add(new CodeRange { Start = GetTagLineNumber(allLines, startTag) + 1, End = GetTagLineNumber(allLines, endTag) - 1 });
             }
 
@@ -56,7 +57,7 @@ namespace MarkdigEngine
 
             for (int lineNumber = 0; lineNumber < allLines.Length; lineNumber++)
             {
-                if(IsLineInRange(lineNumber + 1, allCodeRanges))
+                if (IsLineInRange(lineNumber + 1, allCodeRanges))
                 {
                     showCode.AppendLine(allLines[lineNumber]);
                 }
@@ -104,54 +105,6 @@ namespace MarkdigEngine
             }
 
             return -1;
-        }
-
-        private string GetAbsolutlyPath(string codeSnippetPath)
-        {
-            var currentFolder = Path.GetDirectoryName(Path.Combine(m_BasePath, m_Path));
-
-            var tempFolderName = new StringBuilder();
-
-            var sb = new StringBuilder(currentFolder);
-
-            for (int index = 0; index < codeSnippetPath.Length; index++)
-            {
-                if (codeSnippetPath[index] == '/' || codeSnippetPath[index] == '\\')
-                {
-                    var folderName = tempFolderName.ToString();
-                    tempFolderName = new StringBuilder();
-
-                    switch (folderName)
-                    {
-                        case ".":
-                            break;
-                        case "..":
-                            int slashPosition = sb.Length - 1;
-                            while (slashPosition >= 0 && sb[slashPosition] != '/' && sb[slashPosition] != '\\')
-                            {
-                                slashPosition--;
-                            }
-
-                            sb.Length = slashPosition;
-                            break;
-                        case "~":
-                            sb.Length = m_BasePath.Length;
-                            break;
-                        default:
-                            sb.Append('/').Append(folderName);
-                            break;
-                    }
-
-                }
-                else
-                {
-                    tempFolderName.Append(codeSnippetPath[index]);
-                }
-            }
-
-            if (tempFolderName.Length != 0) sb.Append('/').Append(tempFolderName.ToString());
-
-            return sb.ToString();
         }
     }
 }

@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\ExtensionsHelper.cs" />
     <Compile Include="Extensions\IncludeFile\HtmlIncludeFileRenderer.cs" />
     <Compile Include="Extensions\IncludeFile\IncludeFile.cs" />
     <Compile Include="Extensions\IncludeFile\IncludeFileBlockParser.cs" />
