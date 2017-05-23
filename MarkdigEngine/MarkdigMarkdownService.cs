@@ -1,4 +1,5 @@
-﻿using Microsoft.DocAsCode.Plugins;
+﻿using Markdig;
+using Microsoft.DocAsCode.Plugins;
 
 namespace MarkdigEngine
 {
@@ -12,10 +13,10 @@ namespace MarkdigEngine
         }
 
         public MarkupResult Markup(string src, string path)
-        {
+        {            
             return new MarkupResult
             {
-                Html = MarkdigMarked.Markup(src)
+                Html = MarkdigMarked.Markup(src, _parameters.BasePath, path)
             };
         }
     }
