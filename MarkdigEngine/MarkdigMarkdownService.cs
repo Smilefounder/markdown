@@ -22,6 +22,10 @@ namespace MarkdigEngine
             var pipline = piplineBuilder.Build();
 
             return new MarkupResult { Html = Markdown.ToHtml(src, pipline) };
+            return new MarkupResult
+            {
+                Html = MarkdigMarked.Markup(src)
+            };
         }
     }
 }
