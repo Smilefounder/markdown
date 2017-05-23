@@ -14,10 +14,10 @@ namespace MarkdigEngine
         protected string m_Path;
         protected string m_BasePath;
 
-        public CodeSnippetExtension(string basePath, string path)
+        public CodeSnippetExtension(MarkdownContext context)
         {
-            this.m_BasePath = basePath;
-            this.m_Path = path;
+            this.m_BasePath = context.BasePath;
+            this.m_Path = context.FilePath;
         }
 
         public void Setup(MarkdownPipelineBuilder pipeline)

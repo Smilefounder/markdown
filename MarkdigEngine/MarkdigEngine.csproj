@@ -79,11 +79,11 @@
     <Compile Include="Extensions\CodeSnippet\CodeSnippetParser.cs" />
     <Compile Include="MarkdigMarkdownService.cs" />
     <Compile Include="MarkdigServiceProvider.cs" />
+    <Compile Include="MarkdownContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MarkdownExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
