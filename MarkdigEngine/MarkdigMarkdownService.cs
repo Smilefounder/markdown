@@ -13,10 +13,16 @@ namespace MarkdigEngine
         }
 
         public MarkupResult Markup(string src, string path)
-        {            
+        {
+            var context = new MarkdownContext
+            {
+                FilePath = path,
+                BasePath = _parameters.BasePath
+            };
+
             return new MarkupResult
             {
-                Html = MarkdigMarked.Markup(src, _parameters.BasePath, path)
+                Html = MarkdigMarked.Markup(src, context)
             };
         }
     }

@@ -5,6 +5,8 @@ namespace MarkdigEngine.Extensions.IncludeFile
 {
     public class IncludeFileBlockParser : BlockParser
     {
+        private const string StartString = "[!include";
+
         public IncludeFileBlockParser()
         {
             OpeningCharacters = new char[] { '[' };
@@ -20,36 +22,131 @@ namespace MarkdigEngine.Extensions.IncludeFile
             // [!include[<title>](<filepath>)]
             var column = processor.Column;
             var line = processor.Line;
-            var lineStr = line.ToString().TrimEnd();
-            var c = line.CurrentChar;
+            var command = line.ToString();
+            var includeFile = new IncludeFile(this);
 
-            if (!lineStr.StartsWith("[!include[") || lineStr[lineStr.Length-1] != ']')
+            if (!MatchStart(ref line))
             {
                 return BlockState.None;
             }
 
-            line = new StringSlice(lineStr, "[!include".Length, line.End - 1);
-            if (!LinkHelper.TryParseLabel(ref line, out string title))
+            if (!MatchLink(processor, ref line, ref includeFile))
             {
                 return BlockState.None;
             }
-
-            line.NextChar();
-            if (!LinkHelper.TryParseUrl(ref line, out string filePath))
-            {
-                return BlockState.None;
-            }
-
-            var includeFile = new IncludeFile(this)
-            {
-                Title = title,
-                FilePath = filePath,
-                Command = lineStr
-            };
 
             processor.NewBlocks.Push(includeFile);
 
             return BlockState.BreakDiscard;
+        }
+
+        private bool MatchStart(ref StringSlice slice)
+        {
+            if (IsEscaped(slice))
+            {
+                return false;
+            }
+
+            var c = slice.CurrentChar;
+            var index = 0;
+
+            while (c != '\0' && index < StartString.Length && c == StartString[index])
+            {
+                c = slice.NextChar();
+                index++;
+            }
+
+            return index == StartString.Length;
+        }
+
+        private bool MatchLink(BlockProcessor processor, ref StringSlice slice, ref IncludeFile includeFile)
+        {
+            if (IsEscaped(slice))
+            {
+                return false;
+            }
+
+            return MatchTitle(processor, ref slice, ref includeFile) && MatchPath(processor, ref slice, ref includeFile);
+        }
+
+        private bool MatchTitle(BlockProcessor processor, ref StringSlice slice, ref IncludeFile includeFile)
+        {
+            if (IsEscaped(slice))
+            {
+                return false;
+            }
+
+            if (slice.CurrentChar != '[')
+            {
+                return false;
+            }
+
+            var c = slice.NextChar();
+            var title = processor.StringBuilders.Get();
+            var hasExcape = false;
+
+            while (c != '\0' && (c != ']' || hasExcape))
+            {
+                if (c == '\\' && !hasExcape)
+                {
+                    hasExcape = true;
+                }
+                else
+                {
+                    title.Append(c);
+                    hasExcape = false;
+                }
+                c = slice.NextChar();
+            }
+
+            if (c == ']')
+            {
+                includeFile.Title = title.ToString().Trim();
+                slice.NextChar();
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IsEscaped(StringSlice slice)
+        {
+            return slice.PeekCharExtra(-1) == '\\';
+        }
+
+        private bool MatchPath(BlockProcessor processor, ref StringSlice slice, ref IncludeFile includeFile)
+        {
+            if (slice.CurrentChar != '(')
+            {
+                return false;
+            }
+
+            var c = slice.NextChar();
+            var filePath = processor.StringBuilders.Get();
+            var hasEscape = false;
+
+            while (c != '\0' && (c != ')' || hasEscape))
+            {
+                if (c == '\\' && !hasEscape)
+                {
+                    hasEscape = true;
+                }
+                else
+                {
+                    filePath.Append(c);
+                    hasEscape = false;
+                }
+                c = slice.NextChar();
+            }
+
+            if (c == ')')
+            {
+                includeFile.FilePath = filePath.ToString().Trim();
+                slice.NextChar();
+                return true;
+            }
+
+            return false;
         }
     }
 }

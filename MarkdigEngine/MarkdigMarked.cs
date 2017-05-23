@@ -4,14 +4,8 @@ namespace MarkdigEngine
 {
     public class MarkdigMarked
     {
-        public static string Markup(string src, string basePath = null, string filePath = null)
+        public static string Markup(string src, MarkdownContext context)
         {
-            var context = new MarkdownContext
-            {
-                BasePath = basePath,
-                FilePath = filePath
-            };
-
             var pipeline = new MarkdownPipelineBuilder()
                 .UseAdvancedExtensions()
                 .UseDfmExtensions(context)
