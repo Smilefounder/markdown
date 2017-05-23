@@ -9,10 +9,12 @@ namespace MarkdigEngine.Extensions.IncludeFile
     public class HtmlIncludeFileRenderer : HtmlObjectRenderer<IncludeFile>
     {
         private MarkdownPipeline _pipeline;
+        private MarkdownContext _context;
 
-        public HtmlIncludeFileRenderer(MarkdownPipeline pipeline)
+        public HtmlIncludeFileRenderer(MarkdownPipeline pipeline, MarkdownContext context)
         {
             _pipeline = pipeline;
+            _context = context;
         }
 
         protected override void Write(HtmlRenderer renderer, IncludeFile obj)
@@ -23,6 +25,8 @@ namespace MarkdigEngine.Extensions.IncludeFile
                 throw new Exception("file path can't be empty or null in IncludeFile");
             }
 
+            var currentDir = Path.GetDirectoryName(_context.FilePath);
+            filePath = Path.Combine(currentDir, obj.FilePath);
             if (!File.Exists(filePath))
             {
                 Console.WriteLine($"Can't find {filePath}.");

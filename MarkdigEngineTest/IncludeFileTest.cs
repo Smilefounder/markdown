@@ -14,7 +14,7 @@ namespace MarkdigEngine.Tests
 
 Test Include File
 
-[!include[refa](r/a.md)]
+[!include[refa](a.md)]
 
 ";
 
@@ -23,7 +23,7 @@ Test Include File
 
 This is a file A included by another file.
 
-[!include[refb](r/b.md)]
+[!include[refb](b.md)]
 
 ";
 
@@ -33,7 +33,7 @@ This is a file A included by another file.
             WriteToFile("r/root.md", root);
             WriteToFile("r/a.md", refa);
             WriteToFile("r/b.md", refb);
-            var marked = MarkdigMarked.Markup(root);
+            var marked = MarkdigMarked.Markup(root, "r/root.md");
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Include File</p>
 <h1 id=""hello-include-file-a"">Hello Include File A</h1>

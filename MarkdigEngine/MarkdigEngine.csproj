@@ -74,6 +74,7 @@
     <Compile Include="MarkdigMarkdownService.cs" />
     <Compile Include="MarkdigMarked.cs" />
     <Compile Include="MarkdigServiceProvider.cs" />
+    <Compile Include="MarkdownContext.cs" />
     <Compile Include="MarkdownExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
