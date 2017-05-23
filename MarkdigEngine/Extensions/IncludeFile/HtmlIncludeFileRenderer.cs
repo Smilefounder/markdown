@@ -19,22 +19,23 @@ namespace MarkdigEngine.Extensions.IncludeFile
 
         protected override void Write(HtmlRenderer renderer, IncludeFile obj)
         {
-            var filePath = obj.FilePath;
             if (string.IsNullOrEmpty(obj.FilePath))
             {
                 throw new Exception("file path can't be empty or null in IncludeFile");
             }
 
-            var currentDir = Path.GetDirectoryName(_context.FilePath);
-            filePath = Path.Combine(currentDir, obj.FilePath);
-            if (!File.Exists(filePath))
+            var currentFilePath = Path.Combine(_context.BasePath, _context.FilePath);
+            var currentDir = Path.GetDirectoryName(currentFilePath);
+            var includeFilePath = Path.Combine(currentDir, obj.FilePath);
+
+            if (!File.Exists(includeFilePath))
             {
-                Console.WriteLine($"Can't find {filePath}.");
+                Console.WriteLine($"Can't find {includeFilePath}.");
                 renderer.Write(obj.Command);
             }
             else
             {
-                using (var sr = new StreamReader(filePath))
+                using (var sr = new StreamReader(includeFilePath))
                 {
                     var content = sr.ReadToEnd();
                     var result = Markdown.ToHtml(content, _pipeline);
