@@ -8,9 +8,9 @@ namespace MarkdigEngine.Extensions.IncludeFile
     {
         public string Title { get; set; }
 
-        public string FilePath { get; set; }
+        public string RefFilePath { get; set; }
 
-        public string Command { get; set; }
+        public string Syntax { get; set; }
 
         public MarkdownPipeline Pipeline { get; set; }
 

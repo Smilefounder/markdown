@@ -141,7 +141,7 @@ namespace MarkdigEngine.Extensions.IncludeFile
 
             if (c == ')')
             {
-                includeFile.FilePath = filePath.ToString().Trim();
+                includeFile.RefFilePath = filePath.ToString().Trim();
                 slice.NextChar();
                 return true;
             }

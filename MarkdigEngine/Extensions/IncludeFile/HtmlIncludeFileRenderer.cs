@@ -19,17 +19,17 @@ namespace MarkdigEngine.Extensions.IncludeFile
 
         protected override void Write(HtmlRenderer renderer, IncludeFile obj)
         {
-            if (string.IsNullOrEmpty(obj.FilePath))
+            if (string.IsNullOrEmpty(obj.RefFilePath))
             {
                 throw new Exception("file path can't be empty or null in IncludeFile");
             }
 
-            var includeFilePath = ExtensionsHelper.GetAbsolutlyPath(_context.BasePath, _context.FilePath, obj.FilePath);
+            var includeFilePath = ExtensionsHelper.GetAbsolutePathOfRefFile(_context.BasePath, _context.FilePath, obj.RefFilePath);
 
             if (!File.Exists(includeFilePath))
             {
                 Console.WriteLine($"Can't find {includeFilePath}.");
-                renderer.Write(obj.Command);
+                renderer.Write(obj.Syntax);
             }
             else
             {

@@ -41,7 +41,7 @@ namespace MarkdigEngine
 
         private string GetContent(CodeSnippet obj)
         {
-            var allLines = File.ReadAllLines(ExtensionsHelper.GetAbsolutlyPath(m_BasePath, m_Path, obj.CodePath));
+            var allLines = File.ReadAllLines(ExtensionsHelper.GetAbsolutePathOfRefFile(m_BasePath, m_Path, obj.CodePath));
             var allCodeRanges = obj.CodeRanges ?? new List<CodeRange>();
 
             if (!string.IsNullOrEmpty(obj.TagName))

@@ -6,71 +6,73 @@ namespace MarkdigEngine.Extensions
 {
     public static class ExtensionsHelper
     {
-        public static string GetAbsolutlyPath(string basePath, string currentFilePath, string referencedFilePath)
+        public static string GetAbsolutePathOfRefFile(string basePath, string filePath, string refPath)
         {
+            if (refPath[0] == '~')
+            {
+                return GetAbsolutePathWithTilde(basePath, refPath);
+            }
+
+            var currentDirectory = Path.GetDirectoryName(filePath);
+
+            return NormalizePath(Path.Combine(basePath, currentDirectory, refPath));
+        }
+
+        public static string GetAbsolutePathWithTilde(string basePath, string tildePath)
+        {
+            if (string.IsNullOrEmpty(tildePath))
+            {
+                throw new ArgumentException($"{nameof(tildePath)} can't be null or empty.");
+            }
+
             if (string.IsNullOrEmpty(basePath))
             {
-                throw new ArgumentException(nameof(basePath));
+                throw new ArgumentException($"{nameof(basePath)} can't be null or empty.");
             }
 
-            if (string.IsNullOrEmpty(currentFilePath))
+            if (!tildePath.StartsWith("~"))
             {
-                throw new ArgumentException(nameof(currentFilePath));
+                throw new ArgumentException($"{nameof(tildePath)} should start with ~.");
             }
 
-            if (string.IsNullOrEmpty(referencedFilePath))
+            if (!Path.IsPathRooted(basePath))
             {
-                throw new ArgumentException(nameof(referencedFilePath));
+                throw new ArgumentException($"{nameof(basePath)} should be an absolute path.");
             }
 
-            currentFilePath = Path.Combine(basePath, currentFilePath);
-            var currentFolder = Path.GetDirectoryName(currentFilePath);
-
-            var tempFolderName = new StringBuilder();
-
-            var sb = new StringBuilder(currentFolder);
-
-            for (int index = 0; index < referencedFilePath.Length; index++)
-            {
-                if (referencedFilePath[index] == '/' || referencedFilePath[index] == '\\')
-                {
-                    var folderName = tempFolderName.ToString();
-                    tempFolderName = new StringBuilder();
-
-                    switch (folderName)
-                    {
-                        case ".":
-                            break;
-                        case "..":
-                            int slashPosition = sb.Length - 1;
-                            while (slashPosition >= 0 && sb[slashPosition] != '/' && sb[slashPosition] != '\\')
-                            {
-                                slashPosition--;
-                            }
-
-                            sb.Length = slashPosition;
-                            break;
-                        case "~":
-                            sb.Length = basePath.Length;
-                            break;
-                        default:
-                            sb.Append('/').Append(folderName);
-                            break;
-                    }
-
-                }
-                else
-                {
-                    tempFolderName.Append(referencedFilePath[index]);
-                }
-            }
-
-            if (tempFolderName.Length != 0)
-            {
-                sb.Append('/').Append(tempFolderName.ToString());
-            }
-
-            return sb.ToString();
+            return GetAbsolutePathWithTildeCore(basePath, tildePath);
         }
+
+        public static string NormalizePath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                return path;
+            }
+
+            return Path.GetFullPath(path).Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        }
+
+        #region private methods
+        private static string GetAbsolutePathWithTildeCore(string basePath, string tildePath)
+        {
+            var index = 1;
+            var ch = tildePath[index];
+            while (ch == '/' || ch == '\\')
+            {
+                index++;
+                ch = tildePath[index];
+            }
+
+            if (index == tildePath.Length)
+            {
+                return basePath;
+            }
+
+            var pathWithoutTilde = tildePath.Substring(index);
+
+            return NormalizePath(Path.Combine(basePath, pathWithoutTilde));
+        }
+        #endregion
     }
 }
