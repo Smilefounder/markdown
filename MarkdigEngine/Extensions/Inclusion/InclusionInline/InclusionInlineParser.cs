@@ -3,11 +3,11 @@ using Markdig.Helpers;
 
 namespace MarkdigEngine
 {
-    public class IncludeFileInlineParser : InlineParser
+    public class InclusionInlineParser : InlineParser
     {
         private const string StartString = "[!include";
 
-        public IncludeFileInlineParser()
+        public InclusionInlineParser()
         {
             OpeningCharacters = new[] { '[' };
         }
@@ -19,8 +19,8 @@ namespace MarkdigEngine
                 return false;
             }
 
-            var includeFile = new IncludeFileInline();
-            var context = new IncludeFileContext();
+            var includeFile = new InclusionInline();
+            var context = new InclusionContext();
             var stringBuilderCache = processor.StringBuilders;
 
             if (!ExtensionsHelper.MatchLink(stringBuilderCache, ref slice, ref context))

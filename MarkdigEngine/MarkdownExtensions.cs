@@ -13,7 +13,7 @@ namespace MarkdigEngine
 
         public static MarkdownPipelineBuilder UseIncludeFile(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Insert(0, new IncludeFileExtension(context));
+            pipeline.Extensions.Insert(0, new InclusionExtension(context));
             return pipeline;
         }
 

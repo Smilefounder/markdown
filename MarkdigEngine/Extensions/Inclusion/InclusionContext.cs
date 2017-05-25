@@ -2,7 +2,7 @@
 
 namespace MarkdigEngine
 {
-    public class IncludeFileContext
+    public class InclusionContext
     {
         public string Title { get; set; }
 

@@ -73,7 +73,7 @@ namespace MarkdigEngine
             return index == startString.Length;
         }
 
-        public static bool MatchLink(StringBuilderCache stringBuilderCache, ref StringSlice slice, ref IncludeFileContext context)
+        public static bool MatchLink(StringBuilderCache stringBuilderCache, ref StringSlice slice, ref InclusionContext context)
         {
             if (IsEscaped(slice))
             {
@@ -112,7 +112,7 @@ namespace MarkdigEngine
             return NormalizePath(Path.Combine(basePath, pathWithoutTilde));
         }
 
-        private static bool MatchTitle(StringBuilderCache stringBuilderCache, ref StringSlice slice, ref IncludeFileContext context)
+        private static bool MatchTitle(StringBuilderCache stringBuilderCache, ref StringSlice slice, ref InclusionContext context)
         {
             if (IsEscaped(slice))
             {
@@ -159,7 +159,7 @@ namespace MarkdigEngine
             return slice.PeekCharExtra(-1) == '\\';
         }
 
-        private static bool MatchPath(StringBuilderCache stringBuilderCache, ref StringSlice slice, ref IncludeFileContext context)
+        private static bool MatchPath(StringBuilderCache stringBuilderCache, ref StringSlice slice, ref InclusionContext context)
         {
             if (slice.CurrentChar != '(')
             {

@@ -2,11 +2,11 @@
 
 namespace MarkdigEngine
 {
-    public class IncludeFileBlockParser : BlockParser
+    public class InclusionBlockParser : BlockParser
     {
         private const string StartString = "[!include";
 
-        public IncludeFileBlockParser()
+        public InclusionBlockParser()
         {
             OpeningCharacters = new char[] { '[' };
         }
@@ -22,7 +22,7 @@ namespace MarkdigEngine
             var column = processor.Column;
             var line = processor.Line;
             var command = line.ToString();
-            var includeFile = new IncludeFileBlock(this);
+            var includeFile = new InclusionBlock(this);
 
             if (!ExtensionsHelper.MatchStart(ref line, StartString))
             {
@@ -30,7 +30,7 @@ namespace MarkdigEngine
             }
 
             var stringBuilderCache = processor.StringBuilders;
-            var context = new IncludeFileContext();
+            var context = new InclusionContext();
 
             if (!ExtensionsHelper.MatchLink(stringBuilderCache, ref line, ref context))
             {
