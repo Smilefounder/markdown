@@ -121,6 +121,35 @@ This is a file A included by another file.
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
         }
 
+        [Fact]
+        [Trait("Related", "IncludeFile")]
+        public void TestInlineLevelInclusion_General()
+        {
+            var root = @"
+# Hello World
+
+Test Inline Included File: [!include[refa](~/r/a.md)].
+
+";
+
+            var refa = "This is a included token";
+
+            WriteToFile("r/root.md", root);
+            WriteToFile("r/a.md", refa);
+
+            var context = new MarkdownContext
+            {
+                FilePath = "r/root.md",
+                BasePath = Directory.GetCurrentDirectory()
+            };
+            var marked = MarkdigMarked.Markup(root, context);
+            var expected = @"<h1 id=""hello-world"">Hello World</h1>
+<p>Test Inline Included File: <p>This is a included token</p>
+.</p>
+";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
         private static void WriteToFile(string file, string content)
         {
             var dir = Path.GetDirectoryName(file);

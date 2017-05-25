@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-using MarkdigEngine.Extensions;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 

@@ -1,5 +1,4 @@
 ﻿using Markdig;
-using MarkdigEngine.Extensions.IncludeFile;
 
 namespace MarkdigEngine
 {

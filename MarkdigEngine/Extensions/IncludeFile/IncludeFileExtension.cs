@@ -1,7 +1,8 @@
 ﻿using Markdig.Renderers;
 using Markdig;
+using Markdig.Parsers.Inlines;
 
-namespace MarkdigEngine.Extensions.IncludeFile
+namespace MarkdigEngine
 {
     /// <summary>
     /// Extension to enable extension IncludeFile.
@@ -18,14 +19,22 @@ namespace MarkdigEngine.Extensions.IncludeFile
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
             pipeline.BlockParsers.AddIfNotAlready<IncludeFileBlockParser>();
+            pipeline.InlineParsers.InsertBefore<LinkInlineParser>(new IncludeFileInlineParser());
         }
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
         {
-            var htmlRenderer = renderer as HtmlRenderer;
-            if (htmlRenderer != null && !htmlRenderer.ObjectRenderers.Contains<HtmlIncludeFileRenderer>())
+            if (renderer is HtmlRenderer htmlRenderer)
             {
-                htmlRenderer.ObjectRenderers.Insert(0, new HtmlIncludeFileRenderer(pipeline, Context));
+                if (!htmlRenderer.ObjectRenderers.Contains<HtmlIncludeFileInlineRenderer>())
+                {
+                    htmlRenderer.ObjectRenderers.Insert(0, new HtmlIncludeFileInlineRenderer(pipeline, Context));
+                }
+
+                if (!htmlRenderer.ObjectRenderers.Contains<HtmlIncludeFileBlockRenderer>())
+                {
+                    htmlRenderer.ObjectRenderers.Insert(0, new HtmlIncludeFileBlockRenderer(pipeline, Context));
+                }
             }
         }
     }

@@ -1,10 +1,8 @@
 ﻿using Markdig;
-using Markdig.Parsers;
-using Markdig.Syntax;
 
-namespace MarkdigEngine.Extensions.IncludeFile
+namespace MarkdigEngine
 {
-    public class IncludeFile : LeafBlock
+    public class IncludeFileContext
     {
         public string Title { get; set; }
 
@@ -13,10 +11,5 @@ namespace MarkdigEngine.Extensions.IncludeFile
         public string Syntax { get; set; }
 
         public MarkdownPipeline Pipeline { get; set; }
-
-        public IncludeFile(BlockParser parser): base(parser)
-        {
-
-        }
     }
 }

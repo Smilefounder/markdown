@@ -1,4 +1,4 @@
-﻿using MarkdigEngine.Extensions;
+﻿using MarkdigEngine;
 
 using Xunit;
 

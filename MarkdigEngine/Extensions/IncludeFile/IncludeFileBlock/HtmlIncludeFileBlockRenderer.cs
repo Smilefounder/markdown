@@ -4,32 +4,32 @@ using Markdig;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 
-namespace MarkdigEngine.Extensions.IncludeFile
+namespace MarkdigEngine
 {
-    public class HtmlIncludeFileRenderer : HtmlObjectRenderer<IncludeFile>
+    public class HtmlIncludeFileBlockRenderer : HtmlObjectRenderer<IncludeFileBlock>
     {
         private MarkdownPipeline _pipeline;
         private MarkdownContext _context;
 
-        public HtmlIncludeFileRenderer(MarkdownPipeline pipeline, MarkdownContext context)
+        public HtmlIncludeFileBlockRenderer(MarkdownPipeline pipeline, MarkdownContext context)
         {
             _pipeline = pipeline;
             _context = context;
         }
 
-        protected override void Write(HtmlRenderer renderer, IncludeFile obj)
+        protected override void Write(HtmlRenderer renderer, IncludeFileBlock includeFile)
         {
-            if (string.IsNullOrEmpty(obj.RefFilePath))
+            if (string.IsNullOrEmpty(includeFile.Context.RefFilePath))
             {
                 throw new Exception("file path can't be empty or null in IncludeFile");
             }
 
-            var includeFilePath = ExtensionsHelper.GetAbsolutePathOfRefFile(_context.BasePath, _context.FilePath, obj.RefFilePath);
+            var includeFilePath = ExtensionsHelper.GetAbsolutePathOfRefFile(_context.BasePath, _context.FilePath, includeFile.Context.RefFilePath);
 
             if (!File.Exists(includeFilePath))
             {
                 Console.WriteLine($"Can't find {includeFilePath}.");
-                renderer.Write(obj.Syntax);
+                renderer.Write(includeFile.Context.Syntax);
             }
             else
             {
