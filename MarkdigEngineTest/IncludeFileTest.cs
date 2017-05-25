@@ -144,7 +144,38 @@ Test Inline Included File: [!include[refa](~/r/a.md)].
             };
             var marked = MarkdigMarked.Markup(root, context);
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
-<p>Test Inline Included File: <p>This is a included token</p>
+<p>Test Inline Included File: This is a included token.</p>
+";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        [Trait("Related", "IncludeFile")]
+        public void TestInlineLevelInclusion_Block()
+        {
+            var root = @"
+# Hello World
+
+Test Inline Included File: [!include[refa](~/r/a.md)].
+
+";
+
+            var refa = @"## This is a included token
+
+block content in Inline Inclusion.";
+
+            WriteToFile("r/root.md", root);
+            WriteToFile("r/a.md", refa);
+
+            var context = new MarkdownContext
+            {
+                FilePath = "r/root.md",
+                BasePath = Directory.GetCurrentDirectory()
+            };
+            var marked = MarkdigMarked.Markup(root, context);
+            var expected = @"<h1 id=""hello-world"">Hello World</h1>
+<p>Test Inline Included File: <h2 id=""this-is-a-included-token"">This is a included token</h2>
+<p>block content in Inline Inclusion.</p>
 .</p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
