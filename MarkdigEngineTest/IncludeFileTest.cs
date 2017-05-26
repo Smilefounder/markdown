@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 using Xunit;
 
@@ -35,11 +36,7 @@ This is a file A included by another file.
             WriteToFile("r/a.md", refa);
             WriteToFile("r/b.md", refb);
 
-            var context = new MarkdownContext
-            {
-                FilePath = "r/root.md",
-                BasePath = Directory.GetCurrentDirectory()
-            };
+            var context = new MarkdownContext("r/root.md", null);
             var marked = MarkdigMarked.Markup(root, context);
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Include File</p>
@@ -72,11 +69,7 @@ This is a file A included by another file.
             WriteToFile("r/root.md", root);
             WriteToFile("r/a(x).md", refa);
 
-            var context = new MarkdownContext
-            {
-                FilePath = "r/root.md",
-                BasePath = Directory.GetCurrentDirectory()
-            };
+            var context = new MarkdownContext("r/root.md", null);
             var marked = MarkdigMarked.Markup(root, context);
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Include File</p>
@@ -108,11 +101,7 @@ This is a file A included by another file.
             WriteToFile("r/root.md", root);
             WriteToFile("r/a.md", refa);
 
-            var context = new MarkdownContext
-            {
-                FilePath = "r/root.md",
-                BasePath = Directory.GetCurrentDirectory()
-            };
+            var context = new MarkdownContext("r/root.md", null);
             var marked = MarkdigMarked.Markup(root, context);
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Include File</p>
@@ -120,6 +109,42 @@ This is a file A included by another file.
 <p>This is a file A included by another file.</p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        [Trait("Related", "IncludeFile")]
+        public void TestBlockLevelInclusion_CycleInclude()
+        {
+            var root = @"
+# Hello World
+
+Test Include File
+
+[!include[refa](a.md)]
+
+";
+
+            var refa = @"
+# Hello Include File A
+
+This is a file A included by another file.
+
+[!include[refb](b.md)]
+
+";
+
+            var refb = @"
+# Hello Include File B
+
+[!include[refa](a.md)]
+";
+            WriteToFile("r/root.md", root);
+            WriteToFile("r/a.md", refa);
+            WriteToFile("r/b.md", refb);
+
+            var context = new MarkdownContext("r/root.md", null);
+
+            Assert.Throws<Exception>(() => MarkdigMarked.Markup(root, context));
         }
 
         [Fact]
@@ -138,16 +163,32 @@ Test Inline Included File: [!include[refa](~/r/a.md)].
             WriteToFile("r/root.md", root);
             WriteToFile("r/a.md", refa);
 
-            var context = new MarkdownContext
-            {
-                FilePath = "r/root.md",
-                BasePath = Directory.GetCurrentDirectory()
-            };
+            var context = new MarkdownContext("r/root.md", null);
             var marked = MarkdigMarked.Markup(root, context);
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Inline Included File: This is a <strong>included</strong> token.</p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        [Trait("Related", "IncludeFile")]
+        public void TestInlineLevelInclusion_CycleInclude()
+        {
+            var root = @"
+# Hello World
+
+Test Inline Included File: [!include[refa](~/r/a.md)].
+
+";
+
+            var refa = "This is a **included** token with [!include[root](~/r/root.md)]";
+
+            WriteToFile("r/root.md", root);
+            WriteToFile("r/a.md", refa);
+
+            var context = new MarkdownContext("r/root.md", null);
+            Assert.Throws<Exception>(() => MarkdigMarked.Markup(root, context));
         }
 
         [Fact]
@@ -168,11 +209,7 @@ block content in Inline Inclusion.";
             WriteToFile("r/root.md", root);
             WriteToFile("r/a.md", refa);
 
-            var context = new MarkdownContext
-            {
-                FilePath = "r/root.md",
-                BasePath = Directory.GetCurrentDirectory()
-            };
+            var context = new MarkdownContext("r/root.md", null);
             var marked = MarkdigMarked.Markup(root, context);
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Inline Included File: <h2 id=""this-is-a-included-token"">This is a included token</h2>

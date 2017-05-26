@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Immutable;
 using System.IO;
+using System.Linq;
 
 using Markdig;
 using Markdig.Renderers;
@@ -11,33 +13,41 @@ namespace MarkdigEngine
 {
     public class HtmlInclusionBlockRenderer : HtmlObjectRenderer<InclusionBlock>
     {
-        private MarkdownPipeline _pipeline;
         private MarkdownContext _context;
 
-        public HtmlInclusionBlockRenderer(MarkdownPipeline pipeline, MarkdownContext context)
+        public HtmlInclusionBlockRenderer(MarkdownContext context)
         {
-            _pipeline = pipeline;
             _context = context;
         }
 
-        protected override void Write(HtmlRenderer renderer, InclusionBlock includeFile)
+        protected override void Write(HtmlRenderer renderer, InclusionBlock inclusion)
         {
-            if (string.IsNullOrEmpty(includeFile.Context.RefFilePath))
+            if (string.IsNullOrEmpty(inclusion.Context.RefFilePath))
             {
                 throw new Exception("file path can't be empty or null in IncludeFile");
             }
 
-            var currentFilePath = _context.FilePath;
-            var refFilePath = includeFile.Context.RefFilePath;
-            var includeFilePath = ((RelativePath)refFilePath).BasedOn((RelativePath)currentFilePath).RemoveWorkingFolder();
+            var currentFilePath = (RelativePath)_context.FilePath;
+            var refFilePath = inclusion.Context.RefFilePath;
+            var includeFilePath = ((RelativePath)refFilePath).BasedOn(currentFilePath).RemoveWorkingFolder();
 
             if (!File.Exists(includeFilePath))
             {
                 Console.WriteLine($"Can't find {includeFilePath}.");
-                renderer.Write(includeFile.Context.Syntax);
+                renderer.Write(inclusion.Context.Syntax);
 
                 return;
             }
+
+            var parents = _context.GetFilePathStack() ?? ImmutableHashSet<string>.Empty;
+            if (parents.Contains(currentFilePath))
+            {
+                throw new Exception($"Circular dependency found in {currentFilePath}.");
+            }
+
+            parents = parents.Add(currentFilePath);
+            var context = _context.SetFilePathStack(parents);
+            context = new MarkdownContext(includeFilePath, context.BasePath, context.Variables);
 
             string content;
             using (var sr = new StreamReader(includeFilePath))
@@ -45,7 +55,8 @@ namespace MarkdigEngine
                 content = sr.ReadToEnd();
             }
 
-            var result = Markdown.ToHtml(content, _pipeline);
+            var result = MarkdigMarked.Markup(content, context);
+
             renderer.Write(result);
         }
     }

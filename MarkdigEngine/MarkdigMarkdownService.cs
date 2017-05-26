@@ -1,5 +1,4 @@
-﻿using Markdig;
-using Microsoft.DocAsCode.Plugins;
+﻿using Microsoft.DocAsCode.Plugins;
 
 namespace MarkdigEngine
 {
@@ -14,11 +13,7 @@ namespace MarkdigEngine
 
         public MarkupResult Markup(string content, string path)
         {
-            var context = new MarkdownContext
-            {
-                FilePath = path,
-                BasePath = _parameters.BasePath
-            };
+            var context = new MarkdownContext(path, _parameters.BasePath);
 
             return new MarkupResult
             {

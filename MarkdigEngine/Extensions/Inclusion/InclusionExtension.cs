@@ -33,7 +33,7 @@ namespace MarkdigEngine
 
                 if (!htmlRenderer.ObjectRenderers.Contains<HtmlInclusionBlockRenderer>())
                 {
-                    htmlRenderer.ObjectRenderers.Insert(0, new HtmlInclusionBlockRenderer(pipeline, Context));
+                    htmlRenderer.ObjectRenderers.Insert(0, new HtmlInclusionBlockRenderer(Context));
                 }
             }
         }

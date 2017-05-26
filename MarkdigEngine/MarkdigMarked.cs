@@ -39,7 +39,7 @@ namespace MarkdigEngine
             return writer.ToString();
         }
 
-        private static MarkdownPipeline CreatePipeline(MarkdownContext context)
+        public static MarkdownPipeline CreatePipeline(MarkdownContext context)
         {
             if (context == null)
             {
