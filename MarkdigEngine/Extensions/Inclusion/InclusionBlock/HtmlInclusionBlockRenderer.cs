@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+
 using Markdig;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
@@ -30,16 +31,18 @@ namespace MarkdigEngine
             {
                 Console.WriteLine($"Can't find {includeFilePath}.");
                 renderer.Write(includeFile.Context.Syntax);
+
+                return;
             }
-            else
+
+            string content;
+            using (var sr = new StreamReader(includeFilePath))
             {
-                using (var sr = new StreamReader(includeFilePath))
-                {
-                    var content = sr.ReadToEnd();
-                    var result = Markdown.ToHtml(content, _pipeline);
-                    renderer.Write(result);
-                }
+                content = sr.ReadToEnd();
             }
+
+            var result = Markdown.ToHtml(content, _pipeline);
+            renderer.Write(result);
         }
     }
 }

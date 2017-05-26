@@ -1,5 +1,6 @@
-﻿using Xunit;
-using System.IO;
+﻿using System.IO;
+
+using Xunit;
 
 namespace MarkdigEngine.Tests
 {
@@ -132,7 +133,7 @@ Test Inline Included File: [!include[refa](~/r/a.md)].
 
 ";
 
-            var refa = "This is a included token";
+            var refa = "This is a **included** token";
 
             WriteToFile("r/root.md", root);
             WriteToFile("r/a.md", refa);
@@ -144,7 +145,7 @@ Test Inline Included File: [!include[refa](~/r/a.md)].
             };
             var marked = MarkdigMarked.Markup(root, context);
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
-<p>Test Inline Included File: This is a included token.</p>
+<p>Test Inline Included File: This is a <strong>included</strong> token.</p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
         }
