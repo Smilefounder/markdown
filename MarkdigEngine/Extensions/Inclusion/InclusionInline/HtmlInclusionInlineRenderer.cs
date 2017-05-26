@@ -6,6 +6,8 @@ using Markdig.Renderers;
 using Markdig.Renderers.Html;
 using Markdig.Syntax;
 
+using Microsoft.DocAsCode.Common;
+
 namespace MarkdigEngine
 {
     public class HtmlInclusionInlineRenderer : HtmlObjectRenderer<InclusionInline>
@@ -26,7 +28,9 @@ namespace MarkdigEngine
                 throw new Exception("file path can't be empty or null in IncludeFile");
             }
 
-            var includeFilePath = ExtensionsHelper.GetAbsolutePathOfRefFile(_context.BasePath, _context.FilePath, includeFile.Context.RefFilePath);
+            var currentFilePath = _context.FilePath;
+            var refFilePath = includeFile.Context.RefFilePath;
+            var includeFilePath = ((RelativePath)refFilePath).BasedOn((RelativePath)currentFilePath).RemoveWorkingFolder();
 
             if (!File.Exists(includeFilePath))
             {

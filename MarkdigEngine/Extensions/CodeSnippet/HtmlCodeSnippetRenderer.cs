@@ -7,6 +7,8 @@ using System.IO;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 
+using Microsoft.DocAsCode.Common;
+
 namespace MarkdigEngine
 {
     public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
@@ -40,7 +42,9 @@ namespace MarkdigEngine
 
         private string GetContent(CodeSnippet obj)
         {
-            var allLines = File.ReadAllLines(ExtensionsHelper.GetAbsolutePathOfRefFile(m_BasePath, m_Path, obj.CodePath));
+            var refFileRelativePath = ((RelativePath)m_Path).BasedOn((RelativePath)obj.CodePath).RemoveWorkingFolder();
+
+            var allLines = File.ReadAllLines(refFileRelativePath);
             var allCodeRanges = obj.CodeRanges ?? new List<CodeRange>();
 
             if (!string.IsNullOrEmpty(obj.TagName))

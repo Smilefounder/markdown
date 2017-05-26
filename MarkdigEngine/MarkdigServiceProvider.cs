@@ -1,5 +1,6 @@
-﻿using Microsoft.DocAsCode.Plugins;
-using System.Composition;
+﻿using System.Composition;
+
+using Microsoft.DocAsCode.Plugins;
 
 namespace MarkdigEngine
 {

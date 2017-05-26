@@ -12,7 +12,7 @@ namespace MarkdigEngine
             _parameters = parameters;
         }
 
-        public MarkupResult Markup(string src, string path)
+        public MarkupResult Markup(string content, string path)
         {
             var context = new MarkdownContext
             {
@@ -22,7 +22,7 @@ namespace MarkdigEngine
 
             return new MarkupResult
             {
-                Html = MarkdigMarked.Markup(src, context)
+                Html = MarkdigMarked.Markup(content, context)
             };
         }
     }
