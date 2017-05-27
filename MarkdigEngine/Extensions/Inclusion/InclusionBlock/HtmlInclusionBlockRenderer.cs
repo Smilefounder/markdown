@@ -30,8 +30,8 @@ namespace MarkdigEngine
 
             if (!File.Exists(includeFilePath.RemoveWorkingFolder()))
             {
-                Console.WriteLine($"Can't find {includeFilePath}.");
-                renderer.Write(inclusion.Context.Syntax);
+                Logger.LogWarning($"Can't find {includeFilePath}.");
+                renderer.Write(inclusion.Context.GetRaw());
 
                 return;
             }
@@ -39,7 +39,10 @@ namespace MarkdigEngine
             var parents = _context.InclusionSet;
             if (parents != null && parents.Contains(currentFilePath))
             {
-                throw new Exception($"Circular dependency found in {currentFilePath}.");
+                Logger.LogError($"Circular dependency found in {currentFilePath}.");
+                renderer.Write(inclusion.Context.GetRaw());
+
+                return;
             }
 
             _context = _context.AddIncludeFile(currentFilePath);

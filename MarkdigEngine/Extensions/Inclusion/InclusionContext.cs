@@ -8,8 +8,9 @@ namespace MarkdigEngine
 
         public string RefFilePath { get; set; }
 
-        public string Syntax { get; set; }
-
-        public MarkdownPipeline Pipeline { get; set; }
+        public string GetRaw()
+        {
+            return $"[!Include[{Title}]({RefFilePath})]";
+        }
     }
 }

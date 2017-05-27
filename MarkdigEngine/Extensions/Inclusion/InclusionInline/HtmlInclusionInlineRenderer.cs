@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 using Markdig;
 using Markdig.Renderers;
@@ -21,21 +20,24 @@ namespace MarkdigEngine
             _context = context;
         }
 
-        protected override void Write(HtmlRenderer renderer, InclusionInline includeFile)
+        protected override void Write(HtmlRenderer renderer, InclusionInline inclusion)
         {
-            if (string.IsNullOrEmpty(includeFile.Context.RefFilePath))
+            if (string.IsNullOrEmpty(inclusion.Context.RefFilePath))
             {
-                throw new Exception("file path can't be empty or null in IncludeFile");
+                Logger.LogError("file path can't be empty or null in IncludeFile");
+                renderer.Write(inclusion.Context.GetRaw());
+
+                return;
             }
 
             var currentFilePath = ((RelativePath)_context.FilePath).GetPathFromWorkingFolder();
-            var refFilePath = includeFile.Context.RefFilePath;
+            var refFilePath = inclusion.Context.RefFilePath;
             var includeFilePath = ((RelativePath)refFilePath).BasedOn(currentFilePath);
 
             if (!File.Exists(includeFilePath.RemoveWorkingFolder()))
             {
-                Console.WriteLine($"Can't find {includeFilePath}.");
-                renderer.Write(includeFile.Context.Syntax);
+                Logger.LogWarning($"Can't find {includeFilePath}.");
+                renderer.Write(inclusion.Context.GetRaw());
 
                 return;
             }
@@ -43,7 +45,10 @@ namespace MarkdigEngine
             var parents = _context.InclusionSet;
             if (parents != null && parents.Contains(currentFilePath))
             {
-                throw new Exception($"Circular dependency found in {currentFilePath}.");
+                Logger.LogError($"Circular dependency found in {currentFilePath}.");
+                renderer.Write(inclusion.Context.GetRaw());
+
+                return;
             }
 
             _context = _context.AddIncludeFile(currentFilePath);
@@ -68,7 +73,7 @@ namespace MarkdigEngine
             }
             else
             {
-                Console.WriteLine($"[Warning]: Inline inclusion only support inline syntax.");
+                Logger.LogWarning($"Inline syntax for Inclusion only support inline syntax in {inclusion}.");
                 var result = Markdown.ToHtml(content, _pipeline);
 
                 renderer.Write(result);

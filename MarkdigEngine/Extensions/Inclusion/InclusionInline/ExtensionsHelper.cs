@@ -109,6 +109,7 @@ namespace MarkdigEngine
                 context.Title = title.ToString().Trim();
                 slice.NextChar();
                 stringBuilderCache.Release(title);
+
                 return true;
             }
 

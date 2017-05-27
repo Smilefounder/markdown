@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
@@ -163,9 +162,20 @@ This is a file A included by another file.
             WriteToFile("r/a.md", refa);
             WriteToFile("r/b.md", refb);
 
-            var context = new MarkdownContext("r/root.md", null);
+            var parameter = new MarkdownServiceParameters { };
+            var service = new MarkdigMarkdownService(parameter);
 
-            Assert.Throws<Exception>(() => MarkdigMarked.Markup(root, context));
+            var result = service.Markup(root, "r/root.md");
+            var expected = @"<h1 id=""hello-world"">Hello World</h1>
+<p>Test Include File</p>
+<h1 id=""hello-include-file-a"">Hello Include File A</h1>
+<p>This is a file A included by another file.</p>
+<h1 id=""hello-include-file-b"">Hello Include File B</h1>
+<h1 id=""hello-include-file-a"">Hello Include File A</h1>
+<p>This is a file A included by another file.</p>
+[!Include[refb](b.md)]";
+
+            Assert.Equal<string>(expected.Replace("\r\n", "\n"), result.Html);
         }
 
         [Fact]
@@ -214,8 +224,17 @@ Test Inline Included File: [!include[refa](~/r/a.md)].
             WriteToFile("r/root.md", root);
             WriteToFile("r/a.md", refa);
 
-            var context = new MarkdownContext("r/root.md", null);
-            Assert.Throws<Exception>(() => MarkdigMarked.Markup(root, context));
+            var parameter = new MarkdownServiceParameters { };
+            var service = new MarkdigMarkdownService(parameter);
+
+            var result = service.Markup(root, "r/root.md");
+            var expected = @"<h1 id=""hello-world"">Hello World</h1>
+<p>Test Inline Included File: This is a <strong>included</strong> token with <h1 id=""hello-world"">Hello World</h1>
+<p>Test Inline Included File: This is a <strong>included</strong> token with [!Include[root](~/r/root.md)].</p>
+.</p>
+";
+
+            Assert.Equal<string>(expected.Replace("\r\n", "\n"), result.Html);
         }
 
         [Fact]
