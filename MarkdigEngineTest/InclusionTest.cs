@@ -38,7 +38,10 @@ This is a file A included by another file.
             WriteToFile("r/a.md", refa);
             WriteToFile("r/b.md", refb);
 
-            var parameter = new MarkdownServiceParameters { };
+            var parameter = new MarkdownServiceParameters
+            {
+                BasePath = "."
+            };
             var service = new MarkdigMarkdownService(parameter);
 
             var result = service.Markup(root, "r/root.md");
@@ -48,7 +51,7 @@ This is a file A included by another file.
 <p>This is a file A included by another file.</p>
 <h1 id=""hello-include-file-b"">Hello Include File B</h1>
 ";
-            Assert.Equal(expected.Replace("\r\n","\n"), result.Html);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 
             var dependency = result.Dependency;
             var expectedDependency = new List<string> { "~/r/a.md", "~/r/b.md" };
@@ -77,7 +80,10 @@ This is a file A included by another file.
             WriteToFile("r/root.md", root);
             WriteToFile("r/a(x).md", refa);
 
-            var parameter = new MarkdownServiceParameters { };
+            var parameter = new MarkdownServiceParameters
+            {
+                BasePath = "."
+            };
             var service = new MarkdigMarkdownService(parameter);
 
             var result = service.Markup(root, "r/root.md");
@@ -115,7 +121,10 @@ This is a file A included by another file.
             WriteToFile("r/root.md", root);
             WriteToFile("r/a.md", refa);
 
-            var parameter = new MarkdownServiceParameters { };
+            var parameter = new MarkdownServiceParameters
+            {
+                BasePath = "."
+            };
             var service = new MarkdigMarkdownService(parameter);
 
             var result = service.Markup(root, "r/root.md");
@@ -162,7 +171,10 @@ This is a file A included by another file.
             WriteToFile("r/a.md", refa);
             WriteToFile("r/b.md", refb);
 
-            var parameter = new MarkdownServiceParameters { };
+            var parameter = new MarkdownServiceParameters
+            {
+                BasePath = "."
+            };
             var service = new MarkdigMarkdownService(parameter);
 
             var result = service.Markup(root, "r/root.md");
@@ -194,7 +206,10 @@ Test Inline Included File: [!include[refa](~/r/a.md)].
             WriteToFile("r/root.md", root);
             WriteToFile("r/a.md", refa);
 
-            var parameter = new MarkdownServiceParameters { };
+            var parameter = new MarkdownServiceParameters
+            {
+                BasePath = "."
+            };
             var service = new MarkdigMarkdownService(parameter);
 
             var result = service.Markup(root, "r/root.md"); ;
@@ -224,7 +239,10 @@ Test Inline Included File: [!include[refa](~/r/a.md)].
             WriteToFile("r/root.md", root);
             WriteToFile("r/a.md", refa);
 
-            var parameter = new MarkdownServiceParameters { };
+            var parameter = new MarkdownServiceParameters
+            {
+                BasePath = "."
+            };
             var service = new MarkdigMarkdownService(parameter);
 
             var result = service.Markup(root, "r/root.md");
@@ -255,7 +273,10 @@ block content in Inline Inclusion.";
             WriteToFile("r/root.md", root);
             WriteToFile("r/a.md", refa);
 
-            var parameter = new MarkdownServiceParameters { };
+            var parameter = new MarkdownServiceParameters
+            {
+                BasePath = "."
+            };
             var service = new MarkdigMarkdownService(parameter);
 
             var result = service.Markup(root, "r/root.md");

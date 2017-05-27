@@ -34,7 +34,8 @@ namespace MarkdigEngine
             var refFilePath = inclusion.Context.RefFilePath;
             var includeFilePath = ((RelativePath)refFilePath).BasedOn(currentFilePath);
 
-            if (!File.Exists(includeFilePath.RemoveWorkingFolder()))
+            var refPath = Path.Combine(_context.BasePath, includeFilePath.RemoveWorkingFolder());
+            if (!File.Exists(refPath))
             {
                 Logger.LogWarning($"Can't find {includeFilePath}.");
                 renderer.Write(inclusion.Context.GetRaw());
@@ -57,7 +58,7 @@ namespace MarkdigEngine
             var context = new MarkdownContext(includeFilePath, _context.BasePath, _context.InclusionSet, _context.Dependency);
 
             string content;
-            using (var sr = new StreamReader(includeFilePath.RemoveWorkingFolder()))
+            using (var sr = new StreamReader(refPath))
             {
                 content = sr.ReadToEnd();
             }

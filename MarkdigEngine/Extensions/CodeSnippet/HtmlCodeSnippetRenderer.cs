@@ -43,7 +43,8 @@ namespace MarkdigEngine
             var refFileRelativePath = ((RelativePath)obj.CodePath).BasedOn((RelativePath)_context.FilePath);
             _context.ReportDependency(refFileRelativePath);
 
-            var allLines = File.ReadAllLines(refFileRelativePath.RemoveWorkingFolder());
+            var refPath = Path.Combine(_context.BasePath, refFileRelativePath.RemoveWorkingFolder());
+            var allLines = File.ReadAllLines(refPath);
             var allCodeRanges = obj.CodeRanges ?? new List<CodeRange>();
 
             if (!string.IsNullOrEmpty(obj.TagName))
