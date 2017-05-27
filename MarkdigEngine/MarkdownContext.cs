@@ -15,77 +15,42 @@ namespace MarkdigEngine
         /// </summary>
         public string FilePath { get; }
 
-        private const string FilePathSetKey = "FilePathSet";
-        private const string DependencyKey = "DependencyKey";
+        public ImmutableHashSet<string> InclusionSet { get; }
 
-        public ImmutableDictionary<string, object> Variables { get; private set; }
+        public List<string> Dependency { get; private set; }
 
-        public MarkdownContext(string filePath, string basePath, ImmutableDictionary<string, object> variables = null)
+        public MarkdownContext(string filePath, string basePath, ImmutableHashSet<string> inclusionSet = null, List<string> dependency = null)
         {
             FilePath = filePath;
             BasePath = basePath;
-            Variables = variables ?? ImmutableDictionary<string, object>.Empty.SetItem(DependencyKey, new List<string>());
+            InclusionSet = inclusionSet;
+            Dependency = dependency ?? new List<string>();
         }
 
         public MarkdownContext(MarkdownContext context)
         {
             BasePath = context.BasePath;
             FilePath = context.FilePath;
-            Variables = context.Variables;
+            InclusionSet = context.InclusionSet;
+            Dependency = context.Dependency;
         }
 
-        public MarkdownContext SetFilePathSet(ImmutableHashSet<string> set)
+        public MarkdownContext SetInclusionSet(ImmutableHashSet<string> set)
         {
-            return CreateContext(Variables.SetItem(FilePathSetKey, set));
+            return new MarkdownContext(FilePath, BasePath, set, Dependency);
         }
 
-        public ImmutableHashSet<string> GetFilePathSet()
+        public MarkdownContext AddIncludeFile(string filePath)
         {
-            if (!Variables.ContainsKey(FilePathSetKey))
-            {
-                var context = SetFilePathSet(ImmutableHashSet<string>.Empty);
-                Variables = context.Variables;
-            }
-
-            return (ImmutableHashSet<string>)Variables[FilePathSetKey];
-        }
-
-        public MarkdownContext AddFilePath(string filePath)
-        {
-            var set = GetFilePathSet();
+            var set = InclusionSet ?? ImmutableHashSet<string>.Empty;
             var cloneSet = set.Add(filePath);
 
-            return CreateContext(Variables.SetItem(FilePathSetKey, cloneSet));
-        }
-
-        public MarkdownContext SetDependency(List<string> dependency)
-        {
-            return CreateContext(Variables.SetItem(DependencyKey, dependency));
-        }
-
-        public List<string> GetDependency()
-        {
-            if (!Variables.ContainsKey(DependencyKey))
-            {
-                var context = CreateContext(Variables.SetItem(DependencyKey, new List<string>()));
-                Variables = context.Variables;
-            }
-
-            return (List<string>)Variables[DependencyKey];
+            return new MarkdownContext(FilePath, BasePath, cloneSet, Dependency);
         }
 
         public void ReportDependency(string filePath)
         {
-            var d = GetDependency();
-            d.Add(filePath);
-        }
-
-        public MarkdownContext CreateContext(ImmutableDictionary<string, object> variables)
-        {
-            var clone = (MarkdownContext)MemberwiseClone();
-            clone.Variables = variables;
-
-            return clone;
+            Dependency.Add(filePath);
         }
     }
 }

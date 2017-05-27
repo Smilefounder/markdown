@@ -20,7 +20,7 @@ namespace MarkdigEngine
             return new MarkupResult
             {
                 Html = MarkdigMarked.Markup(content, context),
-                Dependency = context.GetDependency().ToImmutableArray()
+                Dependency = context.Dependency.ToImmutableArray()
             };
         }
     }

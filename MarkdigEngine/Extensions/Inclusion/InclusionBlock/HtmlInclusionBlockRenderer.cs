@@ -36,15 +36,15 @@ namespace MarkdigEngine
                 return;
             }
 
-            var parents = _context.GetFilePathSet();
-            if (parents.Contains(currentFilePath))
+            var parents = _context.InclusionSet;
+            if (parents != null && parents.Contains(currentFilePath))
             {
                 throw new Exception($"Circular dependency found in {currentFilePath}.");
             }
 
-            _context = _context.AddFilePath(currentFilePath);
+            _context = _context.AddIncludeFile(currentFilePath);
             _context.ReportDependency(includeFilePath);
-            var context = new MarkdownContext(includeFilePath.RemoveWorkingFolder(), _context.BasePath, _context.Variables);
+            var context = new MarkdownContext(includeFilePath.RemoveWorkingFolder(), _context.BasePath, _context.InclusionSet, _context.Dependency);
 
             string content;
             using (var sr = new StreamReader(includeFilePath.RemoveWorkingFolder()))
