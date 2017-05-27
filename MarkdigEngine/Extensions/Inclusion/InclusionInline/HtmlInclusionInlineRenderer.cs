@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Immutable;
 using System.IO;
-using System.Linq;
 
 using Markdig;
 using Markdig.Renderers;
@@ -30,11 +28,11 @@ namespace MarkdigEngine
                 throw new Exception("file path can't be empty or null in IncludeFile");
             }
 
-            var currentFilePath = _context.FilePath;
+            var currentFilePath = ((RelativePath)_context.FilePath).GetPathFromWorkingFolder();
             var refFilePath = includeFile.Context.RefFilePath;
-            var includeFilePath = ((RelativePath)refFilePath).BasedOn((RelativePath)currentFilePath).RemoveWorkingFolder();
+            var includeFilePath = ((RelativePath)refFilePath).BasedOn(currentFilePath);
 
-            if (!File.Exists(includeFilePath))
+            if (!File.Exists(includeFilePath.RemoveWorkingFolder()))
             {
                 Console.WriteLine($"Can't find {includeFilePath}.");
                 renderer.Write(includeFile.Context.Syntax);
@@ -42,19 +40,19 @@ namespace MarkdigEngine
                 return;
             }
 
-            var parents = _context.GetFilePathStack() ?? ImmutableHashSet<string>.Empty;
-
+            var parents = _context.GetFilePathSet();
             if (parents.Contains(currentFilePath))
             {
                 throw new Exception($"Circular dependency found in {currentFilePath}.");
             }
 
-            parents = parents.Add(currentFilePath);
-            var context = _context.SetFilePathStack(parents);
-            context = new MarkdownContext(includeFilePath, context.BasePath, context.Variables);
+            _context = _context.AddFilePath(currentFilePath);
+            _context.ReportDependency(includeFilePath);
+
+            var context = new MarkdownContext(includeFilePath, _context.BasePath, _context.Variables);
 
             string content;
-            using (var sr = new StreamReader(includeFilePath))
+            using (var sr = new StreamReader(includeFilePath.RemoveWorkingFolder()))
             {
                 content = sr.ReadToEnd();
             }

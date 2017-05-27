@@ -1,4 +1,6 @@
-﻿using Microsoft.DocAsCode.Plugins;
+﻿using System.Collections.Immutable;
+
+using Microsoft.DocAsCode.Plugins;
 
 namespace MarkdigEngine
 {
@@ -17,7 +19,8 @@ namespace MarkdigEngine
 
             return new MarkupResult
             {
-                Html = MarkdigMarked.Markup(content, context)
+                Html = MarkdigMarked.Markup(content, context),
+                Dependency = context.GetDependency().ToImmutableArray()
             };
         }
     }
