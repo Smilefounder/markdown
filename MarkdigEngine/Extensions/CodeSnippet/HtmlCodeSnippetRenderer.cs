@@ -13,16 +13,14 @@ namespace MarkdigEngine
 {
     public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
     {
-        protected string m_Path;
-        protected string m_BasePath;
+        private MarkdownContext _context;
 
         private static readonly string m_CSharpCodeSnippetCommentStartLineTemplate = "//<snippet{0}>";
         private static readonly string m_CSharpCodeSnippetCommentEndLineTemplate = "//</snippet{0}>";
 
-        public HtmlCodeSnippetRenderer(string basePath, string path)
+        public HtmlCodeSnippetRenderer(MarkdownContext context)
         {
-            this.m_BasePath = basePath;
-            this.m_Path = path;
+            _context = context;
         }
 
         protected override void Write(HtmlRenderer renderer, CodeSnippet obj)
@@ -42,9 +40,10 @@ namespace MarkdigEngine
 
         private string GetContent(CodeSnippet obj)
         {
-            var refFileRelativePath = ((RelativePath)m_Path).BasedOn((RelativePath)obj.CodePath).RemoveWorkingFolder();
+            var refFileRelativePath = ((RelativePath)obj.CodePath).BasedOn((RelativePath)_context.FilePath);
+            _context.ReportDependency(refFileRelativePath);
 
-            var allLines = File.ReadAllLines(refFileRelativePath);
+            var allLines = File.ReadAllLines(refFileRelativePath.RemoveWorkingFolder());
             var allCodeRanges = obj.CodeRanges ?? new List<CodeRange>();
 
             if (!string.IsNullOrEmpty(obj.TagName))
