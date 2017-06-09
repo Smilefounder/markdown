@@ -15,7 +15,7 @@ namespace MarkdigEngine
 
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
-            pipeline.InlineParsers.InsertBefore<LinkInlineParser>(new CodeSnippetParser());
+            pipeline.BlockParsers.AddIfNotAlready<CodeSnippetParser>();
         }
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)

@@ -9,13 +9,17 @@ using System.Threading.Tasks;
 
 namespace MarkdigEngine
 {
-    public class CodeSnippet : LeafInline
+    public class CodeSnippet : LeafBlock
     {
         // TODO: add more mapping
         private static readonly Dictionary<string, string> m_LanguageShortNameMapping = new Dictionary<string, string>
         {
             { "cs", "csharp"}
         };
+
+        public CodeSnippet(BlockParser parser) : base(parser)
+        {
+        }
 
         public string Name { get; set; }
 
