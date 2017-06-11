@@ -14,9 +14,210 @@ namespace MarkdigEngine
     public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
     {
         private MarkdownContext _context;
+        private const string tagPrefix = "snippet";
 
-        private static readonly string m_CSharpCodeSnippetCommentStartLineTemplate = "//<snippet{0}>";
-        private static readonly string m_CSharpCodeSnippetCommentEndLineTemplate = "//</snippet{0}>";
+        // C# code snippet comment block: // <[/]snippetname>
+        private static readonly string CSharpCodeSnippetCommentStartLineTemplate = "//<{tagname}>";
+        private static readonly string CSharpCodeSnippetCommentEndLineTemplate = "//</{tagname}>";
+
+        // C# code snippet region block: start -> #region snippetname, end -> #endregion
+        private static readonly string CSharpCodeSnippetRegionStartLineTemplate = "#region{tagname}";
+        private static readonly string CSharpCodeSnippetRegionEndLineTemplate = "#endregion";
+
+        // VB code snippet comment block: ' <[/]snippetname>
+        private static readonly string VBCodeSnippetCommentStartLineTemplate = "'<{tagname}>";
+        private static readonly string VBCodeSnippetCommentEndLineTemplate = "'</{tagname}>";
+
+        // VB code snippet Region block: start -> # Region "snippetname", end -> # End Region
+        private static readonly string VBCodeSnippetRegionRegionStartLineTemplate = "#region{tagname}";
+        private static readonly string VBCodeSnippetRegionRegionEndLineTemplate = "#endregion";
+
+        // C++ code snippet block: // <[/]snippetname>
+        private static readonly string CPlusPlusCodeSnippetCommentStartLineTemplate = "//<{tagname}>";
+        private static readonly string CPlusPlusCodeSnippetCommentEndLineTemplate = "//</{tagname}>";
+
+        // F# code snippet block: // <[/]snippetname>
+        private static readonly string FSharpCodeSnippetCommentStartLineTemplate = "//<{tagname}>";
+        private static readonly string FSharpCodeSnippetCommentEndLineTemplate = "//</{tagname}>";
+
+        // XML code snippet block: <!-- <[/]snippetname> -->
+        private static readonly string XmlCodeSnippetCommentStartLineTemplate = "<!--<{tagname}>-->";
+        private static readonly string XmlCodeSnippetCommentEndLineTemplate = "<!--</{tagname}>-->";
+
+        // XAML code snippet block: <!-- <[/]snippetname> -->
+        private static readonly string XamlCodeSnippetCommentStartLineTemplate = "<!--<{tagname}>-->";
+        private static readonly string XamlCodeSnippetCommentEndLineTemplate = "<!--</{tagname}>-->";
+
+        // HTML code snippet block: <!-- <[/]snippetname> -->
+        private static readonly string HtmlCodeSnippetCommentStartLineTemplate = "<!--<{tagname}>-->";
+        private static readonly string HtmlCodeSnippetCommentEndLineTemplate = "<!--</{tagname}>-->";
+
+        // Sql code snippet block: -- <[/]snippetname>
+        private static readonly string SqlCodeSnippetCommentStartLineTemplate = "--<{tagname}>";
+        private static readonly string SqlCodeSnippetCommentEndLineTemplate = "--</{tagname}>";
+
+        // Javascript code snippet block: <!-- <[/]snippetname> -->
+        private static readonly string JavaScriptSnippetCommentStartLineTemplate = "//<{tagname}>";
+        private static readonly string JavaScriptSnippetCommentEndLineTemplate = "//</{tagname}>";
+
+        // Java code snippet comment block: // <[/]snippetname>
+        private static readonly string JavaCodeSnippetCommentStartLineTemplate = "//<{tagname}>";
+        private static readonly string JavaCodeSnippetCommentEndLineTemplate = "//</{tagname}>";
+
+        // Python code snippet comment block: # <[/]snippetname>
+        private static readonly string PythonCodeSnippetCommentStartLineTemplate = "#<{tagname}>";
+        private static readonly string PythonCodeSnippetCommentEndLineTemplate = "#</{tagname}>";
+
+        // Language names and aliases fllow http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases
+        // Language file extensions follow https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
+        // Currently only supports parts of the language names, aliases and extensions
+        // Later we can move the repository's supported/custom language names, aliases, extensions and corresponding comments regexes to docfx build configuration
+        private static readonly IReadOnlyDictionary<string, List<CodeSnippetExtrator>> CodeLanguageExtractors =
+            new Dictionary<string, List<CodeSnippetExtrator>>(StringComparer.OrdinalIgnoreCase)
+            {
+                [".cs"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(CSharpCodeSnippetCommentStartLineTemplate, CSharpCodeSnippetCommentEndLineTemplate),
+                    new CodeSnippetExtrator(CSharpCodeSnippetRegionStartLineTemplate, CSharpCodeSnippetRegionEndLineTemplate, false)
+                },
+                ["cs"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(CSharpCodeSnippetCommentStartLineTemplate, CSharpCodeSnippetCommentEndLineTemplate),
+                    new CodeSnippetExtrator(CSharpCodeSnippetRegionStartLineTemplate, CSharpCodeSnippetRegionEndLineTemplate, false)
+                },
+                ["csharp"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(CSharpCodeSnippetCommentStartLineTemplate, CSharpCodeSnippetCommentEndLineTemplate),
+                    new CodeSnippetExtrator(CSharpCodeSnippetRegionStartLineTemplate, CSharpCodeSnippetRegionEndLineTemplate, false)
+                },
+                [".vb"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(VBCodeSnippetCommentStartLineTemplate, VBCodeSnippetCommentEndLineTemplate),
+                    new CodeSnippetExtrator(VBCodeSnippetRegionRegionStartLineTemplate, VBCodeSnippetRegionRegionEndLineTemplate, false)
+                },
+                ["vb"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(VBCodeSnippetCommentStartLineTemplate, VBCodeSnippetCommentEndLineTemplate),
+                    new CodeSnippetExtrator(VBCodeSnippetRegionRegionStartLineTemplate, VBCodeSnippetRegionRegionEndLineTemplate, false)
+                },
+                ["vbnet"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(VBCodeSnippetCommentStartLineTemplate, VBCodeSnippetCommentEndLineTemplate),
+                    new CodeSnippetExtrator(VBCodeSnippetRegionRegionStartLineTemplate, VBCodeSnippetRegionRegionEndLineTemplate, false)
+                },
+                [".cpp"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(CPlusPlusCodeSnippetCommentStartLineTemplate, CPlusPlusCodeSnippetCommentEndLineTemplate)
+                },
+                [".h"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(CPlusPlusCodeSnippetCommentStartLineTemplate, CPlusPlusCodeSnippetCommentEndLineTemplate)
+                },
+                [".hpp"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(CPlusPlusCodeSnippetCommentStartLineTemplate, CPlusPlusCodeSnippetCommentEndLineTemplate)
+                },
+                [".c"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(CPlusPlusCodeSnippetCommentStartLineTemplate, CPlusPlusCodeSnippetCommentEndLineTemplate)
+                },
+                [".cc"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(CPlusPlusCodeSnippetCommentStartLineTemplate, CPlusPlusCodeSnippetCommentEndLineTemplate)
+                },
+                ["cpp"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(CPlusPlusCodeSnippetCommentStartLineTemplate, CPlusPlusCodeSnippetCommentEndLineTemplate)
+                },
+                ["c++"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(CPlusPlusCodeSnippetCommentStartLineTemplate, CPlusPlusCodeSnippetCommentEndLineTemplate)
+                },
+                ["fs"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(FSharpCodeSnippetCommentStartLineTemplate, FSharpCodeSnippetCommentEndLineTemplate)
+                },
+                ["fsharp"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(FSharpCodeSnippetCommentStartLineTemplate, FSharpCodeSnippetCommentEndLineTemplate)
+                },
+                [".fs"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(FSharpCodeSnippetCommentStartLineTemplate, FSharpCodeSnippetCommentEndLineTemplate)
+                },
+                [".fsi"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(FSharpCodeSnippetCommentStartLineTemplate, FSharpCodeSnippetCommentEndLineTemplate)
+                },
+                [".fsx"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(FSharpCodeSnippetCommentStartLineTemplate, FSharpCodeSnippetCommentEndLineTemplate)
+                },
+                [".xml"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(XmlCodeSnippetCommentStartLineTemplate, XmlCodeSnippetCommentEndLineTemplate)
+                },
+                [".csdl"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(XmlCodeSnippetCommentStartLineTemplate, XmlCodeSnippetCommentEndLineTemplate)
+                },
+                [".edmx"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(XmlCodeSnippetCommentStartLineTemplate, XmlCodeSnippetCommentEndLineTemplate)
+                },
+                ["xml"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(XmlCodeSnippetCommentStartLineTemplate, XmlCodeSnippetCommentEndLineTemplate)
+                },
+                [".html"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(HtmlCodeSnippetCommentStartLineTemplate, HtmlCodeSnippetCommentEndLineTemplate)
+                },
+                ["html"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(HtmlCodeSnippetCommentStartLineTemplate, HtmlCodeSnippetCommentEndLineTemplate)
+                },
+                [".xaml"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(XamlCodeSnippetCommentStartLineTemplate, XamlCodeSnippetCommentEndLineTemplate)
+                },
+                [".sql"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(SqlCodeSnippetCommentStartLineTemplate, SqlCodeSnippetCommentEndLineTemplate)
+                },
+                ["sql"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(SqlCodeSnippetCommentStartLineTemplate, SqlCodeSnippetCommentEndLineTemplate)
+                },
+                [".js"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(JavaScriptSnippetCommentStartLineTemplate, JavaScriptSnippetCommentEndLineTemplate)
+                },
+                ["js"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(JavaScriptSnippetCommentStartLineTemplate, JavaScriptSnippetCommentEndLineTemplate)
+                },
+                ["javascript"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(JavaScriptSnippetCommentStartLineTemplate, JavaScriptSnippetCommentEndLineTemplate)
+                },
+                [".java"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(JavaCodeSnippetCommentStartLineTemplate, JavaCodeSnippetCommentEndLineTemplate)
+                },
+                ["java"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(JavaCodeSnippetCommentStartLineTemplate, JavaCodeSnippetCommentEndLineTemplate)
+                },
+                [".py"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(PythonCodeSnippetCommentStartLineTemplate, PythonCodeSnippetCommentEndLineTemplate)
+                },
+                ["python"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(PythonCodeSnippetCommentStartLineTemplate, PythonCodeSnippetCommentEndLineTemplate)
+                }
+            };
 
         public HtmlCodeSnippetRenderer(MarkdownContext context)
         {
@@ -49,11 +250,28 @@ namespace MarkdigEngine
 
             if (!string.IsNullOrEmpty(obj.TagName))
             {
-                var codeRange = new CodeRange();
-                var startTag = string.Format(m_CSharpCodeSnippetCommentStartLineTemplate, obj.TagName).ToUpper();
-                var endTag = string.Format(m_CSharpCodeSnippetCommentEndLineTemplate, obj.TagName).ToUpper();
+                var lang = obj.Language ?? Path.GetExtension(refPath);
+                List<CodeSnippetExtrator> extrators;
+                if(!CodeLanguageExtractors.TryGetValue(lang, out extrators))
+                {
+                    Logger.LogError($"{lang} is not supported languaging name, alias or extension for parsing code snippet with tag name, you can use line numbers instead");
+                }
 
-                allCodeRanges.Add(new CodeRange { Start = GetTagLineNumber(allLines, startTag) + 1, End = GetTagLineNumber(allLines, endTag) - 1 });
+                if(extrators != null)
+                {
+                    var tagWithPrefix = tagPrefix + obj.TagName;
+                    foreach(var extrator in extrators)
+                    {
+                        var tagToCoderangeMapping = extrator.GetAllTags(allLines);
+                        CodeRange cr;
+                        if (tagToCoderangeMapping.TryGetValue(obj.TagName, out cr)
+                            || tagToCoderangeMapping.TryGetValue(tagWithPrefix, out cr))
+                        {
+                            allCodeRanges.Add(cr);
+                            break;
+                        }
+                    }
+                }
             }
 
             var showCode = new StringBuilder();

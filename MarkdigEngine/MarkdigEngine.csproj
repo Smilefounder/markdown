@@ -73,6 +73,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\CodeSnippet\CodeSnippetExtrator.cs" />
     <Compile Include="Extensions\Inclusion\InclusionBlock\HtmlInclusionBlockRenderer.cs" />
     <Compile Include="Extensions\Inclusion\InclusionInline\ExtensionsHelper.cs" />
     <Compile Include="Extensions\Inclusion\InclusionInline\HtmlInclusionInlineRenderer.cs" />
@@ -98,5 +99,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
