@@ -9,13 +9,11 @@ using System.Threading.Tasks;
 
 namespace MarkdigEngine
 {
-    public class CodeSnippet : LeafInline
+    public class CodeSnippet : LeafBlock
     {
-        // TODO: add more mapping
-        private static readonly Dictionary<string, string> m_LanguageShortNameMapping = new Dictionary<string, string>
+        public CodeSnippet(BlockParser parser) : base(parser)
         {
-            { "cs", "csharp"}
-        };
+        }
 
         public string Name { get; set; }
 
@@ -47,9 +45,9 @@ namespace MarkdigEngine
                 sb.Append(string.Format(@" name=""{0}""", this.Name));
             }
 
-            if (!string.IsNullOrEmpty(this.Language) && m_LanguageShortNameMapping.ContainsKey(this.Language))
+            if (!string.IsNullOrEmpty(this.Language))
             {
-                sb.Append(string.Format(@" class=""lang-{0}""", m_LanguageShortNameMapping[this.Language]));
+                sb.Append(string.Format(@" class=""lang-{0}""", this.Language));
             }
 
             var highlightRangesString = GetHighlightLinesString();

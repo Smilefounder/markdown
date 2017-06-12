@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MarkdigEngine
 {
-    public class CodeSnippetParser : InlineParser
+    public class CodeSnippetParser : BlockParser
     {
         private const string StartString = "[!code";
 
@@ -18,12 +18,21 @@ namespace MarkdigEngine
             OpeningCharacters = new[] { '[' };
         }
 
-        public override bool Match(InlineProcessor processor, ref StringSlice slice)
+        public override BlockState TryOpen(BlockProcessor processor)
         {
-            var startPosition = slice.Start;
-            if (!MatchStart(ref slice)) return false;
+            if (processor.IsCodeIndent)
+            {
+                return BlockState.None;
+            }
 
-            var codeSnippet = new CodeSnippet();
+            var slice = processor.Line;
+            
+            if (!MatchStart(ref slice))
+            {
+                return BlockState.None;
+            }
+
+            var codeSnippet = new CodeSnippet(this);
             var isMatching = false;
             var c = slice.CurrentChar;
 
@@ -39,19 +48,13 @@ namespace MarkdigEngine
             if (isMatching && slice.CurrentChar == ']')
             {
                 slice.NextChar();
-
-                int line;
-                int column;
-
-                codeSnippet.Span = new SourceSpan(processor.GetSourcePosition(startPosition, out line, out column), processor.GetSourcePosition(slice.Start - 1));
-                codeSnippet.Line = line;
-                codeSnippet.Column = column;
-                processor.Inline = codeSnippet;
-
-                return true;
+                
+                codeSnippet.Column = processor.Column;
+                processor.NewBlocks.Push(codeSnippet);
+                return BlockState.BreakDiscard;
             }
 
-            return false;
+            return BlockState.None;
         }
 
         private bool MatchStart(ref StringSlice slice)
@@ -62,7 +65,7 @@ namespace MarkdigEngine
             var c = slice.CurrentChar;
             var index = 0;
 
-            while (c != '\0' && index < StartString.Length && c == StartString[index])
+            while (c != '\0' && index < StartString.Length && Char.ToLower(c) == StartString[index])
             {
                 c = slice.NextChar();
                 index++;
@@ -71,7 +74,7 @@ namespace MarkdigEngine
             return index == StartString.Length;
         }
 
-        private bool MatchLanguage(InlineProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+        private bool MatchLanguage(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
             if (slice.CurrentChar != '-') return false;
 
@@ -95,7 +98,7 @@ namespace MarkdigEngine
             return false;
         }
 
-        private bool MatchPath(InlineProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+        private bool MatchPath(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
             if (slice.CurrentChar != '(') return false;
             var c = slice.NextChar();
@@ -140,7 +143,7 @@ namespace MarkdigEngine
             return false;
         }
 
-        private bool MatchName(InlineProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+        private bool MatchName(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
             if (slice.CurrentChar != '[') return false;
 
@@ -174,7 +177,7 @@ namespace MarkdigEngine
             return false;
         }
 
-        private bool MatchQuery(InlineProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+        private bool MatchQuery(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
             if (slice.CurrentChar != '#' && slice.CurrentChar != '?') return false;
 
@@ -227,7 +230,7 @@ namespace MarkdigEngine
             return true;
         }
 
-        private bool MatchTitle(InlineProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+        private bool MatchTitle(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
             if (slice.CurrentChar != '"') return false;
 
