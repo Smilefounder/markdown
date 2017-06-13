@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 
 using Microsoft.DocAsCode.Plugins;
 using Xunit;
+using System.Linq;
 
 namespace MarkdigEngine.Tests
 {
@@ -140,7 +141,7 @@ This is a file A included by another file.
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
         }
 
-        [Fact]
+		[Fact]
         [Trait("Related", "Inclusion")]
         public void TestBlockLevelInclusion_CycleInclude()
         {
@@ -292,7 +293,416 @@ block content in Inline Inclusion.";
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
         }
 
-        private static void WriteToFile(string file, string content)
+
+
+		[Fact]
+		[Trait("Related", "DfmMarkdown")]
+		public void TestBlockLevelInclusion()
+		{
+			// -r
+			//  |- root.md
+			//  |- empty.md
+			//  |- a
+			//  |  |- refc.md
+			//  |- b
+			//  |  |- linkAndRefRoot.md
+			//  |  |- a.md
+			//  |  |- img
+			//  |  |   |- img.jpg
+			//  |- c
+			//  |  |- c.md
+			//  |- link
+			//     |- link2.md
+			//     |- md
+			//         |- c.md
+			var root = @"
+[!include[linkAndRefRoot](b/linkAndRefRoot.md)]
+[!include[refc](a/refc.md ""This is root"")]
+[!include[refc_using_cache](a/refc.md)]
+[!include[empty](empty.md)]
+[!include[external](http://microsoft.com/a.md)]";
+
+			var linkAndRefRoot = @"
+Paragraph1
+[link](a.md)
+[!include-[link2](../link/link2.md)]
+![Image](img/img.jpg)
+[!include-[root](../root.md)]";
+			var link2 = @"[link](md/c.md)";
+			var refc = @"[!include[c](../c/c.md ""This is root"")]";
+			var c = @"**Hello**";
+			WriteToFile("r/root.md", root);
+
+			WriteToFile("r/a/refc.md", refc);
+			WriteToFile("r/b/linkAndRefRoot.md", linkAndRefRoot);
+			WriteToFile("r/link/link2.md", link2);
+			WriteToFile("r/c/c.md", c);
+			WriteToFile("r/empty.md", string.Empty);
+			var parameter = new MarkdownServiceParameters
+			{
+				BasePath = "."
+			};
+			var service = new MarkdigMarkdownService(parameter);
+			var marked = service.Markup(root, "r/root.md");
+			var dependency = marked.Dependency;
+			Assert.Equal(@"<p>Paragraph1
+<a href=""~/r/b/a.md"" data-raw-source=""[link](a.md)"">link</a>
+<a href=""~/r/link/md/c.md"" data-raw-source=""[link](md/c.md)"">link</a>
+<img src=""~/r/b/img/img.jpg"" alt=""Image"">
+<!-- BEGIN ERROR INCLUDE: Unable to resolve [!include-[root](../root.md)]: Circular dependency found in &quot;r/b/linkAndRefRoot.md&quot; -->[!include-[root](../root.md)]<!--END ERROR INCLUDE --></p>
+<p><strong>Hello</strong></p>
+<p><strong>Hello</strong></p>
+<!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[external](http://microsoft.com/a.md)]: Absolute path &quot;http://microsoft.com/a.md&quot; is not supported. -->[!include[external](http://microsoft.com/a.md)]<!--END ERROR INCLUDE -->".Replace("\r\n", "\n"), marked.Html);
+			Assert.Equal(
+				new[]
+				{
+					"a/refc.md",
+					"b/linkAndRefRoot.md",
+					"c/c.md",
+					"empty.md",
+					"link/link2.md",
+					"root.md",
+				},
+				dependency.OrderBy(x => x));
+		}
+
+		[Fact]
+		[Trait("Related", "DfmMarkdown")]
+		public void TestBlockLevelInclusionWithSameFile()
+		{
+			// -r
+			//  |- r.md
+			//  |- a
+			//  |  |- a.md
+			//  |- b
+			//  |  |- token.md
+			//  |- c
+			//     |- d
+			//        |- d.md
+			//  |- img
+			//  |  |- img.jpg
+			var r = @"
+[!include[](a/a.md)]
+[!include[](c/d/d.md)]
+";
+			var a = @"
+[!include[](../b/token.md)]";
+			var token = @"
+![](../img/img.jpg)
+[](#anchor)
+[a](../a/a.md)
+[](invalid.md)
+[d](../c/d/d.md#anchor)
+";
+			var d = @"
+[!include[](../../b/token.md)]";
+			WriteToFile("r/r.md", r);
+			WriteToFile("r/a/a.md", a);
+			WriteToFile("r/b/token.md", token);
+			WriteToFile("r/c/d/d.md", d);
+			var parameter = new MarkdownServiceParameters
+			{
+				BasePath = "."
+			};
+			var service = new MarkdigMarkdownService(parameter);
+			var marked = service.Markup(a, "r/a/a.md");
+			var expected = @"<p><img src=""~/r/img/img.jpg"" alt="""">
+<a href=""#anchor"" data-raw-source=""[](#anchor)""></a>
+<a href=""~/r/a/a.md"" data-raw-source=""[a](../a/a.md)"">a</a>
+<a href=""~/r/b/invalid.md"" data-raw-source=""[](invalid.md)""></a>
+<a href=""~/r/c/d/d.md#anchor"" data-raw-source=""[d](../c/d/d.md#anchor)"">d</a></p>".Replace("\r\n", "\n") + "\n";
+			var dependency = marked.Dependency;
+			Assert.Equal(expected, marked.Html);
+			Assert.Equal(
+				new[] { "../b/token.md" },
+				dependency.OrderBy(x => x).ToArray());
+
+			marked = service.Markup(d, "r/c/d/d.md");
+			dependency = marked.Dependency;
+			Assert.Equal(expected, marked.Html);
+			Assert.Equal(
+				new[] { "../../b/token.md" },
+				dependency.OrderBy(x => x).ToArray());
+
+			dependency.Clear();
+			marked = service.Markup(r, "r/r.md");
+			dependency = marked.Dependency;
+			Assert.Equal($@"{expected}{expected}", marked.Html);
+			Assert.Equal(
+				new[] { "a/a.md", "b/token.md", "c/d/d.md" },
+				dependency.OrderBy(x => x).ToArray());
+		}
+
+		[Fact]
+		[Trait("Related", "DfmMarkdown")]
+		public void TestBlockLevelInclusionWithWorkingFolder()
+		{
+			// -r
+			//  |- root.md
+			//  |- b
+			//  |  |- linkAndRefRoot.md
+			var root = @"[!include[linkAndRefRoot](~/r/b/linkAndRefRoot.md)]";
+			var linkAndRefRoot = @"Paragraph1";
+			WriteToFile("r/root.md", root);
+			WriteToFile("r/b/linkAndRefRoot.md", linkAndRefRoot);
+			var parameter = new MarkdownServiceParameters
+			{
+				BasePath = "."
+			};
+			var service = new MarkdigMarkdownService(parameter);
+			var marked = service.Markup(root, "r/root.md");
+			var expected = @"<p>Paragraph1</p>" + "\n";
+			Assert.Equal(expected, marked.Html);
+		}
+
+		#region Fallback folders testing
+
+		[Fact]
+		[Trait("Related", "DfmMarkdown")]
+		public void TestFallback_Inclusion_random_name()
+		{
+			// -root_folder (this is also docset folder)
+			//  |- root.md
+			//  |- a_folder
+			//  |  |- a.md
+			//  |- token_folder
+			//  |  |- token1.md
+			// -fallback_folder
+			//  |- token_folder
+			//     |- token2.md
+
+			// 1. Prepare data
+			var uniqueFolderName = Path.GetRandomFileName();
+			var root = $@"1markdown root.md main content start.
+
+[!include[a](a_folder_{uniqueFolderName}/a_{uniqueFolderName}.md ""This is a.md"")]
+
+markdown root.md main content end.";
+
+			var a = $@"1markdown a.md main content start.
+
+[!include[token1](../token_folder_{uniqueFolderName}/token1_{uniqueFolderName}.md ""This is token1.md"")]
+[!include[token1](../token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md ""This is token2.md"")]
+
+markdown a.md main content end.";
+
+			var token1 = $@"1markdown token1.md content start.
+
+[!include[token2](token2_{uniqueFolderName}.md ""This is token2.md"")]
+
+markdown token1.md content end.";
+
+			var token2 = @"**1markdown token2.md main content**";
+
+			WriteToFile($"{uniqueFolderName}/root_folder_{uniqueFolderName}/root_{uniqueFolderName}.md", root);
+			WriteToFile($"{uniqueFolderName}/root_folder_{uniqueFolderName}/a_folder_{uniqueFolderName}/a_{uniqueFolderName}.md", a);
+			WriteToFile($"{uniqueFolderName}/root_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token1_{uniqueFolderName}.md", token1);
+			WriteToFile($"{uniqueFolderName}/fallback_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md", token2);
+
+			var fallbackFolders = new List<string> { { Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/fallback_folder_{uniqueFolderName}") } };
+			var parameter = new MarkdownServiceParameters
+			{
+				BasePath = "."
+			};
+			var service = new MarkdigMarkdownService(parameter);
+			//var marked = service.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder_{uniqueFolderName}"), root, fallbackFolders, $"root_{uniqueFolderName}.md");
+			var marked = service.Markup("place", "holder");
+			var dependency = marked.Dependency;
+
+			Assert.Equal($@"<p>1markdown root.md main content start.</p>
+<p>1markdown a.md main content start.</p>
+<p>1markdown token1.md content start.</p>
+<p><strong>1markdown token2.md main content</strong></p>
+<p>markdown token1.md content end.</p>
+<p><strong>1markdown token2.md main content</strong></p>
+<p>markdown a.md main content end.</p>
+<p>markdown root.md main content end.</p>
+".Replace("\r\n", "\n"), marked.Html);
+			Assert.Equal(
+				new[] { $"../fallback_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md", $"a_folder_{uniqueFolderName}/a_{uniqueFolderName}.md", $"token_folder_{uniqueFolderName}/token1_{uniqueFolderName}.md", $"token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md" },
+				dependency.OrderBy(x => x).ToArray());
+		}
+
+		[Fact]
+		[Trait("Related", "DfmMarkdown")]
+		public void TestFallback_InclusionWithCodeFences()
+		{
+			// -root_folder (this is also docset folder)
+			//  |- root.md
+			//  |- a_folder
+			//     |- a.md
+			//  |- code_folder
+			//     |- sample1.cs
+			// -fallback_folder
+			//  |- a_folder
+			//     |- code_in_a.cs
+			//  |- code_folder
+			//     |- sample2.cs
+
+			// 1. Prepare data
+			var root = @"markdown root.md main content start.
+
+mardown a content in root.md content start
+
+[!include[a](a_folder/a.md ""This is a.md"")]
+
+mardown a content in root.md content end
+
+sample 1 code in root.md content start
+
+[!CODE-cs[this is sample 1 code](code_folder/sample1.cs)]
+
+sample 1 code in root.md content end
+
+sample 2 code in root.md content start
+
+[!CODE-cs[this is sample 2 code](code_folder/sample2.cs)]
+
+sample 2 code in root.md content end
+
+markdown root.md main content end.";
+
+			var a = @"markdown a.md main content start.
+
+code_in_a code in a.md content start
+
+[!CODE-cs[this is code_in_a code](code_in_a.cs)]
+
+code_in_a in a.md content end
+
+markdown a.md a.md content end.";
+
+			var code_in_a = @"namespace code_in_a{}";
+
+			var sample1 = @"namespace sample1{}";
+
+			var sample2 = @"namespace sample2{}";
+
+			var uniqueFolderName = Path.GetRandomFileName();
+			WriteToFile($"{uniqueFolderName}/root_folder/root.md", root);
+			WriteToFile($"{uniqueFolderName}/root_folder/a_folder/a.md", a);
+			WriteToFile($"{uniqueFolderName}/root_folder/code_folder/sample1.cs", sample1);
+			WriteToFile($"{uniqueFolderName}/fallback_folder/a_folder/code_in_a.cs", code_in_a);
+			WriteToFile($"{uniqueFolderName}/fallback_folder/code_folder/sample2.cs", sample2);
+
+			var fallbackFolders = new List<string> { { Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/fallback_folder") } };
+
+			// Verify root.md markup result
+			var parameter = new MarkdownServiceParameters
+			{
+				BasePath = "."
+			};
+			var service = new MarkdigMarkdownService(parameter);
+			//var rootMarked = service.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder"), root, fallbackFolders, "root.md");
+			var rootMarked = service.Markup("place", "holder");
+			var rootDependency = rootMarked.Dependency;
+			Assert.Equal(@"<p>markdown root.md main content start.</p>
+<p>mardown a content in root.md content start</p>
+<p>markdown a.md main content start.</p>
+<p>code_in_a code in a.md content start</p>
+<pre><code class=""lang-cs"" name=""this is code_in_a code"">namespace code_in_a{}
+</code></pre><p>code_in_a in a.md content end</p>
+<p>markdown a.md a.md content end.</p>
+<p>mardown a content in root.md content end</p>
+<p>sample 1 code in root.md content start</p>
+<pre><code class=""lang-cs"" name=""this is sample 1 code"">namespace sample1{}
+</code></pre><p>sample 1 code in root.md content end</p>
+<p>sample 2 code in root.md content start</p>
+<pre><code class=""lang-cs"" name=""this is sample 2 code"">namespace sample2{}
+</code></pre><p>sample 2 code in root.md content end</p>
+<p>markdown root.md main content end.</p>
+".Replace("\r\n", "\n"), rootMarked.Html);
+			Assert.Equal(
+				new[] { "../fallback_folder/a_folder/code_in_a.cs", "../fallback_folder/code_folder/sample2.cs", "a_folder/a.md", "a_folder/code_in_a.cs", "code_folder/sample1.cs", "code_folder/sample2.cs" },
+				rootDependency.OrderBy(x => x).ToArray());
+
+			// Verify a.md markup result
+			//var aMarked = service.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder"), a, fallbackFolders, "a_folder/a.md");
+			var aMarked = service.Markup("place", "holder");
+			var aDependency = aMarked.Dependency;
+			Assert.Equal(@"<p>markdown a.md main content start.</p>
+<p>code_in_a code in a.md content start</p>
+<pre><code class=""lang-cs"" name=""this is code_in_a code"">namespace code_in_a{}
+</code></pre><p>code_in_a in a.md content end</p>
+<p>markdown a.md a.md content end.</p>
+".Replace("\r\n", "\n"), aMarked.Html);
+			Assert.Equal(
+				new[] { "../../fallback_folder/a_folder/code_in_a.cs", "code_in_a.cs" },
+				aDependency.OrderBy(x => x).ToArray());
+		}
+
+		#endregion
+
+		[Fact]
+		[Trait("Related", "DfmMarkdown")]
+		public void TestInclusion_InlineLevel()
+		{
+			// 1. Prepare data
+			var root = @"
+Inline [!include[ref1](ref1.md ""This is root"")]
+Inline [!include[ref3](ref3.md ""This is root"")]
+";
+
+			var ref1 = @"[!include[ref2](ref2.md ""This is root"")]";
+			var ref2 = @"## Inline inclusion do not parse header [!include[root](root.md ""This is root"")]";
+			var ref3 = @"**Hello**  ";
+			File.WriteAllText("root.md", root);
+			File.WriteAllText("ref1.md", ref1);
+			File.WriteAllText("ref2.md", ref2);
+			File.WriteAllText("ref3.md", ref3);
+
+			var parameter = new MarkdownServiceParameters
+			{
+				BasePath = "."
+			};
+			var service = new MarkdigMarkdownService(parameter);
+			var marked = service.Markup(root, "root.md");
+			var dependency = marked.Dependency;
+			Assert.Equal("<p>Inline ## Inline inclusion do not parse header <!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](root.md &quot;This is root&quot;)]: Circular dependency found in &quot;ref2.md&quot; -->[!include[root](root.md &quot;This is root&quot;)]<!--END ERROR INCLUDE -->\nInline <strong>Hello</strong></p>\n", marked.Html);
+			Assert.Equal(
+				new[] { "ref1.md", "ref2.md", "ref3.md", "root.md" },
+				dependency.OrderBy(x => x).ToArray());
+		}
+
+		[Fact]
+		[Trait("Related", "DfmMarkdown")]
+		public void TestBlockInclude_ShouldExcludeBracketInRegex()
+		{
+			// 1. Prepare data
+			var root = @"[!INCLUDE [azure-probe-intro-include](inc1.md)].
+
+[!INCLUDE [azure-arm-classic-important-include](inc2.md)] [Resource Manager model](inc1.md).
+
+
+[!INCLUDE [azure-ps-prerequisites-include.md](inc3.md)]";
+
+			var expected = @"<p>inc1.</p>
+<p>inc2 <a href=""inc1.md"" data-raw-source=""[Resource Manager model](inc1.md)"">Resource Manager model</a>.</p>
+<p>inc3</p>
+";
+
+			var inc1 = @"inc1";
+			var inc2 = @"inc2";
+			var inc3 = @"inc3";
+			File.WriteAllText("root.md", root);
+			File.WriteAllText("inc1.md", inc1);
+			File.WriteAllText("inc2.md", inc2);
+			File.WriteAllText("inc3.md", inc3);
+
+			var parameter = new MarkdownServiceParameters
+			{
+				BasePath = "."
+			};
+			var service = new MarkdigMarkdownService(parameter);
+			var marked = service.Markup(root, "root.md");
+			var dependency = marked.Dependency;
+			Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+			Assert.Equal(
+			  new[] { "inc1.md", "inc2.md", "inc3.md" },
+			  dependency.OrderBy(x => x).ToArray());
+		}
+
+		private static void WriteToFile(string file, string content)
         {
             var dir = Path.GetDirectoryName(file);
             if (!string.IsNullOrEmpty(dir))
