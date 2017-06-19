@@ -14,7 +14,7 @@ namespace MarkdigEngine
 
         public override bool Match(InlineProcessor processor, ref StringSlice slice)
         {
-            if (!ExtensionsHelper.MatchStart(ref slice, StartString))
+            if (!ExtensionsHelper.MatchStart(ref slice, StartString, false))
             {
                 return false;
             }

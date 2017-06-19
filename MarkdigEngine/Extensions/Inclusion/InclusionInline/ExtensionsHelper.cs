@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 using Markdig.Helpers;
 
@@ -16,7 +17,7 @@ namespace MarkdigEngine
             return Path.GetFullPath(path).Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         }
 
-        public static bool MatchStart(ref StringSlice slice, string startString)
+        public static bool MatchStart(ref StringSlice slice, string startString, bool isCaseSensitive = true)
         {
             if (IsEscaped(slice))
             {
@@ -26,7 +27,7 @@ namespace MarkdigEngine
             var c = slice.CurrentChar;
             var index = 0;
 
-            while (c != '\0' && index < startString.Length && c == startString[index])
+            while (c != '\0' && index < startString.Length && CharEqual(c, startString[index], isCaseSensitive))
             {
                 c = slice.NextChar();
                 index++;
@@ -72,6 +73,11 @@ namespace MarkdigEngine
             var pathWithoutTilde = tildePath.Substring(index);
 
             return NormalizePath(Path.Combine(basePath, pathWithoutTilde));
+        }
+
+        private static bool CharEqual(char ch1, char ch2, bool isCaseSensitive)
+        {
+            return isCaseSensitive ? ch1 == ch2 : Char.ToLower(ch1) == Char.ToLower(ch2);
         }
 
         private static bool MatchTitle(StringBuilderCache stringBuilderCache, ref StringSlice slice, ref InclusionContext context)
