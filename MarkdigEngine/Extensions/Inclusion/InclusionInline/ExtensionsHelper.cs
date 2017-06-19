@@ -87,6 +87,11 @@ namespace MarkdigEngine
                 return false;
             }
 
+            while (slice.CurrentChar == ' ')
+            {
+                slice.NextChar();
+            }
+
             if (slice.CurrentChar != '[')
             {
                 return false;
