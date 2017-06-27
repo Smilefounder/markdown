@@ -228,7 +228,7 @@ namespace MarkdigEngine
         {
             if (renderer.EnableHtmlForInline)
             {
-                renderer.Write("<pre><code").Write(obj.ToAttributeString()).Write(">");
+                renderer.Write("<pre><code").Write(obj.ToAttributeString()).WriteAttributes(obj).Write(">");
             }
 
             renderer.WriteEscape(GetContent(obj));
@@ -280,7 +280,7 @@ namespace MarkdigEngine
             {
                 if (IsLineInRange(lineNumber + 1, allCodeRanges))
                 {
-                    showCode.AppendLine(allLines[lineNumber]);
+                    showCode.Append($"{allLines[lineNumber]}\n");
                 }
             }
 

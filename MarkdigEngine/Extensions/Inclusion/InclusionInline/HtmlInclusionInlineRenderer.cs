@@ -55,27 +55,28 @@ namespace MarkdigEngine
             _context = _context.AddIncludeFile(currentFilePath);
             _context.ReportDependency(includeFilePath);
 
-            var context = new MarkdownContext(includeFilePath, _context.BasePath, _context.InclusionSet, _context.Dependency);
+            var context = new MarkdownContext(includeFilePath.RemoveWorkingFolder(), _context.BasePath, _context.EnableSourceInfo, _context.InclusionSet, _context.Dependency);
+			var pipeline = MarkdigMarked.CreatePipeline(context);
 
-            string content;
+			string content;
             using (var sr = new StreamReader(refPath))
             {
                 content = sr.ReadToEnd();
             }
 
-            var document = Markdown.Parse(content, _pipeline);
+			var document = Markdown.Parse(content, pipeline);
             if (document != null && document.Count == 1 && document.LastChild is ParagraphBlock)
             {
                 var block = (ParagraphBlock)document.LastChild;
                 var inlines = block.Inline;
-                var result = MarkdigMarked.Markup(inlines, context);
+				var result = MarkdigMarked.Markup(inlines, context);
 
                 renderer.Write(result);
             }
             else
             {
                 Logger.LogWarning($"Inline syntax for Inclusion only support inline syntax in {inclusion}.");
-                var result = Markdown.ToHtml(content, _pipeline);
+                var result = Markdown.ToHtml(content, pipeline);
 
                 renderer.Write(result);
             }

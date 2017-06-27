@@ -4,6 +4,8 @@ using System.IO;
 using Markdig;
 using Markdig.Renderers;
 using Markdig.Syntax.Inlines;
+using Markdig.Syntax;
+using Markdig.Renderers.Html;
 
 namespace MarkdigEngine
 {
@@ -21,10 +23,11 @@ namespace MarkdigEngine
                 throw new ArgumentNullException(nameof(context));
             }
 
+			if (context.EnableSourceInfo) context.ResetlineEnds(content);
             var pipeline = CreatePipeline(context);
 
-            return Markdown.ToHtml(content, pipeline);
-        }
+			return Markdown.ToHtml(content, pipeline);
+		}
 
         public static string Markup(ContainerInline inline, MarkdownContext context)
         {
@@ -49,7 +52,7 @@ namespace MarkdigEngine
             return new MarkdownPipelineBuilder()
                 .UseAdvancedExtensions()
                 .UseDfmExtensions(context)
-                .Build();
+				.Build();
         }
-    }
+	}
 }
