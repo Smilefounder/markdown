@@ -24,7 +24,7 @@ namespace MarkdigEngine
             var command = line.ToString();
             var includeFile = new InclusionBlock(this);
 
-            if (!ExtensionsHelper.MatchStart(ref line, StartString))
+            if (!ExtensionsHelper.MatchStart(ref line, StartString, false))
             {
                 return BlockState.None;
             }
