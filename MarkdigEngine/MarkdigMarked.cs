@@ -23,11 +23,11 @@ namespace MarkdigEngine
                 throw new ArgumentNullException(nameof(context));
             }
 
-			if (context.EnableSourceInfo) context.ResetlineEnds(content);
+            if (context.EnableSourceInfo) context.ResetlineEnds(content);
             var pipeline = CreatePipeline(context);
 
-			return Markdown.ToHtml(content, pipeline);
-		}
+            return Markdown.ToHtml(content, pipeline);
+        }
 
         public static string Markup(ContainerInline inline, MarkdownContext context)
         {
@@ -52,7 +52,7 @@ namespace MarkdigEngine
             return new MarkdownPipelineBuilder()
                 .UseAdvancedExtensions()
                 .UseDfmExtensions(context)
-				.Build();
+                .Build();
         }
-	}
+    }
 }

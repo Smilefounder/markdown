@@ -15,13 +15,13 @@ namespace MarkdigEngine
 
         public MarkupResult Markup(string content, string path)
         {
-			bool enableSourceInfo = _parameters?.Extensions != null && _parameters.Extensions.ContainsKey(LineNumberExtension.EnableSourceInfo) ?
-								   (bool)_parameters.Extensions[LineNumberExtension.EnableSourceInfo] :
-								   false;
+            bool enableSourceInfo = _parameters?.Extensions != null && _parameters.Extensions.ContainsKey(LineNumberExtension.EnableSourceInfo) ?
+                                   (bool)_parameters.Extensions[LineNumberExtension.EnableSourceInfo] :
+                                   false;
 
-			var context = new MarkdownContext(path, _parameters.BasePath, enableSourceInfo);
+            var context = new MarkdownContext(path, _parameters.BasePath, enableSourceInfo);
 
-			return new MarkupResult
+            return new MarkupResult
             {
                 Html = MarkdigMarked.Markup(content, context),
                 Dependency = context.Dependency.ToImmutableArray()
