@@ -30,7 +30,7 @@ namespace MarkdigEngine
 
         public List<string> Dependency { get; private set; }
 
-        public MarkdownContext(string filePath, string basePath, bool enableSourceInfo = true, ImmutableHashSet<string> inclusionSet = null, List<string> dependency = null)
+        public MarkdownContext(string filePath, string basePath, bool enableSourceInfo = false, ImmutableHashSet<string> inclusionSet = null, List<string> dependency = null)
         {
             FilePath = filePath;
             BasePath = basePath;
