@@ -55,8 +55,8 @@ namespace MarkdigEngine
             if (context.EnableSourceInfo)
             {
                 var absoluteFilePath = Path.Combine(context.BasePath, context.FilePath);
-                var helper = LineNumberExtensionHelper.Create(content, absoluteFilePath, context.FilePath);
-                pipeline.UseLineNumber(helper);
+                var lineNumberContext = LineNumberExtensionContext.Create(content, absoluteFilePath, context.FilePath);
+                pipeline.UseLineNumber(lineNumberContext);
             }
 
             return pipeline.Build();

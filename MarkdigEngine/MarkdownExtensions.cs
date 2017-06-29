@@ -11,10 +11,10 @@ namespace MarkdigEngine
                 .UseCodeSnippet(context);
         }
 
-        public static MarkdownPipelineBuilder UseLineNumber(this MarkdownPipelineBuilder pipeline, LineNumberExtensionHelper helper)
+        public static MarkdownPipelineBuilder UseLineNumber(this MarkdownPipelineBuilder pipeline, LineNumberExtensionContext lineNumberContext)
         {
             pipeline.PreciseSourceLocation = true;
-            pipeline.DocumentProcessed += LineNumberExtension.GetProcessDocumentDelegate(helper);
+            pipeline.DocumentProcessed += LineNumberExtension.GetProcessDocumentDelegate(lineNumberContext);
             return pipeline;
         }
 
