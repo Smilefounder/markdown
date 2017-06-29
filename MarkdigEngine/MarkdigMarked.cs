@@ -4,6 +4,8 @@ using System.IO;
 using Markdig;
 using Markdig.Renderers;
 using Markdig.Syntax.Inlines;
+using Markdig.Syntax;
+using Markdig.Renderers.Html;
 
 namespace MarkdigEngine
 {
@@ -21,7 +23,7 @@ namespace MarkdigEngine
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var pipeline = CreatePipeline(context);
+            var pipeline = CreatePipeline(context, content);
 
             return Markdown.ToHtml(content, pipeline);
         }
@@ -39,17 +41,25 @@ namespace MarkdigEngine
             return writer.ToString();
         }
 
-        public static MarkdownPipeline CreatePipeline(MarkdownContext context)
+        public static MarkdownPipeline CreatePipeline(MarkdownContext context, string content = null)
         {
             if (context == null)
             {
                 throw new ArgumentNullException(nameof(context));
             }
 
-            return new MarkdownPipelineBuilder()
+            var pipeline = new MarkdownPipelineBuilder()
                 .UseAdvancedExtensions()
-                .UseDfmExtensions(context)
-                .Build();
+                .UseDfmExtensions(context);
+
+            if (context.EnableSourceInfo)
+            {
+                var absoluteFilePath = Path.Combine(context.BasePath, context.FilePath);
+                var lineNumberContext = LineNumberExtensionContext.Create(content, absoluteFilePath, context.FilePath);
+                pipeline.UseLineNumber(lineNumberContext);
+            }
+
+            return pipeline.Build();
         }
     }
 }

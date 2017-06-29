@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="CodeSnippetTest.cs" />
     <Compile Include="InclusionTest.cs" />
+    <Compile Include="LineNumberTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

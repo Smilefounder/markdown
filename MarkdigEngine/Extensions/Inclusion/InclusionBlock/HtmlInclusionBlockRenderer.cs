@@ -48,7 +48,7 @@ namespace MarkdigEngine
 
             _context = _context.AddIncludeFile(currentFilePath);
             _context.ReportDependency(includeFilePath);
-            var context = new MarkdownContext(includeFilePath.RemoveWorkingFolder(), _context.BasePath, _context.InclusionSet, _context.Dependency);
+            var context = new MarkdownContext(includeFilePath.RemoveWorkingFolder(), _context.BasePath, _context.EnableSourceInfo, _context.InclusionSet, _context.Dependency);
 
             string content;
             using (var sr = new StreamReader(refPath))

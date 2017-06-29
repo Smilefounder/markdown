@@ -11,6 +11,13 @@ namespace MarkdigEngine
                 .UseCodeSnippet(context);
         }
 
+        public static MarkdownPipelineBuilder UseLineNumber(this MarkdownPipelineBuilder pipeline, LineNumberExtensionContext lineNumberContext)
+        {
+            pipeline.PreciseSourceLocation = true;
+            pipeline.DocumentProcessed += LineNumberExtension.GetProcessDocumentDelegate(lineNumberContext);
+            return pipeline;
+        }
+
         public static MarkdownPipelineBuilder UseIncludeFile(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
             pipeline.Extensions.Insert(0, new InclusionExtension(context));
