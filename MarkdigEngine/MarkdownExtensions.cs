@@ -7,18 +7,14 @@ namespace MarkdigEngine
         public static MarkdownPipelineBuilder UseDfmExtensions(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
             return pipeline
-                .UseLineNumber(context)
                 .UseIncludeFile(context)
                 .UseCodeSnippet(context);
         }
 
-        public static MarkdownPipelineBuilder UseLineNumber(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
+        public static MarkdownPipelineBuilder UseLineNumber(this MarkdownPipelineBuilder pipeline, LineNumberExtensionHelper helper)
         {
-            if (context.EnableSourceInfo == true)
-            {
-                pipeline.PreciseSourceLocation = true;
-                pipeline.DocumentProcessed += LineNumberExtension.GetProcessDocumentDelegate(context);
-            }
+            pipeline.PreciseSourceLocation = true;
+            pipeline.DocumentProcessed += LineNumberExtension.GetProcessDocumentDelegate(helper);
             return pipeline;
         }
 

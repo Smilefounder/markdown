@@ -23,8 +23,7 @@ namespace MarkdigEngine
                 throw new ArgumentNullException(nameof(context));
             }
 
-            if (context.EnableSourceInfo) context.ResetlineEnds(content);
-            var pipeline = CreatePipeline(context);
+            var pipeline = CreatePipeline(context, content);
 
             return Markdown.ToHtml(content, pipeline);
         }
@@ -42,17 +41,25 @@ namespace MarkdigEngine
             return writer.ToString();
         }
 
-        public static MarkdownPipeline CreatePipeline(MarkdownContext context)
+        public static MarkdownPipeline CreatePipeline(MarkdownContext context, string content = null)
         {
             if (context == null)
             {
                 throw new ArgumentNullException(nameof(context));
             }
 
-            return new MarkdownPipelineBuilder()
+            var pipeline = new MarkdownPipelineBuilder()
                 .UseAdvancedExtensions()
-                .UseDfmExtensions(context)
-                .Build();
+                .UseDfmExtensions(context);
+
+            if (context.EnableSourceInfo)
+            {
+                var absoluteFilePath = Path.Combine(context.BasePath, context.FilePath);
+                var helper = LineNumberExtensionHelper.Create(content, absoluteFilePath, context.FilePath);
+                pipeline.UseLineNumber(helper);
+            }
+
+            return pipeline.Build();
         }
     }
 }
