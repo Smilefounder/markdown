@@ -8,6 +8,7 @@ using Markdig.Renderers;
 using Markdig.Renderers.Html;
 
 using Microsoft.DocAsCode.Common;
+using Markdig.Helpers;
 
 namespace MarkdigEngine
 {
@@ -275,16 +276,58 @@ namespace MarkdigEngine
             }
 
             var showCode = new StringBuilder();
+            List<string> codeLines = new List<string>();
+            int commonIndent = int.MaxValue;
 
             for (int lineNumber = 0; lineNumber < allLines.Length; lineNumber++)
             {
                 if (IsLineInRange(lineNumber + 1, allCodeRanges))
                 {
-                    showCode.Append($"{allLines[lineNumber]}\n");
+                    int indentSpaces = 0;
+                    string rawCodeLine = CountAndReplaceIndentSpaces(allLines[lineNumber], out indentSpaces);
+                    commonIndent = Math.Min(commonIndent, indentSpaces);
+                    codeLines.Add(rawCodeLine);
                 }
             }
 
+            int dedent = obj.DedentLength == null ? commonIndent : Math.Min(commonIndent, (int)obj.DedentLength);
+            foreach (var rawCodeLine in codeLines)
+            {
+                string dedentedLine = rawCodeLine.Substring(dedent);
+                showCode.Append($"{dedentedLine}\n");
+            }
+
             return showCode.ToString();
+        }
+
+        private string CountAndReplaceIndentSpaces(string line, out int count)
+        {
+            StringBuilder sb = new StringBuilder();
+            count = 0;
+
+            for (int i = 0; i < line.Length; i++)
+            {
+                char c = line[i];
+                if (c == ' ')
+                {
+                    sb.Append(' ');
+                    count++;
+                }
+                else if (c == '\t')
+                {
+                    int newCount = CharHelper.AddTab(count);
+                    sb.Append(' ', newCount - count);
+                    count = newCount;
+
+                }
+                else
+                {
+                    sb.Append(line, i, line.Length - i);
+                    break;
+                }
+            }
+
+            return sb.ToString();
         }
 
         private bool IsLineInRange(int lineNumber, List<CodeRange> allCodeRanges)

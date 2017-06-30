@@ -11,30 +11,59 @@ using Xunit;
 
 namespace MarkdigEngineTest
 {
-	public class CodeSnippetTest
-	{
-		[Fact]
-		public void CodeSnippetShouldNotWorkInParagragh()
-		{
-			// act
-			var parameter = new MarkdownServiceParameters
-			{
-				BasePath = "."
-			};
-			var service = new MarkdigMarkdownService(parameter);
-			var marked = service.Markup("text [!code[test](CodeSnippet.cs)]", "Topic.md");
+    public class CodeSnippetTest
+    {
 
-			// assert
-			var expected = @"<p>text [!code<a href=""CodeSnippet.cs"" data-raw-source=""[test](CodeSnippet.cs)"">test</a>]</p>
+        [Fact]
+        public void CodeSnippetGeneral()
+        {
+            //arange
+            var content = @"    line for start & end
+    // <tag1>
+    line1
+    // </tag1>
+" + " \tline for indent & range";
+
+            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
+
+            // act
+            var parameter = new MarkdownServiceParameters
+            {
+                BasePath = "."
+            };
+            var service = new MarkdigMarkdownService(parameter);
+            var marked = service.Markup("[!code-csharp[name](Program.cs?start=1&end=1&name=tag&range=5-&highlight=1,2-2,4-&dedent=3#tag1)]", "Topic.md");
+
+            // assert
+            var expected = @"<pre><code name=""name"" class=""lang-csharp"" highlight-lines=""1,2,4-""> line for start &amp; end
+ line1
+ line for indent &amp; range
+</code></pre>";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+        }
+
+        [Fact]
+        public void CodeSnippetShouldNotWorkInParagragh()
+        {
+            // act
+            var parameter = new MarkdownServiceParameters
+            {
+                BasePath = "."
+            };
+            var service = new MarkdigMarkdownService(parameter);
+            var marked = service.Markup("text [!code[test](CodeSnippet.cs)]", "Topic.md");
+
+            // assert
+            var expected = @"<p>text [!code<a href=""CodeSnippet.cs"" data-raw-source=""[test](CodeSnippet.cs)"">test</a>]</p>
 ";
-			Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
-		}
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+        }
 
-		[Fact]
-		public void CodeSnippetTagsShouldMatchCaseInsensitive()
-		{
-			//arange
-			var content = @"// <tag1>
+        [Fact]
+        public void CodeSnippetTagsShouldMatchCaseInsensitive()
+        {
+            //arange
+            var content = @"// <tag1>
 line1
 // <tag2>
 line2
@@ -43,26 +72,26 @@ line3
 // </TAG1>
 // <unmatched>
 ";
-			File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
+            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
-			// act
-			var parameter = new MarkdownServiceParameters
-			{
-				BasePath = "."
-			};
-			var service = new MarkdigMarkdownService(parameter);
-			var marked = service.Markup("[!code[tag1](Program.cs#Tag1)]", "Topic.md");
+            // act
+            var parameter = new MarkdownServiceParameters
+            {
+                BasePath = "."
+            };
+            var service = new MarkdigMarkdownService(parameter);
+            var marked = service.Markup("[!code[tag1](Program.cs#Tag1)]", "Topic.md");
 
-			// assert
-			var expected = "<pre><code name=\"tag1\">line1\nline2\nline3\n</code></pre>";
-			Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
-		}
+            // assert
+            var expected = "<pre><code name=\"tag1\">line1\nline2\nline3\n</code></pre>";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+        }
 
-		[Fact]
-		public void CodeSnippetTagsShouldSucceedWhenDuplicateWithoutWarning()
-		{
-			//arange
-			var content = @"// <tag1>
+        [Fact]
+        public void CodeSnippetTagsShouldSucceedWhenDuplicateWithoutWarning()
+        {
+            //arange
+            var content = @"// <tag1>
 line1
 // <tag1>
 line2
@@ -73,26 +102,26 @@ line3
 line4
 // </tag2>
 ";
-			File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
+            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
-			// act
-			var parameter = new MarkdownServiceParameters
-			{
-				BasePath = "."
-			};
-			var service = new MarkdigMarkdownService(parameter);
-			var marked = service.Markup("[!code[tag2](Program.cs#Tag2)]", "Topic.md");
+            // act
+            var parameter = new MarkdownServiceParameters
+            {
+                BasePath = "."
+            };
+            var service = new MarkdigMarkdownService(parameter);
+            var marked = service.Markup("[!code[tag2](Program.cs#Tag2)]", "Topic.md");
 
-			// assert
-			var expected = "<pre><code name=\"tag2\">line4\n</code></pre>";
-			Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
-		}
+            // assert
+            var expected = "<pre><code name=\"tag2\">line4\n</code></pre>";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+        }
 
-		[Fact]
-		public void CodeSnippetTagsShouldSucceedWhenDuplicateWithWarningWhenReferenced()
-		{
-			//arange
-			var content = @"// <tag1>
+        [Fact]
+        public void CodeSnippetTagsShouldSucceedWhenDuplicateWithWarningWhenReferenced()
+        {
+            //arange
+            var content = @"// <tag1>
 line1
 // <tag1>
 line2
@@ -103,26 +132,26 @@ line3
 line4
 // </tag2>
 ";
-			File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
+            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
-			// act
-			var parameter = new MarkdownServiceParameters
-			{
-				BasePath = "."
-			};
-			var service = new MarkdigMarkdownService(parameter);
-			var result = service.Markup("[!code[tag1](Program.cs#Tag1)]", "Topic.md");
+            // act
+            var parameter = new MarkdownServiceParameters
+            {
+                BasePath = "."
+            };
+            var service = new MarkdigMarkdownService(parameter);
+            var result = service.Markup("[!code[tag1](Program.cs#Tag1)]", "Topic.md");
 
-			// assert
-			var expected = "<pre><code name=\"tag1\">line2\n</code></pre>";
-			Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
-		}
+            // assert
+            var expected = "<pre><code name=\"tag1\">line2\n</code></pre>";
+            Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
+        }
 
-		[Fact]
-		public void CodeSnippetTagsShouldSucceedWhenReferencedFileContainsRegionWithoutName()
-		{
-			// arrange
-			var content = @"#region
+        [Fact]
+        public void CodeSnippetTagsShouldSucceedWhenReferencedFileContainsRegionWithoutName()
+        {
+            // arrange
+            var content = @"#region
 public class MyClass
 #region
 {
@@ -134,27 +163,27 @@ public class MyClass
 }
 #endregion
 #endregion";
-			File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
+            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
-			// act
-			var parameter = new MarkdownServiceParameters
-			{
-				BasePath = "."
-			};
-			var service = new MarkdigMarkdownService(parameter);
-			var marked = service.Markup("[!code[MyClass](Program.cs#main)]", "Topic.md");
+            // act
+            var parameter = new MarkdownServiceParameters
+            {
+                BasePath = "."
+            };
+            var service = new MarkdigMarkdownService(parameter);
+            var marked = service.Markup("[!code[MyClass](Program.cs#main)]", "Topic.md");
 
-			// assert
-			var expected = @"<pre><code name=""MyClass"">static void Main()
+            // assert
+            var expected = @"<pre><code name=""MyClass"">static void Main()
 {
 }
 </code></pre>";
-			Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
-		}
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+        }
 
-		[Theory]
-		[Trait("Related", "DfmMarkdown")]
-		[InlineData(@"> [!div class=""tabbedCodeSnippets"" data-resources=""OutlookServices.Calendar""]
+        [Theory]
+        [Trait("Related", "DfmMarkdown")]
+        [InlineData(@"> [!div class=""tabbedCodeSnippets"" data-resources=""OutlookServices.Calendar""]
 >
 >```cs-i
     var outlookClient = await CreateOutlookClientAsync(""Calendar"");
@@ -175,24 +204,24 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
         console.log(error);
     });
 ```")]
-		public void TestSectionBlockLevel(string source)
-		{
-			var parameter = new MarkdownServiceParameters
-			{
-				BasePath = "."
-			};
-			var service = new MarkdigMarkdownService(parameter);
-			var content = service.Markup(source, "Topic.md");
+        public void TestSectionBlockLevel(string source)
+        {
+            var parameter = new MarkdownServiceParameters
+            {
+                BasePath = "."
+            };
+            var service = new MarkdigMarkdownService(parameter);
+            var content = service.Markup(source, "Topic.md");
 
-			// assert
-			XmlDocument xdoc = new XmlDocument();
-			xdoc.LoadXml(content.Html);
-			var tabbedCodeNode = xdoc.SelectSingleNode("//div[@class='tabbedCodeSnippets' and @data-resources='OutlookServices.Calendar']");
-			Assert.True(tabbedCodeNode != null);
-			var csNode = tabbedCodeNode.SelectSingleNode("./pre/code[@class='lang-cs-i']");
-			Assert.True(csNode != null);
-			var jsNode = tabbedCodeNode.SelectSingleNode("./pre/code[@class='lang-javascript-i']");
-			Assert.True(jsNode != null);
-		}
-	}
+            // assert
+            XmlDocument xdoc = new XmlDocument();
+            xdoc.LoadXml(content.Html);
+            var tabbedCodeNode = xdoc.SelectSingleNode("//div[@class='tabbedCodeSnippets' and @data-resources='OutlookServices.Calendar']");
+            Assert.True(tabbedCodeNode != null);
+            var csNode = tabbedCodeNode.SelectSingleNode("./pre/code[@class='lang-cs-i']");
+            Assert.True(csNode != null);
+            var jsNode = tabbedCodeNode.SelectSingleNode("./pre/code[@class='lang-javascript-i']");
+            Assert.True(jsNode != null);
+        }
+    }
 }

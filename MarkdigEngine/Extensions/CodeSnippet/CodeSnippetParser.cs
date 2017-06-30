@@ -25,30 +25,35 @@ namespace MarkdigEngine
                 return BlockState.None;
             }
 
+            // Sample: [!code-javascript[Main](../jquery.js?name=testsnippet#tag "title")]
             var slice = processor.Line;
-            
             if (!MatchStart(ref slice))
             {
                 return BlockState.None;
             }
 
             var codeSnippet = new CodeSnippet(this);
-            var isMatching = false;
-            var c = slice.CurrentChar;
 
-            if (c == '-')
+            MatchLanguage(processor, ref slice, ref codeSnippet);
+
+            if (!MatchName(processor, ref slice, ref codeSnippet))
             {
-                isMatching = MatchLanguage(processor, ref slice, ref codeSnippet);
-            }
-            else if (c == '[')
-            {
-                isMatching = MatchName(processor, ref slice, ref codeSnippet);
+                return BlockState.None;
             }
 
-            if (isMatching && slice.CurrentChar == ']')
+            if (!MatchPath(processor, ref slice, ref codeSnippet))
+            {
+                return BlockState.None;
+            }
+
+            MatchQuery(processor, ref slice, ref codeSnippet);
+
+            MatchTitle(processor, ref slice, ref codeSnippet);
+
+            if (slice.CurrentChar == ')' && slice.NextChar() == ']')
             {
                 slice.NextChar();
-                
+
                 codeSnippet.Column = processor.Column;
                 processor.NewBlocks.Push(codeSnippet);
                 return BlockState.BreakDiscard;
@@ -89,13 +94,8 @@ namespace MarkdigEngine
 
             codeSnippet.Language = language.ToString();
             processor.StringBuilders.Release(language);
-            
-            if (c == '[')
-            {
-                return MatchName(processor, ref slice, ref codeSnippet);
-            }
 
-            return false;
+            return true;
         }
 
         private bool MatchPath(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
@@ -123,24 +123,7 @@ namespace MarkdigEngine
             codeSnippet.CodePath = path.ToString().Trim();
             processor.StringBuilders.Release(path);
 
-            var isMatching = true;
-
-            if (c == '#' || c == '?')
-            {
-                isMatching = MatchQuery(processor, ref slice, ref codeSnippet);
-            }
-            else if (c == '"')
-            {
-                isMatching = MatchTitle(processor, ref slice, ref codeSnippet);
-            }
-
-            if (slice.CurrentChar == ')' && isMatching)
-            {
-                slice.NextChar();
-                return true;
-            }
-
-            return false;
+            return true;
         }
 
         private bool MatchName(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
@@ -171,7 +154,7 @@ namespace MarkdigEngine
             if (c == ']')
             {
                 slice.NextChar();
-                return MatchPath(processor, ref slice, ref codeSnippet);
+                return true;
             }
 
             return false;
@@ -179,7 +162,36 @@ namespace MarkdigEngine
 
         private bool MatchQuery(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
-            if (slice.CurrentChar != '#' && slice.CurrentChar != '?') return false;
+            var questionMarkMatched = MatchQuestionMarkQuery(processor, ref slice, ref codeSnippet);
+
+            var bookMarkMatched = MatchBookMarkQuery(processor, ref slice, ref codeSnippet);
+
+            return questionMarkMatched || bookMarkMatched;
+        }
+
+        private bool MatchQuestionMarkQuery(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+        {
+            if (slice.CurrentChar != '?') return false;
+
+            var queryChar = slice.CurrentChar;
+            var query = processor.StringBuilders.Get();
+            var c = slice.NextChar();
+
+            while (c != '\0' && c != '"' && c != ')' && c != '#')
+            {
+                query.Append(c);
+                c = slice.NextChar();
+            }
+
+            var queryString = query.ToString().Trim();
+            processor.StringBuilders.Release(query);
+
+            return TryParseQuery(queryString, ref codeSnippet);
+        }
+
+        private bool MatchBookMarkQuery(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+        {
+            if (slice.CurrentChar != '#') return false;
 
             var queryChar = slice.CurrentChar;
             var query = processor.StringBuilders.Get();
@@ -194,39 +206,20 @@ namespace MarkdigEngine
             var queryString = query.ToString().Trim();
             processor.StringBuilders.Release(query);
 
-            if (string.IsNullOrEmpty(queryString)) return false;
-
-            switch (queryChar)
+            CodeRange codeRange;
+            if (TryGetLineRange(queryString, out codeRange))
             {
-                case '#':
-                    CodeRange codeRange;
-                    if (TryGetLineRange(queryString, out codeRange))
-                    {
-                        if (codeSnippet.CodeRanges == null)
-                        {
-                            codeSnippet.CodeRanges = new List<CodeRange>();
-                        }
-                        codeSnippet.CodeRanges.Add(codeRange);
-                    }
-                    else
-                    {
-                        codeSnippet.TagName = queryString;
-                    }
-                    break;
-                case '?':
-                    if (!TryParseQuery(queryString, ref codeSnippet))
-                    {
-                        return false;
-                    }
-                    break;
-                default:
-                    return false;
+                if (codeSnippet.CodeRanges == null)
+                {
+                    codeSnippet.CodeRanges = new List<CodeRange>();
+                }
+                codeSnippet.CodeRanges.Add(codeRange);
+            }
+            else
+            {
+                codeSnippet.TagName = queryString;
             }
 
-            if (c == '"')
-            {
-                return MatchTitle(processor, ref slice, ref codeSnippet);
-            }
             return true;
         }
 
