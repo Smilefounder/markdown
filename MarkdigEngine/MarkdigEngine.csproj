@@ -75,7 +75,7 @@
   <ItemGroup>
     <Compile Include="Extensions\CodeSnippet\CodeSnippetExtrator.cs" />
     <Compile Include="Extensions\Inclusion\InclusionBlock\HtmlInclusionBlockRenderer.cs" />
-    <Compile Include="Extensions\Inclusion\InclusionInline\ExtensionsHelper.cs" />
+    <Compile Include="ExtensionsHelper.cs" />
     <Compile Include="Extensions\Inclusion\InclusionInline\HtmlInclusionInlineRenderer.cs" />
     <Compile Include="Extensions\Inclusion\InclusionBlock\InclusionBlock.cs" />
     <Compile Include="Extensions\Inclusion\InclusionBlock\InclusionBlockParser.cs" />

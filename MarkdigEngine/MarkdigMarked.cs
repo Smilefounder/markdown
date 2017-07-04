@@ -4,8 +4,6 @@ using System.IO;
 using Markdig;
 using Markdig.Renderers;
 using Markdig.Syntax.Inlines;
-using Markdig.Syntax;
-using Markdig.Renderers.Html;
 
 namespace MarkdigEngine
 {
