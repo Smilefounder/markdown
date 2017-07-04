@@ -282,7 +282,7 @@ namespace MarkdigEngine
 
             for (int lineNumber = 0; lineNumber < allLines.Length; lineNumber++)
             {
-                if (IsLineInRange(lineNumber + 1, allCodeRanges) && !tagLines.Contains(lineNumber))
+                if (!tagLines.Contains(lineNumber) && IsLineInRange(lineNumber + 1, allCodeRanges))
                 {
                     int indentSpaces = 0;
                     string rawCodeLine = CountAndReplaceIndentSpaces(allLines[lineNumber], out indentSpaces);
