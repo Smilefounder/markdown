@@ -21,7 +21,7 @@ namespace MarkdigEngine
             this.IsEndLineContainsTagName = isEndLineContainsTagName;
         }
 
-        public Dictionary<string, CodeRange> GetAllTags(string[] lines)
+        public Dictionary<string, CodeRange> GetAllTags(string[] lines, ref HashSet<int> tagLines)
         {
             var result = new Dictionary<string, CodeRange>(StringComparer.OrdinalIgnoreCase);
             var tagStack = new Stack<string>();
@@ -34,7 +34,8 @@ namespace MarkdigEngine
 
                 if(MatchTag(line, EndLineTemplate, out tagName))
                 {
-                    if(!IsEndLineContainsTagName)
+                    tagLines.Add(index);
+                    if (!IsEndLineContainsTagName)
                     {
                         tagName = tagStack.Pop();
                     }
@@ -45,7 +46,11 @@ namespace MarkdigEngine
                     }
                     else
                     {
-                        result[tagName].End = index;
+                        if (result[tagName].End == 0)
+                        {
+                            // we meet the first end tag, ignore the following ones
+                            result[tagName].End = index;
+                        }
                     }
 
                     continue;
@@ -53,6 +58,7 @@ namespace MarkdigEngine
 
                 if (MatchTag(line, StartLineTemplate, out tagName))
                 {
+                    tagLines.Add(index);
                     result[tagName] = new CodeRange { Start = index + 2 };
                     tagStack.Push(tagName);
                 }
