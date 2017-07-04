@@ -248,6 +248,7 @@ namespace MarkdigEngine
             var refPath = Path.Combine(_context.BasePath, refFileRelativePath.RemoveWorkingFolder());
             var allLines = File.ReadAllLines(refPath);
             var allCodeRanges = obj.CodeRanges ?? new List<CodeRange>();
+            HashSet<int> tagLines = new HashSet<int>();
 
             if (!string.IsNullOrEmpty(obj.TagName))
             {
@@ -263,7 +264,7 @@ namespace MarkdigEngine
                     var tagWithPrefix = tagPrefix + obj.TagName;
                     foreach(var extrator in extrators)
                     {
-                        var tagToCoderangeMapping = extrator.GetAllTags(allLines);
+                        var tagToCoderangeMapping = extrator.GetAllTags(allLines, ref tagLines);
                         CodeRange cr;
                         if (tagToCoderangeMapping.TryGetValue(obj.TagName, out cr)
                             || tagToCoderangeMapping.TryGetValue(tagWithPrefix, out cr))
@@ -281,7 +282,7 @@ namespace MarkdigEngine
 
             for (int lineNumber = 0; lineNumber < allLines.Length; lineNumber++)
             {
-                if (IsLineInRange(lineNumber + 1, allCodeRanges))
+                if (!tagLines.Contains(lineNumber) && IsLineInRange(lineNumber + 1, allCodeRanges))
                 {
                     int indentSpaces = 0;
                     string rawCodeLine = CountAndReplaceIndentSpaces(allLines[lineNumber], out indentSpaces);
