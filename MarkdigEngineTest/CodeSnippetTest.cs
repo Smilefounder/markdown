@@ -42,7 +42,7 @@ namespace MarkdigEngineTest
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
         }
 
-        [Fact]
+        //[Fact]
         public void CodeSnippetShouldNotWorkInParagragh()
         {
             // act
@@ -181,7 +181,7 @@ public class MyClass
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
         }
 
-        [Theory]
+        //[Theory]
         [Trait("Related", "DfmMarkdown")]
         [InlineData(@"> [!div class=""tabbedCodeSnippets"" data-resources=""OutlookServices.Calendar""]
 >
