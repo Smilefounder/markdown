@@ -85,6 +85,11 @@
     <Compile Include="Extensions\Inclusion\InclusionInline\InclusionInlineParser.cs" />
     <Compile Include="Extensions\LineNumber\LineNumberExtension.cs" />
     <Compile Include="Extensions\LineNumber\LineNumberExtensionContext.cs" />
+    <Compile Include="Extensions\Xref\XrefInlineExtension.cs" />
+    <Compile Include="Extensions\Xref\XrefInline.cs" />
+    <Compile Include="Extensions\Xref\HtmlXrefInlineRender.cs" />
+    <Compile Include="Extensions\Xref\XrefInlineParser.cs" />
+    <Compile Include="Extensions\Xref\XrefInlineShortParser.cs" />
     <Compile Include="MarkdigMarked.cs" />
     <Compile Include="Extensions\CodeSnippet\CodeRange.cs" />
     <Compile Include="Extensions\CodeSnippet\HtmlCodeSnippetRenderer.cs" />
