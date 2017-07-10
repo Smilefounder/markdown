@@ -69,7 +69,7 @@ line1
                 }
             };
             var service = new MarkdigMarkdownService(parameter);
-            var marked = service.Markup("[!code[tag-test](Program.cs#Tag)]", "Topic.md");
+            var marked = service.Markup(@"[!code[tag-test](Program.cs#Tag)]", "Topic.md");
 
             // assert
             var expected = @"<pre><code name=""tag-test"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""1"">line1
@@ -91,9 +91,15 @@ http://spec.commonmark.org/0.27/)";
 
             var refb = @"[block](
 http://spec.commonmark.org/0.27/)";
-            File.WriteAllText("r/root.md", root);
-            File.WriteAllText("r/a.md", refa);
-            File.WriteAllText("r/b.md", refb);
+
+            if (!Directory.Exists("LineNumber"))
+            {
+                Directory.CreateDirectory("LineNumber");
+            }
+
+            File.WriteAllText("LineNumber/root.md", root);
+            File.WriteAllText("LineNumber/a.md", refa);
+            File.WriteAllText("LineNumber/b.md", refb);
 
             var parameter = new MarkdownServiceParameters
             {
@@ -105,10 +111,10 @@ http://spec.commonmark.org/0.27/)";
             };
             var service = new MarkdigMarkdownService(parameter);
 
-            var result = service.Markup(root, "r/root.md");
-            var expected = @"<h1 id=""root-content"" sourceFile=""r/root.md"" sourceStartLineNumber=""2"" sourceEndLineNumber=""2"">Root content</h1>
-<p sourceFile=""r/root.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3"">This is inline <a href=""http://spec.commonmark.org/0.27/"" sourceFile=""r/a.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""2"">inline</a> inclusion</p>
-<p sourceFile=""r/b.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""2""><a href=""http://spec.commonmark.org/0.27/"" sourceFile=""r/b.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""2"">block</a></p>
+            var result = service.Markup(root, "LineNumber/root.md");
+            var expected = @"<h1 id=""root-content"" sourceFile=""LineNumber/root.md"" sourceStartLineNumber=""2"" sourceEndLineNumber=""2"">Root content</h1>
+<p sourceFile=""LineNumber/root.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3"">This is inline <a href=""http://spec.commonmark.org/0.27/"" sourceFile=""LineNumber/a.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""2"">inline</a> inclusion</p>
+<p sourceFile=""LineNumber/b.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""2""><a href=""http://spec.commonmark.org/0.27/"" sourceFile=""LineNumber/b.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""2"">block</a></p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
         }

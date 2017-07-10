@@ -42,7 +42,7 @@ namespace MarkdigEngineTest
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
         }
 
-        //[Fact]
+        [Fact]
         public void CodeSnippetShouldNotWorkInParagragh()
         {
             // act
@@ -54,7 +54,7 @@ namespace MarkdigEngineTest
             var marked = service.Markup("text [!code[test](CodeSnippet.cs)]", "Topic.md");
 
             // assert
-            var expected = @"<p>text [!code<a href=""CodeSnippet.cs"" data-raw-source=""[test](CodeSnippet.cs)"">test</a>]</p>
+            var expected = @"<p>text [!code<a href=""CodeSnippet.cs"">test</a>]</p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
         }
