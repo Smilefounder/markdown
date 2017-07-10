@@ -27,7 +27,7 @@ namespace MarkdigEngine
 
             // Sample: [!code-javascript[Main](../jquery.js?name=testsnippet#tag "title")]
             var slice = processor.Line;
-            if (!MatchStart(ref slice))
+            if (!ExtensionsHelper.MatchStart(ref slice, StartString, false))
             {
                 return BlockState.None;
             }

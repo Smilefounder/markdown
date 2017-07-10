@@ -8,7 +8,8 @@ namespace MarkdigEngine
         {
             return pipeline
                 .UseIncludeFile(context)
-                .UseCodeSnippet(context);
+                .UseCodeSnippet(context)
+                .UseXref();
         }
 
         public static MarkdownPipelineBuilder UseLineNumber(this MarkdownPipelineBuilder pipeline, LineNumberExtensionContext lineNumberContext)
@@ -27,6 +28,12 @@ namespace MarkdigEngine
         public static MarkdownPipelineBuilder UseCodeSnippet(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
             pipeline.Extensions.Insert(0, new CodeSnippetExtension(context));
+            return pipeline;
+        }
+
+        public static MarkdownPipelineBuilder UseXref(this MarkdownPipelineBuilder pipeline)
+        {
+            pipeline.Extensions.Insert(0, new XrefInlineExtension());
             return pipeline;
         }
     }
