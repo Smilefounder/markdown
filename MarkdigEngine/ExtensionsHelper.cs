@@ -52,8 +52,6 @@ namespace MarkdigEngine
             return false;
         }
 
-
-
         #region private methods
         private static string GetAbsolutePathWithTildeCore(string basePath, string tildePath)
         {

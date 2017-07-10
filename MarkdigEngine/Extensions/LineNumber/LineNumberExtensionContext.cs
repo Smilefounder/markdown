@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MarkdigEngine
 {
@@ -11,15 +7,17 @@ namespace MarkdigEngine
     {
         // This two private members are used for quickly getting the line number of one charactor
         // lineEnds[5] = 255 means the 6th lines ends at the 255th character of the text
-        private int previousLineNumber;
-        private List<int> lineEnds;
+        private int _previousLineNumber;
+        private List<int> _lineEnds;
 
         internal string FilePath { get; private set; }
 
         static internal LineNumberExtensionContext Create(string content, string absolutefilePath, string relativeFilePath)
         {
-            var instance = new LineNumberExtensionContext();
-            instance.FilePath = relativeFilePath;
+            var instance = new LineNumberExtensionContext()
+            {
+                FilePath = relativeFilePath
+            };
 
             if (string.IsNullOrEmpty(content))
             {
@@ -38,8 +36,8 @@ namespace MarkdigEngine
 
         private void ResetlineEnds(string text)
         {
-            previousLineNumber = 0;
-            lineEnds = new List<int>();
+            _previousLineNumber = 0;
+            _lineEnds = new List<int>();
             for (int position = 0; position < text.Length; position++)
             {
                 var c = text[position];
@@ -49,10 +47,10 @@ namespace MarkdigEngine
                     {
                         position++;
                     }
-                    lineEnds.Add(position);
+                    _lineEnds.Add(position);
                 }
             }
-            lineEnds.Add(text.Length - 1);
+            _lineEnds.Add(text.Length - 1);
         }
 
         /// <summary>
@@ -63,24 +61,24 @@ namespace MarkdigEngine
         /// <returns></returns>
         internal int GetLineNumber(int position, int start)
         {
-            int lineNumber = start > previousLineNumber ? start : previousLineNumber;
+            int lineNumber = start > _previousLineNumber ? start : _previousLineNumber;
 
-            if (lineEnds == null || lineNumber >= lineEnds.Count)
+            if (_lineEnds == null || lineNumber >= _lineEnds.Count)
             {
-                previousLineNumber = start;
+                _previousLineNumber = start;
                 return start;
             }
 
-            for (; lineNumber < lineEnds.Count; lineNumber++)
+            for (; lineNumber < _lineEnds.Count; lineNumber++)
             {
-                if (position <= lineEnds[lineNumber])
+                if (position <= _lineEnds[lineNumber])
                 {
-                    previousLineNumber = lineNumber;
+                    _previousLineNumber = lineNumber;
                     return lineNumber;
                 }
             }
 
-            previousLineNumber = start;
+            _previousLineNumber = start;
             return start;
         }
     }

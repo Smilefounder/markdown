@@ -2,12 +2,6 @@
 using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MarkdigEngine
 {
@@ -17,12 +11,10 @@ namespace MarkdigEngine
 
         internal static ProcessDocumentDelegate GetProcessDocumentDelegate(LineNumberExtensionContext lineNumberContext)
         {
-            ProcessDocumentDelegate result = delegate (MarkdownDocument document) 
-            {
-                AddSourceInfoInDataEntry(document, lineNumberContext);
-            };
-
-            return result;
+            return (MarkdownDocument document) =>
+           {
+               AddSourceInfoInDataEntry(document, lineNumberContext);
+           };
         }
 
         /// <summary>
@@ -35,17 +27,15 @@ namespace MarkdigEngine
             if (markdownObject == null || lineNumberContext == null) return;
 
             // set linenumber for its children recursively
-            if (markdownObject is ContainerBlock)
+            if (markdownObject is ContainerBlock containerBlock)
             {
-                var containerBlock = (ContainerBlock)markdownObject;
                 foreach (var subBlock in containerBlock)
                 {
                     AddSourceInfoInDataEntry(subBlock, lineNumberContext);
                 }
             }
-            else if (markdownObject is LeafBlock)
+            else if (markdownObject is LeafBlock leafBlock)
             {
-                var leafBlock = (LeafBlock)markdownObject;
                 if (leafBlock.Inline != null)
                 {
                     foreach (var subInline in leafBlock.Inline)
@@ -54,9 +44,8 @@ namespace MarkdigEngine
                     }
                 }
             }
-            else if (markdownObject is ContainerInline)
+            else if (markdownObject is ContainerInline containerInline)
             {
-                var containerInline = (ContainerInline)markdownObject;
                 foreach (var subInline in containerInline)
                 {
                     AddSourceInfoInDataEntry(subInline, lineNumberContext);
