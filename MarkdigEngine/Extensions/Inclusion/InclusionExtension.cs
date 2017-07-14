@@ -1,6 +1,7 @@
 ﻿using Markdig.Renderers;
 using Markdig;
 using Markdig.Parsers.Inlines;
+using Microsoft.DocAsCode.Plugins;
 
 namespace MarkdigEngine
 {
@@ -11,9 +12,12 @@ namespace MarkdigEngine
     {
         public MarkdownContext Context { get; set; }
 
-        public InclusionExtension(MarkdownContext context)
+        private MarkdownServiceParameters _parameters;
+
+        public InclusionExtension(MarkdownContext context, MarkdownServiceParameters parameters)
         {
             Context = context;
+            _parameters = parameters;
         }
 
         public void Setup(MarkdownPipelineBuilder pipeline)
@@ -28,12 +32,12 @@ namespace MarkdigEngine
             {
                 if (!htmlRenderer.ObjectRenderers.Contains<HtmlInclusionInlineRenderer>())
                 {
-                    htmlRenderer.ObjectRenderers.Insert(0, new HtmlInclusionInlineRenderer(pipeline, Context));
+                    htmlRenderer.ObjectRenderers.Insert(0, new HtmlInclusionInlineRenderer(pipeline, Context, _parameters));
                 }
 
                 if (!htmlRenderer.ObjectRenderers.Contains<HtmlInclusionBlockRenderer>())
                 {
-                    htmlRenderer.ObjectRenderers.Insert(0, new HtmlInclusionBlockRenderer(Context));
+                    htmlRenderer.ObjectRenderers.Insert(0, new HtmlInclusionBlockRenderer(Context, _parameters));
                 }
             }
         }

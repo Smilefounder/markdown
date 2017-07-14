@@ -57,7 +57,7 @@ http://spec.commonmark.org/0.27/)";
             var content = @"// <tag>
 line1
 // </tag>";
-            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
+            File.WriteAllText("LineNumber/Program.cs", content.Replace("\r\n", "\n"));
 
             // act
             var parameter = new MarkdownServiceParameters
@@ -69,7 +69,7 @@ line1
                 }
             };
             var service = new MarkdigMarkdownService(parameter);
-            var marked = service.Markup(@"[!code[tag-test](Program.cs#Tag)]", "Topic.md");
+            var marked = service.Markup(@"[!code[tag-test](LineNumber/Program.cs#Tag)]", "Topic.md");
 
             // assert
             var expected = @"<pre><code name=""tag-test"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""1"">line1

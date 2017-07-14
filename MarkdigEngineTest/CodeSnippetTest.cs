@@ -180,48 +180,5 @@ public class MyClass
 </code></pre>";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
         }
-
-        //[Theory]
-        [Trait("Related", "DfmMarkdown")]
-        [InlineData(@"> [!div class=""tabbedCodeSnippets"" data-resources=""OutlookServices.Calendar""]
->
->```cs-i
-    var outlookClient = await CreateOutlookClientAsync(""Calendar"");
-    var events = await outlookClient.Me.Events.Take(10).ExecuteAsync();
-            foreach (var calendarEvent in events.CurrentPage)
-            {
-                System.Diagnostics.Debug.WriteLine(""Event '{0}'."", calendarEvent.Subject);
-            }
-```
-> 
->```javascript-i
-outlookClient.me.events.getEvents().fetch().then(function(result) {
-        result.currentPage.forEach(function(event) {
-        console.log('Event ""' + event.subject + '""')
-    });
-}, function(error)
-    {
-        console.log(error);
-    });
-```")]
-        public void TestSectionBlockLevel(string source)
-        {
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            var content = service.Markup(source, "Topic.md");
-
-            // assert
-            XmlDocument xdoc = new XmlDocument();
-            xdoc.LoadXml(content.Html);
-            var tabbedCodeNode = xdoc.SelectSingleNode("//div[@class='tabbedCodeSnippets' and @data-resources='OutlookServices.Calendar']");
-            Assert.True(tabbedCodeNode != null);
-            var csNode = tabbedCodeNode.SelectSingleNode("./pre/code[@class='lang-cs-i']");
-            Assert.True(csNode != null);
-            var jsNode = tabbedCodeNode.SelectSingleNode("./pre/code[@class='lang-javascript-i']");
-            Assert.True(jsNode != null);
-        }
     }
 }
