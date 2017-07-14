@@ -19,15 +19,15 @@ namespace MarkdigEngine
 
         public static MarkdownPipelineBuilder UseDFMCodeInfoPrefix(this MarkdownPipelineBuilder pipeline)
         {
-            var DFMFencedCodeBlockParser = new FencedCodeBlockParser()
+            var fencedCodeBlockParser = pipeline.BlockParsers.FindExact<FencedCodeBlockParser>();
+            if (fencedCodeBlockParser != null)
             {
-                InfoPrefix = "lang-"
-            };
-
-            if (!pipeline.BlockParsers.Replace<FencedCodeBlockParser>(DFMFencedCodeBlockParser))
+                fencedCodeBlockParser.InfoPrefix = "lang-";
+            }
+            else
             {
                 Logger.LogWarning($"Can't find FencedCodeBlockParser to replace, insert DFMFencedCodeBlockParser directly.");
-                pipeline.BlockParsers.Insert(0, DFMFencedCodeBlockParser);
+                pipeline.BlockParsers.Insert(0, new FencedCodeBlockParser() { InfoPrefix = "lang-" });
             }
             return pipeline;
         }
