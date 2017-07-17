@@ -6,6 +6,7 @@ using Markdig.Renderers.Html;
 using Markdig.Syntax;
 
 using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Plugins;
 
 namespace MarkdigEngine
 {
@@ -13,11 +14,13 @@ namespace MarkdigEngine
     {
         private MarkdownPipeline _pipeline;
         private MarkdownContext _context;
+        private MarkdownServiceParameters _parameters;
 
-        public HtmlInclusionInlineRenderer(MarkdownPipeline pipeline, MarkdownContext context)
+        public HtmlInclusionInlineRenderer(MarkdownPipeline pipeline, MarkdownContext context, MarkdownServiceParameters parameters)
         {
             _pipeline = pipeline;
             _context = context;
+            _parameters = parameters;
         }
 
         protected override void Write(HtmlRenderer renderer, InclusionInline inclusion)
@@ -55,7 +58,7 @@ namespace MarkdigEngine
             _context = _context.AddIncludeFile(currentFilePath);
             _context.ReportDependency(includeFilePath);
 
-            var context = new MarkdownContext(includeFilePath.RemoveWorkingFolder(), _context.BasePath, _context.EnableSourceInfo, _context.InclusionSet, _context.Dependency);
+            var context = new MarkdownContext(includeFilePath.RemoveWorkingFolder(), _context.BasePath, _context.InclusionSet, _context.Dependency);
 
             string content;
             using (var sr = new StreamReader(refPath))
@@ -63,14 +66,14 @@ namespace MarkdigEngine
                 content = sr.ReadToEnd();
             }
 
-            var pipeline = MarkdigMarked.CreatePipeline(context, content);
+            var pipeline = MarkdigMarked.CreatePipeline(context, _parameters, content);
 
             var document = Markdown.Parse(content, pipeline);
             if (document != null && document.Count == 1 && document.LastChild is ParagraphBlock)
             {
                 var block = (ParagraphBlock)document.LastChild;
                 var inlines = block.Inline;
-                var result = MarkdigMarked.Markup(inlines, context);
+                var result = MarkdigMarked.Markup(inlines, pipeline);
 
                 renderer.Write(result);
             }
