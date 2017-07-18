@@ -5,16 +5,19 @@ using Markdig.Renderers;
 using Markdig.Renderers.Html;
 
 using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Plugins;
 
 namespace MarkdigEngine
 {
     public class HtmlInclusionBlockRenderer : HtmlObjectRenderer<InclusionBlock>
     {
         private MarkdownContext _context;
+        private MarkdownServiceParameters _parameters;
 
-        public HtmlInclusionBlockRenderer(MarkdownContext context)
+        public HtmlInclusionBlockRenderer(MarkdownContext context, MarkdownServiceParameters parameters)
         {
             _context = context;
+            _parameters = parameters;
         }
 
         protected override void Write(HtmlRenderer renderer, InclusionBlock inclusion)
@@ -48,7 +51,7 @@ namespace MarkdigEngine
 
             _context = _context.AddIncludeFile(currentFilePath);
             _context.ReportDependency(includeFilePath);
-            var context = new MarkdownContext(includeFilePath.RemoveWorkingFolder(), _context.BasePath, _context.EnableSourceInfo, _context.InclusionSet, _context.Dependency);
+            var context = new MarkdownContext(includeFilePath.RemoveWorkingFolder(), _context.BasePath, _context.InclusionSet, _context.Dependency);
 
             string content;
             using (var sr = new StreamReader(refPath))
@@ -56,7 +59,7 @@ namespace MarkdigEngine
                 content = sr.ReadToEnd();
             }
 
-            var result = MarkdigMarked.Markup(content, context);
+            var result = MarkdigMarked.Markup(content, context, _parameters);
 
             renderer.Write(result);
         }

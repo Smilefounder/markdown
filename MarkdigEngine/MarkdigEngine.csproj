@@ -85,6 +85,10 @@
     <Compile Include="Extensions\Inclusion\InclusionInline\InclusionInlineParser.cs" />
     <Compile Include="Extensions\LineNumber\LineNumberExtension.cs" />
     <Compile Include="Extensions\LineNumber\LineNumberExtensionContext.cs" />
+    <Compile Include="Extensions\QuoteSectionNote\QuoteSectionNoteBlock.cs" />
+    <Compile Include="Extensions\QuoteSectionNote\QuoteSectionNoteExtension.cs" />
+    <Compile Include="Extensions\QuoteSectionNote\QuoteSectionNoteParser.cs" />
+    <Compile Include="Extensions\QuoteSectionNote\QuoteSectionNoteRender.cs" />
     <Compile Include="Extensions\Xref\XrefInlineExtension.cs" />
     <Compile Include="Extensions\Xref\XrefInline.cs" />
     <Compile Include="Extensions\Xref\HtmlXrefInlineRender.cs" />
