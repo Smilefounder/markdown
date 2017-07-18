@@ -94,6 +94,8 @@
     <Compile Include="Extensions\Xref\HtmlXrefInlineRender.cs" />
     <Compile Include="Extensions\Xref\XrefInlineParser.cs" />
     <Compile Include="Extensions\Xref\XrefInlineShortParser.cs" />
+    <Compile Include="Extensions\YamlHeader\YamlHeaderExtension.cs" />
+    <Compile Include="Extensions\YamlHeader\YamlHeaderRenderer.cs" />
     <Compile Include="MarkdigMarked.cs" />
     <Compile Include="Extensions\CodeSnippet\CodeRange.cs" />
     <Compile Include="Extensions\CodeSnippet\HtmlCodeSnippetRenderer.cs" />
