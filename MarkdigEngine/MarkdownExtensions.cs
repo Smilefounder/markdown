@@ -1,4 +1,5 @@
 ﻿using Markdig;
+using Markdig.Extensions;
 
 namespace MarkdigEngine
 {
@@ -9,7 +10,8 @@ namespace MarkdigEngine
             return pipeline
                 .UseIncludeFile(context)
                 .UseCodeSnippet(context)
-                .UseXref();
+                .UseXref()
+                .UseYamlHeader();
         }
 
         public static MarkdownPipelineBuilder UseLineNumber(this MarkdownPipelineBuilder pipeline, LineNumberExtensionContext lineNumberContext)
@@ -34,6 +36,12 @@ namespace MarkdigEngine
         public static MarkdownPipelineBuilder UseXref(this MarkdownPipelineBuilder pipeline)
         {
             pipeline.Extensions.Insert(0, new XrefInlineExtension());
+            return pipeline;
+        }
+
+        public static MarkdownPipelineBuilder UseYamlHeader(this MarkdownPipelineBuilder pipeline)
+        {
+            pipeline.Extensions.Insert(0, new YamlHeaderExtension());
             return pipeline;
         }
     }
