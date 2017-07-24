@@ -7,6 +7,7 @@ using Markdig.Syntax;
 
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
+using System;
 
 namespace MarkdigEngine
 {
@@ -33,11 +34,20 @@ namespace MarkdigEngine
                 return;
             }
 
+            if (!PathUtility.IsRelativePath(inclusion.Context.RefFilePath))
+            {
+                string tag = "ERROR INCLUDE";
+                string message = $"Unable to resolve {inclusion.Context.GetRaw()}: Absolute path \"{inclusion.Context.RefFilePath}\" is not supported.";
+                ExtensionsHelper.GenerateNodeWithCommentWrapper(renderer, tag, message, inclusion.Context.GetRaw(), inclusion.Line);
+
+                return;
+            }
+
             var currentFilePath = ((RelativePath)_context.FilePath).GetPathFromWorkingFolder();
             var refFilePath = inclusion.Context.RefFilePath;
             var includeFilePath = ((RelativePath)refFilePath).BasedOn(currentFilePath);
-
             var refPath = Path.Combine(_context.BasePath, includeFilePath.RemoveWorkingFolder());
+            
             if (!File.Exists(refPath))
             {
                 Logger.LogWarning($"Can't find {includeFilePath}.");
@@ -47,18 +57,19 @@ namespace MarkdigEngine
             }
 
             var parents = _context.InclusionSet;
-            if (parents != null && parents.Contains(currentFilePath))
+            if (parents != null && parents.Contains(includeFilePath))
             {
-                Logger.LogError($"Circular dependency found in {currentFilePath}.");
-                renderer.Write(inclusion.Context.GetRaw());
+                string tag = "ERROR INCLUDE";
+                string message = $"Unable to resolve {inclusion.Context.GetRaw()}: Circular dependency found in \"{_context.FilePath}\"";
+                ExtensionsHelper.GenerateNodeWithCommentWrapper(renderer, tag, message, inclusion.Context.GetRaw(), inclusion.Line);
 
                 return;
             }
 
-            _context = _context.AddIncludeFile(currentFilePath);
             _context.ReportDependency(includeFilePath);
 
-            var context = new MarkdownContext(includeFilePath.RemoveWorkingFolder(), _context.BasePath, _context.InclusionSet, _context.Dependency);
+            var context = new MarkdownContext(includeFilePath.RemoveWorkingFolder(), _context.BasePath, true, _context.InclusionSet, _context.Dependency);
+            context = context.AddIncludeFile(currentFilePath);
 
             string content;
             using (var sr = new StreamReader(refPath))
@@ -66,24 +77,9 @@ namespace MarkdigEngine
                 content = sr.ReadToEnd();
             }
 
-            var pipeline = MarkdigMarked.CreatePipeline(context, _parameters, content);
-
-            var document = Markdown.Parse(content, pipeline);
-            if (document != null && document.Count == 1 && document.LastChild is ParagraphBlock)
-            {
-                var block = (ParagraphBlock)document.LastChild;
-                var inlines = block.Inline;
-                var result = MarkdigMarked.Markup(inlines, pipeline);
-
-                renderer.Write(result);
-            }
-            else
-            {
-                Logger.LogWarning($"Inline syntax for Inclusion only support inline syntax in {inclusion}.");
-                var result = Markdown.ToHtml(content, pipeline);
-
-                renderer.Write(result);
-            }
+            // Do not need to check if content is a single paragragh
+            // context.IsInline = true will force it into a single paragragh and render with no <p></p>
+            renderer.Write(MarkdigMarked.Markup(content, context, _parameters));
         }
     }
 }

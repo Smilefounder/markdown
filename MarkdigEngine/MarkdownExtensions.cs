@@ -1,5 +1,6 @@
 ﻿using Markdig;
 using Markdig.Parsers;
+using Markdig.Parsers.Inlines;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
 
@@ -17,6 +18,18 @@ namespace MarkdigEngine
                 .UseXref();
         }
 
+        /// <summary>
+        /// This extension removes all the block parser except paragragh. Please use this extension in the last.
+        /// </summary>
+        /// <param name="pipeline"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static MarkdownPipelineBuilder UseInineParserOnly(this MarkdownPipelineBuilder pipeline)
+        {
+            pipeline.Extensions.Add(new InlineOnlyExtentsion());
+            return pipeline;
+        }
+
         public static MarkdownPipelineBuilder UseDFMCodeInfoPrefix(this MarkdownPipelineBuilder pipeline)
         {
             var fencedCodeBlockParser = pipeline.BlockParsers.FindExact<FencedCodeBlockParser>();
@@ -26,7 +39,7 @@ namespace MarkdigEngine
             }
             else
             {
-                Logger.LogWarning($"Can't find FencedCodeBlockParser to replace, insert DFMFencedCodeBlockParser directly.");
+                Logger.LogWarning($"Can't find FencedCodeBlockParser to set InfoPrefix, insert DFMFencedCodeBlockParser directly.");
                 pipeline.BlockParsers.Insert(0, new FencedCodeBlockParser() { InfoPrefix = "lang-" });
             }
             return pipeline;
@@ -48,6 +61,7 @@ namespace MarkdigEngine
         public static MarkdownPipelineBuilder UseIncludeFile(this MarkdownPipelineBuilder pipeline, MarkdownContext context, MarkdownServiceParameters parameters)
         {
             pipeline.Extensions.Insert(0, new InclusionExtension(context, parameters));
+            pipeline.DocumentProcessed += InclusionExtension.GetProcessDocumentDelegate(context);
             return pipeline;
         }
 

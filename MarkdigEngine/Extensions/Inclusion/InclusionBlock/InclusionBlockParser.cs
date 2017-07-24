@@ -1,4 +1,5 @@
-﻿using Markdig.Parsers;
+﻿using Markdig.Helpers;
+using Markdig.Parsers;
 
 namespace MarkdigEngine
 {
@@ -28,11 +29,24 @@ namespace MarkdigEngine
             {
                 return BlockState.None;
             }
+            else
+            {
+                if (line.CurrentChar == '+')
+                {
+                    line.NextChar();
+                }
+            }
 
             var stringBuilderCache = processor.StringBuilders;
             var context = new InclusionContext();
 
             if (!ExtensionsHelper.MatchLink(stringBuilderCache, ref line, ref context))
+            {
+                return BlockState.None;
+            }
+
+            while (line.CurrentChar.IsSpaceOrTab()) line.NextChar();
+            if (line.CurrentChar != '\0')
             {
                 return BlockState.None;
             }

@@ -108,11 +108,22 @@ namespace MarkdigEngine.Parsers
 
             var stringBuilder = processor.StringBuilders.Get();
             var c = processor.CurrentChar;
-            while (c != '\0' && c != ']')
+
+            var hasExcape = false;
+            while (c != '\0' && (c != ']' || hasExcape))
             {
-                stringBuilder.Append(c);
+                if (c == '\\' && !hasExcape)
+                {
+                    hasExcape = true;
+                }
+                else
+                {
+                    stringBuilder.Append(c);
+                    hasExcape = false;
+                }
                 c = processor.NextChar();
             }
+
             stringBuilder.Append(c);
             var infoString = stringBuilder.ToString().Trim();
             processor.StringBuilders.Release(stringBuilder);

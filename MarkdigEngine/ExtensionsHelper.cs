@@ -1,7 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 using Markdig.Helpers;
+using System.Collections;
+using System.Collections.Generic;
+using Microsoft.DocAsCode.Common;
+using Markdig.Renderers;
 
 namespace MarkdigEngine
 {
@@ -43,13 +48,67 @@ namespace MarkdigEngine
                 return false;
             }
 
-            if (MatchTitle(stringBuilderCache, ref slice, ref context) && MatchPath(stringBuilderCache, ref slice, ref context))
+            if (MatchTitle(stringBuilderCache, ref slice, ref context) && MatchPath(ref slice, ref context))
             {
                 slice.NextChar();
                 return true;
             }
 
             return false;
+        }
+
+        public static void SkipWhitespace(ref StringSlice slice)
+        {
+            var c = slice.CurrentChar;
+            while (c != '\0' && c.IsWhitespace())
+            {
+                c = slice.NextChar();
+            }
+        }
+
+        public static void GenerateNodeWithCommentWrapper(HtmlRenderer htmlRenderer, string tag, string message, string rawContent, int lineNumber)
+        {
+            Logger.LogWarning($"At line {lineNumber}: {message}");
+            htmlRenderer.Write("<!-- BEGIN ");
+            htmlRenderer.WriteEscape(tag).Write(": ");
+            htmlRenderer.WriteEscape(message).Write(" -->");
+            htmlRenderer.WriteEscape(rawContent);
+            htmlRenderer.Write("<!--END ").WriteEscape(tag).Write(" -->");
+        }
+
+        public static string TryGetStringBeforeChars(IEnumerable<char> chars, ref StringSlice slice, bool breakOnWhitespace = false)
+        {
+            StringSlice savedSlice = slice;
+            var c = slice.CurrentChar;
+            var hasEscape = false;
+            var builder = StringBuilderCache.Local();
+
+            while (c != '\0' && (!breakOnWhitespace || !c.IsWhitespace()) && (hasEscape || !chars.Contains(c)))
+            {
+                if (c == '\\' && !hasEscape)
+                {
+                    hasEscape = true;
+                }
+                else
+                {
+                    builder.Append(c);
+                    hasEscape = false;
+                }
+                c = slice.NextChar();
+            }
+
+            if (c == '\0' && !chars.Contains('\0'))
+            {
+                slice = savedSlice;
+                builder.Length = 0;
+                return null;
+            }
+            else
+            {
+                var result = builder.ToString().Trim();
+                builder.Length = 0;
+                return result;
+            }
         }
 
         #region private methods
@@ -131,41 +190,64 @@ namespace MarkdigEngine
             return slice.PeekCharExtra(-1) == '\\';
         }
 
-        private static bool MatchPath(StringBuilderCache stringBuilderCache, ref StringSlice slice, ref InclusionContext context)
+        private static bool MatchPath(ref StringSlice slice, ref InclusionContext context)
         {
             if (slice.CurrentChar != '(')
             {
                 return false;
             }
 
-            var c = slice.NextChar();
-            var filePath = stringBuilderCache.Get();
-            var hasEscape = false;
+            slice.NextChar();
+            SkipWhitespace(ref slice);
 
-            while (c != '\0' && (c != ')' || hasEscape))
+            string refFilePath;
+            if (slice.CurrentChar == '<')
             {
-                if (c == '\\' && !hasEscape)
+                refFilePath = TryGetStringBeforeChars(new char[] { ')', '>' }, ref slice, breakOnWhitespace: true);
+            }
+            else
+            {
+                refFilePath = TryGetStringBeforeChars(new char[] { ')' }, ref slice, breakOnWhitespace: true);
+            };
+
+            if (refFilePath == null)
+            {
+                return false;
+            }
+
+            if(refFilePath.Length >= 1 && refFilePath.First() == '<' && slice.CurrentChar == '>')
+            {
+                refFilePath = refFilePath.Substring(1, refFilePath.Length - 1).Trim();
+            }
+
+            if (slice.CurrentChar == ')')
+            {
+                context.RefFilePath = refFilePath;
+                slice.NextChar();
+                return true;
+            }
+            else
+            {
+                var title = TryGetStringBeforeChars(new char[] { ')' }, ref slice, breakOnWhitespace: false);
+                if (title == null)
                 {
-                    hasEscape = true;
+                    return false;
                 }
                 else
                 {
-                    filePath.Append(c);
-                    hasEscape = false;
+                    if (title.Length >= 2 && title.First() == '\'' && title.Last() == '\'')
+                    {
+                        title = title.Substring(1, title.Length - 2).Trim();
+                    }
+                    else if(title.Length >= 2 && title.First() == '\"' && title.Last() == '\"')
+                    {
+                        title = title.Substring(1, title.Length - 2).Trim();
+                    }
+                    context.RefFilePath = refFilePath;
+                    slice.NextChar();
+                    return true;
                 }
-                c = slice.NextChar();
             }
-
-            if (c == ')')
-            {
-                context.RefFilePath = filePath.ToString().Trim();
-                slice.NextChar();
-                stringBuilderCache.Release(filePath);
-                return true;
-            }
-
-            stringBuilderCache.Release(filePath);
-            return false;
         }
         #endregion
     }

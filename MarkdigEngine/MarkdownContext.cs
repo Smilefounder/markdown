@@ -16,14 +16,20 @@ namespace MarkdigEngine
         /// </summary>
         public string FilePath { get; }
 
+        /// <summary>
+        /// Indicate if this file is inline included.
+        /// </summary>
+        public bool IsInline { get; }
+
         public ImmutableHashSet<string> InclusionSet { get; }
 
         public List<string> Dependency { get; private set; }
 
-        public MarkdownContext(string filePath, string basePath, ImmutableHashSet<string> inclusionSet = null, List<string> dependency = null)
+        public MarkdownContext(string filePath, string basePath, bool isInline = false, ImmutableHashSet<string> inclusionSet = null, List<string> dependency = null)
         {
             FilePath = filePath;
             BasePath = basePath;
+            IsInline = isInline;
             InclusionSet = inclusionSet;
             Dependency = dependency ?? new List<string>();
         }
@@ -38,7 +44,7 @@ namespace MarkdigEngine
 
         public MarkdownContext SetInclusionSet(ImmutableHashSet<string> set)
         {
-            return new MarkdownContext(FilePath, BasePath, set, Dependency);
+            return new MarkdownContext(FilePath, BasePath, IsInline, set, Dependency);
         }
 
         public MarkdownContext AddIncludeFile(string filePath)
@@ -46,12 +52,12 @@ namespace MarkdigEngine
             var set = InclusionSet ?? ImmutableHashSet<string>.Empty;
             var cloneSet = set.Add(filePath);
 
-            return new MarkdownContext(FilePath, BasePath, cloneSet, Dependency);
+            return new MarkdownContext(FilePath, BasePath, IsInline, cloneSet, Dependency);
         }
 
         public void ReportDependency(string filePath)
         {
-            Dependency.Add(filePath);
+            if(!Dependency.Contains(filePath)) Dependency.Add(filePath);
         }
     }
 }

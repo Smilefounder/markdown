@@ -18,6 +18,13 @@ namespace MarkdigEngine
             {
                 return false;
             }
+            else
+            {
+                if(slice.CurrentChar == '-')
+                {
+                    slice.NextChar();
+                }
+            }
 
             var includeFile = new InclusionInline();
             var context = new InclusionContext();
