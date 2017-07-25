@@ -27,16 +27,6 @@ namespace MarkdigEngine
             return Markdown.ToHtml(content, pipeline);
         }
 
-        public static string Markup(ContainerInline inline, MarkdownPipeline pipeline)
-        {
-            var writer = new StringWriter();
-            var renderer = new HtmlRenderer(writer);
-            pipeline.Setup(renderer);
-            renderer.Render(inline);
-            writer.Flush();
-            return writer.ToString();
-        }
-
         public static MarkdownPipeline CreatePipeline(MarkdownContext context, MarkdownServiceParameters parameters, string content = null)
         {
             if (context == null)
@@ -50,12 +40,16 @@ namespace MarkdigEngine
 
             object enableSourceInfo = null;
             parameters?.Extensions?.TryGetValue(LineNumberExtension.EnableSourceInfo, out enableSourceInfo);
-
             if (enableSourceInfo != null && (bool)enableSourceInfo == true)
             {
                 var absoluteFilePath = Path.Combine(context.BasePath, context.FilePath);
                 var lineNumberContext = LineNumberExtensionContext.Create(content, absoluteFilePath, context.FilePath);
                 pipeline.UseLineNumber(lineNumberContext);
+            }
+
+            if (context.IsInline)
+            {
+                pipeline.UseInineParserOnly();
             }
 
             return pipeline.Build();

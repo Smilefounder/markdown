@@ -10,7 +10,7 @@ namespace MarkdigEngine
 
         public string GetRaw()
         {
-            return $"[!Include[{Title}]({RefFilePath})]";
+            return $"[!include[{Title}]({RefFilePath})]";
         }
     }
 }
