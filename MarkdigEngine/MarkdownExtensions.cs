@@ -18,7 +18,8 @@ namespace MarkdigEngine
                 .UseYamlHeader()
                 .UseDFMCodeInfoPrefix()
                 .UseQuoteSectionNote(parameters)
-                .UseXref();
+                .UseXref()
+                .UseEmojiAndSmiley();
         }
 
         /// <summary>
