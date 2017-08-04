@@ -4,6 +4,8 @@ using Markdig.Parsers.Inlines;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
 
+using Markdig.Extensions;
+
 namespace MarkdigEngine
 {
     public static class MarkdownExtensions
@@ -13,9 +15,11 @@ namespace MarkdigEngine
             return pipeline
                 .UseIncludeFile(context, parameters)
                 .UseCodeSnippet(context)
+                .UseYamlHeader()
                 .UseDFMCodeInfoPrefix()
                 .UseQuoteSectionNote(parameters)
-                .UseXref();
+                .UseXref()
+                .UseEmojiAndSmiley();
         }
 
         /// <summary>
@@ -74,6 +78,12 @@ namespace MarkdigEngine
         public static MarkdownPipelineBuilder UseXref(this MarkdownPipelineBuilder pipeline)
         {
             pipeline.Extensions.Insert(0, new XrefInlineExtension());
+            return pipeline;
+        }
+
+        public static MarkdownPipelineBuilder UseYamlHeader(this MarkdownPipelineBuilder pipeline)
+        {
+            pipeline.Extensions.Insert(0, new YamlHeaderExtension());
             return pipeline;
         }
     }
