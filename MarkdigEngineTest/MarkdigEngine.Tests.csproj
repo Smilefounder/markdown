@@ -70,11 +70,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeSnippetTest.cs" />
+    <Compile Include="GeneralTest.cs" />
     <Compile Include="InclusionTest.cs" />
     <Compile Include="LineNumberTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuoteSectionNoteTest.cs" />
     <Compile Include="XrefTest.cs" />
+    <Compile Include="YamlHeaderTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

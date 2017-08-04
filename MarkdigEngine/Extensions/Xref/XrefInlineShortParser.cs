@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Markdig.Helpers;
 using Markdig.Syntax;
+using Markdig.Renderers.Html;
 
 namespace MarkdigEngine
 {
@@ -22,7 +23,7 @@ namespace MarkdigEngine
         {
             var c = slice.PeekCharExtra(-1);
 
-            if (c == '\\' || c == ' ')
+            if (c == '\\')
             {
                 return false;
             }
@@ -39,6 +40,10 @@ namespace MarkdigEngine
             {
                 startChar = c;
                 c = slice.NextChar();
+            }
+            else if(!c.IsAlpha())
+            {
+                return false;
             }
 
             if(startChar != '\0')
@@ -62,6 +67,15 @@ namespace MarkdigEngine
                     href.Append(c);
                     c = slice.NextChar();
                 }
+
+                // test if it maybe an email
+                var temp = saved;
+                temp.End = slice.Start - 1;
+                temp.Start = saved.Start - 1;
+                if (temp.Start > 0 && IsValidEmail(temp.ToString()))
+                {
+                    return false;
+                }
             }
 
             var xrefInline = new XrefInline
@@ -71,9 +85,25 @@ namespace MarkdigEngine
                 Line = line,
                 Column = column
             };
+
+            var htmlAttributes = xrefInline.GetAttributes();
+            htmlAttributes.AddPropertyIfNotExist("data-throw-if-not-resolved", "False");
             processor.Inline = xrefInline;
 
             return true;
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

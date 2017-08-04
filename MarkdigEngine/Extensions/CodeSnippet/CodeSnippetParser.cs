@@ -50,13 +50,29 @@ namespace MarkdigEngine
 
             MatchTitle(processor, ref slice, ref codeSnippet);
 
-            if (slice.CurrentChar == ')' && slice.NextChar() == ']')
+            ExtensionsHelper.SkipWhitespace(ref slice);
+            if (slice.CurrentChar == ')')
             {
                 slice.NextChar();
+                ExtensionsHelper.SkipWhitespace(ref slice);
+                if (slice.CurrentChar == ']')
+                {
+                    var codeSnippetEnd = slice.Start;
+                    slice.NextChar();
+                    ExtensionsHelper.SkipWhitespace(ref slice);
+                    if (slice.CurrentChar == '\0')
+                    {
+                        // slice finished its task, re-use it for Raw content
+                        slice.Start = processor.Line.Start;
+                        slice.End = codeSnippetEnd;
+                        codeSnippet.Raw = slice.ToString();
+                        codeSnippet.Column = processor.Column;
 
-                codeSnippet.Column = processor.Column;
-                processor.NewBlocks.Push(codeSnippet);
-                return BlockState.BreakDiscard;
+                        codeSnippet.SetAttributeString();
+                        processor.NewBlocks.Push(codeSnippet);
+                        return BlockState.BreakDiscard;
+                    }
+                }
             }
 
             return BlockState.None;
@@ -92,7 +108,7 @@ namespace MarkdigEngine
                 c = slice.NextChar();
             }
 
-            codeSnippet.Language = language.ToString();
+            codeSnippet.Language = language.ToString().Trim();
             processor.StringBuilders.Release(language);
 
             return true;
@@ -100,23 +116,33 @@ namespace MarkdigEngine
 
         private bool MatchPath(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
+            ExtensionsHelper.SkipWhitespace(ref slice);
             if (slice.CurrentChar != '(') return false;
             var c = slice.NextChar();
 
             var bracketNeedToMatch = 0;
 
             var path = processor.StringBuilders.Get();
-            while (c != '\0' && c != '#' && c != '?' && c != '"' && (c != ')' || bracketNeedToMatch > 0))
+            var hasEscape = false;
+            while (c != '\0' && (hasEscape || (c != '#' && c != '?' && c != '"' && (c != ')' || bracketNeedToMatch > 0))))
             {
-                if (c == '(')
+                if (c == '\\' && !hasEscape)
                 {
-                    bracketNeedToMatch++;
+                    hasEscape = true;
                 }
-                if (c == ')')
+                else
                 {
-                    bracketNeedToMatch--;
+                    if (c == '(' && !hasEscape)
+                    {
+                        bracketNeedToMatch++;
+                    }
+                    if (c == ')' && !hasEscape)
+                    {
+                        bracketNeedToMatch--;
+                    }
+                    path.Append(c);
+                    hasEscape = false;
                 }
-                path.Append(c);
                 c = slice.NextChar();
             }
 
@@ -209,11 +235,7 @@ namespace MarkdigEngine
             CodeRange codeRange;
             if (TryGetLineRange(queryString, out codeRange))
             {
-                if (codeSnippet.CodeRanges == null)
-                {
-                    codeSnippet.CodeRanges = new List<CodeRange>();
-                }
-                codeSnippet.CodeRanges.Add(codeRange);
+                codeSnippet.BookMarkRange = codeRange;
             }
             else
             {
@@ -245,7 +267,7 @@ namespace MarkdigEngine
                 c = slice.NextChar();
             }
 
-            codeSnippet.Title = title.ToString();
+            codeSnippet.Title = title.ToString().Trim();
             processor.StringBuilders.Release(title);
 
             if(c == '"')
@@ -297,12 +319,7 @@ namespace MarkdigEngine
                             return false;
                         }
 
-                        if(codeSnippet.CodeRanges == null)
-                        {
-                            codeSnippet.CodeRanges = new List<CodeRange>();
-                        }
-
-                        codeSnippet.CodeRanges.AddRange(temp);
+                        codeSnippet.CodeRanges = temp;
                         break;
                     case "highlight":
                         if(!TryGetLineRanges(value, out temp))
@@ -330,12 +347,7 @@ namespace MarkdigEngine
 
             if(start != -1 && end != -1)
             {
-                if(codeSnippet.CodeRanges == null)
-                {
-                    codeSnippet.CodeRanges = new List<CodeRange>();
-                }
-
-                codeSnippet.CodeRanges.Add(new CodeRange { Start = start, End = end });
+                codeSnippet.StartEndRange = new CodeRange { Start = start, End = end };
             }
 
             return true;
