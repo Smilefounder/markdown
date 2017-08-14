@@ -67,15 +67,6 @@ namespace MarkdigEngine
                     href.Append(c);
                     c = slice.NextChar();
                 }
-
-                // test if it maybe an email
-                var temp = saved;
-                temp.End = slice.Start - 1;
-                temp.Start = saved.Start - 1;
-                if (temp.Start > 0 && IsValidEmail(temp.ToString()))
-                {
-                    return false;
-                }
             }
 
             var xrefInline = new XrefInline
@@ -91,19 +82,6 @@ namespace MarkdigEngine
             processor.Inline = xrefInline;
 
             return true;
-        }
-
-        private bool IsValidEmail(string email)
-        {
-            try
-            {
-                var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
-            }
-            catch
-            {
-                return false;
-            }
         }
     }
 }
