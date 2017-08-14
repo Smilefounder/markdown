@@ -227,17 +227,24 @@ namespace MarkdigEngine
 
         protected override void Write(HtmlRenderer renderer, CodeSnippet obj)
         {
-            if (renderer.EnableHtmlForInline)
+            var refFileRelativePath = ((RelativePath)obj.CodePath).BasedOn((RelativePath)_context.FilePath);
+            var refPath = Path.Combine(_context.BasePath, refFileRelativePath.RemoveWorkingFolder());
+            if (!File.Exists(refPath))
             {
-                renderer.Write("<pre><code").Write(obj.ToAttributeString()).WriteAttributes(obj).Write(">");
+                string tag = "ERROR CODESNIPPET";
+                string message = $"Unable to find {refFileRelativePath}";
+                ExtensionsHelper.GenerateNodeWithCommentWrapper(renderer, tag, message, obj.Raw, obj.Line);
+                return;
+            }
+            
+            if(obj.DedentLength != null && obj.DedentLength < 0)
+            {
+                renderer.Write($"<!-- Dedent length {obj.DedentLength} should be positive. Auto-dedent will be applied. -->\n");
             }
 
+            renderer.Write("<pre><code").WriteAttributes(obj).Write(">");
             renderer.WriteEscape(GetContent(obj));
-
-            if (renderer.EnableHtmlForInline)
-            {
-                renderer.Write("</code></pre>");
-            }
+            renderer.Write("</code></pre>");
         }
 
         private string GetContent(CodeSnippet obj)
@@ -248,9 +255,8 @@ namespace MarkdigEngine
 
             var refPath = Path.Combine(_context.BasePath, refFileRelativePath.RemoveWorkingFolder());
             var allLines = File.ReadAllLines(refPath);
-            var allCodeRanges = obj.CodeRanges ?? new List<CodeRange>();
-            HashSet<int> tagLines = new HashSet<int>();
 
+            // code range priority: tag > #L1 > start/end > range > default
             if (!string.IsNullOrEmpty(obj.TagName))
             {
                 var lang = obj.Language ?? Path.GetExtension(refPath);
@@ -265,41 +271,86 @@ namespace MarkdigEngine
                     var tagWithPrefix = tagPrefix + obj.TagName;
                     foreach(var extrator in extrators)
                     {
+                        HashSet<int> tagLines = new HashSet<int>();
                         var tagToCoderangeMapping = extrator.GetAllTags(allLines, ref tagLines);
                         CodeRange cr;
                         if (tagToCoderangeMapping.TryGetValue(obj.TagName, out cr)
                             || tagToCoderangeMapping.TryGetValue(tagWithPrefix, out cr))
                         {
-                            allCodeRanges.Add(cr);
-                            break;
+                            return GetCodeLines(allLines, obj, new List<CodeRange> { cr }, tagLines);
                         }
                     }
                 }
             }
+            else if (obj.BookMarkRange != null)
+            {
+                return GetCodeLines(allLines, obj, new List<CodeRange> { obj.BookMarkRange });
+            }
+            else if (obj.StartEndRange != null)
+            {
+                return GetCodeLines(allLines, obj, new List<CodeRange> { obj.StartEndRange });
+            }
+            else if (obj.CodeRanges != null)
+            {
+                return GetCodeLines(allLines, obj, obj.CodeRanges);
+            }
+            else
+            {
+                return GetCodeLines(allLines, obj, new List<CodeRange> { new CodeRange() { Start = 0, End = allLines.Length } });
+            }
 
-            var showCode = new StringBuilder();
+            return string.Empty;
+        }
+
+        private string GetCodeLines(string[] allLines, CodeSnippet obj, List<CodeRange> codeRanges, HashSet<int> ignoreLines = null)
+        {
             List<string> codeLines = new List<string>();
+            StringBuilder showCode = new StringBuilder();
             int commonIndent = int.MaxValue;
 
-            for (int lineNumber = 0; lineNumber < allLines.Length; lineNumber++)
+            foreach (var codeRange in codeRanges)
             {
-                if (!tagLines.Contains(lineNumber) && IsLineInRange(lineNumber + 1, allCodeRanges))
+                for (int lineNumber = Math.Max(codeRange.Start - 1, 0); lineNumber < Math.Min(codeRange.End, allLines.Length); lineNumber++)
                 {
-                    int indentSpaces = 0;
-                    string rawCodeLine = CountAndReplaceIndentSpaces(allLines[lineNumber], out indentSpaces);
-                    commonIndent = Math.Min(commonIndent, indentSpaces);
-                    codeLines.Add(rawCodeLine);
+                    if (ignoreLines != null && ignoreLines.Contains(lineNumber)) continue;
+
+                    if (IsBlankLine(allLines[lineNumber]))
+                    {
+                        codeLines.Add(allLines[lineNumber]);
+                    }
+                    else
+                    {
+                        int indentSpaces = 0;
+                        string rawCodeLine = CountAndReplaceIndentSpaces(allLines[lineNumber], out indentSpaces);
+                        commonIndent = Math.Min(commonIndent, indentSpaces);
+                        codeLines.Add(rawCodeLine);
+                    }
                 }
             }
 
-            int dedent = obj.DedentLength == null ? commonIndent : Math.Min(commonIndent, (int)obj.DedentLength);
+            int dedent = obj.DedentLength == null || obj.DedentLength < 0 ? commonIndent : (int)obj.DedentLength;
+
             foreach (var rawCodeLine in codeLines)
             {
-                string dedentedLine = rawCodeLine.Substring(dedent);
-                showCode.Append($"{dedentedLine}\n");
+                showCode.Append($"{DedentString(rawCodeLine, dedent)}\n");
             }
 
             return showCode.ToString();
+        }
+
+        private string DedentString(string source, int dedent)
+        {
+            int validDedent = Math.Min(dedent, source.Length);
+            for (int i = 0; i < validDedent; i++)
+            {
+                if (source[i] != ' ') return source.Substring(i);
+            }
+            return source.Substring(validDedent);
+        }
+
+        private bool IsBlankLine(string line)
+        {
+            return line == "";
         }
 
         private string CountAndReplaceIndentSpaces(string line, out int count)
@@ -334,6 +385,8 @@ namespace MarkdigEngine
 
         private bool IsLineInRange(int lineNumber, List<CodeRange> allCodeRanges)
         {
+            if (allCodeRanges.Count() == 0) return true;
+
             for (int rangeNumber = 0; rangeNumber < allCodeRanges.Count(); rangeNumber++)
             {
                 var range = allCodeRanges[rangeNumber];

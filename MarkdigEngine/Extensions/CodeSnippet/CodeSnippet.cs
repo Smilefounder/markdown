@@ -1,4 +1,5 @@
 ﻿using Markdig.Parsers;
+using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using System;
@@ -23,6 +24,10 @@ namespace MarkdigEngine
 
         public string TagName { get; set; }
 
+        public CodeRange StartEndRange { get; set; }
+
+        public CodeRange BookMarkRange { get; set; }
+
         public List<CodeRange> CodeRanges { get; set; }
 
         public List<CodeRange> HighlightRanges { get; set; }
@@ -31,13 +36,42 @@ namespace MarkdigEngine
 
         public string Title { get; set; }
 
+        public string Raw { get; set; }
+
+        public void SetAttributeString()
+        {
+            var attributes = this.GetAttributes();
+
+            if (!string.IsNullOrEmpty(this.Language))
+            {
+                attributes.AddClass($"lang-{this.Language}");
+            }
+
+            if (!string.IsNullOrEmpty(this.Name))
+            {
+                attributes.AddProperty("name", this.Name);
+            }
+
+            if (!string.IsNullOrEmpty(this.Title))
+            {
+                attributes.AddProperty("title", this.Title);
+            }
+
+            var highlightRangesString = GetHighlightLinesString();
+            if (highlightRangesString != string.Empty)
+            {
+                attributes.AddProperty("highlight-lines", highlightRangesString);
+            }
+        }
+
+        // retired because the value need escaping
         public string ToAttributeString()
         {
             var sb = new StringBuilder();
 
-            if (!string.IsNullOrEmpty(this.Title))
+            if (!string.IsNullOrEmpty(this.Language))
             {
-                sb.Append(string.Format(@" title=""{0}""", this.Title));
+                sb.Append(string.Format(@" class=""lang-{0}""", this.Language));
             }
 
             if (!string.IsNullOrEmpty(this.Name))
@@ -45,9 +79,9 @@ namespace MarkdigEngine
                 sb.Append(string.Format(@" name=""{0}""", this.Name));
             }
 
-            if (!string.IsNullOrEmpty(this.Language))
+            if (!string.IsNullOrEmpty(this.Title))
             {
-                sb.Append(string.Format(@" class=""lang-{0}""", this.Language));
+                sb.Append(string.Format(@" title=""{0}""", this.Title));
             }
 
             var highlightRangesString = GetHighlightLinesString();

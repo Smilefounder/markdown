@@ -11,7 +11,7 @@ namespace MarkdigEngine.Tests
     public class XrefTest
     {
         [Fact]
-        public void CodeSnippetGeneral()
+        public void XrefTestGeneral()
         {
             //arange
             var content = @"<xref:Microsoft.Build.Tasks>
@@ -32,13 +32,13 @@ namespace MarkdigEngine.Tests
             var marked = service.Markup(content, "Topic.md");
 
             // assert
-            var expected = @"<p><xref href=""Microsoft.Build.Tasks""></xref>
-<xref href=""Microsoft.Build.Tasks""></xref>
-<xref href=""Microsoft.Build.Tasks?text=Tasks""></xref>
+            var expected = @"<p><xref href=""Microsoft.Build.Tasks"" data-throw-if-not-resolved=""True""></xref>
+<xref href=""Microsoft.Build.Tasks"" data-throw-if-not-resolved=""False""></xref>
+<xref href=""Microsoft.Build.Tasks?text=Tasks"" data-throw-if-not-resolved=""False""></xref>
 <a href=""xref:Microsoft.Build.Tasks"">link_text</a>
-<xref href=""Microsoft.Build.Tasks#Anchor_1""></xref>
+<xref href=""Microsoft.Build.Tasks#Anchor_1"" data-throw-if-not-resolved=""True""></xref>
 <xref href=""Microsoft.Build.Tasks?alt=ImmutableArray""/>
-<xref href=""Microsoft.Build.Tasks?alt=ImmutableArray""></xref>
+<xref href=""Microsoft.Build.Tasks?alt=ImmutableArray"" data-throw-if-not-resolved=""True""></xref>
 <a href=""xref:Microsoft.Build.Tasks?displayProperty=fullName""/></p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
