@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\CodeSnippet\CodeSnippetExtrator.cs" />
+    <Compile Include="Extensions\DFMHeadingId\DFMHeadingIdExtension.cs" />
     <Compile Include="Extensions\DFMHelperExtensions\InlineOnlyExtentsion.cs" />
     <Compile Include="Extensions\Inclusion\InclusionBlock\HtmlInclusionBlockRenderer.cs" />
     <Compile Include="ExtensionsHelper.cs" />

@@ -14,7 +14,10 @@ namespace MarkdigEngine
     {
         protected override void Write(HtmlRenderer renderer, YamlFrontMatterBlock obj)
         {
-            renderer.Write("<yamlheader").WriteAttributes(obj).Write(">").Write(WebUtility.HtmlEncode(obj.Lines.ToString())).Write("</yamlheader>");
+            renderer.Write("<yamlheader").Write($" start=\"{obj.Line + 1}\" end=\"{obj.Line + obj.Lines.Count + 2}\"");
+            renderer.WriteAttributes(obj).Write(">");
+            renderer.Write(WebUtility.HtmlEncode(obj.Lines.ToString()));
+            renderer.Write("</yamlheader>");
         }
     }
 }

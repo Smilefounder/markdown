@@ -60,7 +60,7 @@ namespace MarkdigEngineTest
         }
         
         [Fact]
-        public void CodeSnippetGeneral()
+        public void TestDfmYamlHeader_General()
         {
             //arange
             var content = @"---
@@ -98,7 +98,7 @@ ms.openlocfilehash: 2ea129ac94cb1ddc7486ba69280dc0390896e088
             var marked = service.Markup(content, "Topic.md");
 
             // assert
-            var expected = @"<yamlheader>title: &quot;如何使用 Visual C++ 工具集报告问题 | Microsoft Docs&quot;
+            var expected = @"<yamlheader start=""1"" end=""26"">title: &quot;如何使用 Visual C++ 工具集报告问题 | Microsoft Docs&quot;
 ms.custom: 
 ms.date: 11/04/2016
 ms.reviewer: 
