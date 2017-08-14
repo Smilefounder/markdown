@@ -242,7 +242,8 @@ namespace MarkdigEngine
 
         private string GetContent(CodeSnippet obj)
         {
-            var refFileRelativePath = ((RelativePath)obj.CodePath).BasedOn((RelativePath)_context.FilePath);
+            var currentFilePath = ((RelativePath)_context.FilePath).GetPathFromWorkingFolder();
+            var refFileRelativePath = ((RelativePath)obj.CodePath).BasedOn(currentFilePath);
             _context.ReportDependency(refFileRelativePath);
 
             var refPath = Path.Combine(_context.BasePath, refFileRelativePath.RemoveWorkingFolder());
