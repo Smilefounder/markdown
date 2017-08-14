@@ -42,7 +42,7 @@ namespace MarkdigEngine
 
                     if(!result.ContainsKey(tagName))
                     {
-                        Logger.LogError($"Can't find startTag {tagName}");
+                        Logger.LogWarning($"Can't find startTag {tagName}");
                     }
                     else
                     {
