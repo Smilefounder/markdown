@@ -182,6 +182,10 @@ namespace MarkdigEngine
                 {
                     new CodeSnippetExtrator(XamlCodeSnippetCommentStartLineTemplate, XamlCodeSnippetCommentEndLineTemplate)
                 },
+                ["xaml"] = new List<CodeSnippetExtrator>
+                {
+                    new CodeSnippetExtrator(XamlCodeSnippetCommentStartLineTemplate, XamlCodeSnippetCommentEndLineTemplate)
+                },
                 [".sql"] = new List<CodeSnippetExtrator>
                 {
                     new CodeSnippetExtrator(SqlCodeSnippetCommentStartLineTemplate, SqlCodeSnippetCommentEndLineTemplate)
