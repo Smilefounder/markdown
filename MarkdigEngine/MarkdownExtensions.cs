@@ -85,7 +85,10 @@ namespace MarkdigEngine
         public static MarkdownPipelineBuilder UseIncludeFile(this MarkdownPipelineBuilder pipeline, MarkdownContext context, MarkdownServiceParameters parameters)
         {
             pipeline.Extensions.Insert(0, new InclusionExtension(context, parameters));
-            pipeline.DocumentProcessed += InclusionExtension.GetProcessDocumentDelegate(context);
+            if (context.InclusionSet != null && !context.InclusionSet.IsEmpty)
+            {
+                pipeline.DocumentProcessed += InclusionExtension.GetProcessDocumentDelegate(context);
+            }
             return pipeline;
         }
 
