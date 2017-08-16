@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Markdig.Helpers;
 using Markdig.Syntax;
+using Markdig.Renderers.Html;
 
 namespace MarkdigEngine
 {
@@ -22,7 +23,7 @@ namespace MarkdigEngine
         {
             var c = slice.PeekCharExtra(-1);
 
-            if (c == '\\' || c == ' ')
+            if (c == '\\')
             {
                 return false;
             }
@@ -39,6 +40,10 @@ namespace MarkdigEngine
             {
                 startChar = c;
                 c = slice.NextChar();
+            }
+            else if(!c.IsAlpha())
+            {
+                return false;
             }
 
             if(startChar != '\0')
@@ -71,6 +76,9 @@ namespace MarkdigEngine
                 Line = line,
                 Column = column
             };
+
+            var htmlAttributes = xrefInline.GetAttributes();
+            htmlAttributes.AddPropertyIfNotExist("data-throw-if-not-resolved", "False");
             processor.Inline = xrefInline;
 
             return true;

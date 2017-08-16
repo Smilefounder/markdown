@@ -5,6 +5,7 @@ using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
 
 using Markdig.Extensions;
+using Markdig.Extensions.AutoIdentifiers;
 
 namespace MarkdigEngine
 {
@@ -13,6 +14,7 @@ namespace MarkdigEngine
         public static MarkdownPipelineBuilder UseDfmExtensions(this MarkdownPipelineBuilder pipeline, MarkdownContext context, MarkdownServiceParameters parameters)
         {
             return pipeline
+                .UseDFMHeadingId()
                 .UseIncludeFile(context, parameters)
                 .UseCodeSnippet(context)
                 .UseYamlHeader()
@@ -31,6 +33,24 @@ namespace MarkdigEngine
         public static MarkdownPipelineBuilder UseInineParserOnly(this MarkdownPipelineBuilder pipeline)
         {
             pipeline.Extensions.Add(new InlineOnlyExtentsion());
+            return pipeline;
+        }
+
+        /// <summary>
+        /// This extension removes AutoIdentifierExtension. Please use this extension after UseAdvancedExtensions().
+        /// </summary>
+        /// <param name="pipeline"></param>
+        /// <returns></returns>
+        public static MarkdownPipelineBuilder UseDFMHeadingId(this MarkdownPipelineBuilder pipeline)
+        {
+            if (pipeline.Extensions.Contains<AutoIdentifierExtension>())
+            {
+                pipeline.Extensions.Replace<AutoIdentifierExtension>(new DFMHeadingIdExtension());
+            }
+            else
+            {
+                pipeline.Extensions.Add(new DFMHeadingIdExtension());
+            }
             return pipeline;
         }
 

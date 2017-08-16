@@ -15,7 +15,7 @@ namespace MarkdigEngine
     public class YamlHeaderRenderer : HtmlObjectRenderer<YamlFrontMatterBlock>
     {
         protected override void Write(HtmlRenderer renderer, YamlFrontMatterBlock obj)
-        {
+        {            
             var content = obj.Lines.ToString();
             try
             {
@@ -24,7 +24,10 @@ namespace MarkdigEngine
                     var result = YamlUtility.Deserialize<Dictionary<string, object>>(reader);
                     if (result != null)
                     {
-                        renderer.Write("<yamlheader").WriteAttributes(obj).Write(">").Write(WebUtility.HtmlEncode(content)).Write("</yamlheader>");
+                        renderer.Write("<yamlheader").Write($" start=\"{obj.Line + 1}\" end=\"{obj.Line + obj.Lines.Count + 2}\"");
+                        renderer.WriteAttributes(obj).Write(">");
+                        renderer.Write(WebUtility.HtmlEncode(obj.Lines.ToString()));
+                        renderer.Write("</yamlheader>");
                     }
                 }
             }

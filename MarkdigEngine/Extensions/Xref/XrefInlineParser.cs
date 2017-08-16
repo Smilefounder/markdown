@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Markdig.Helpers;
 using Markdig.Syntax;
+using Markdig.Renderers.Html;
 
 namespace MarkdigEngine
 {
@@ -64,6 +65,9 @@ namespace MarkdigEngine
                 Line = line,
                 Column = column
             };
+
+            var htmlAttributes = xrefInline.GetAttributes();
+            htmlAttributes.AddPropertyIfNotExist("data-throw-if-not-resolved", "True");
             processor.Inline = xrefInline;
 
             return true;

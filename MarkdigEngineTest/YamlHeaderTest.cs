@@ -7,12 +7,60 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace MarkdigEngineTest.Tests
+namespace MarkdigEngineTest
 {
     public class YamlHeaderTest
     {
+        private static MarkupResult SimpleMarkup(string source)
+        {
+            var parameter = new MarkdownServiceParameters
+            {
+                BasePath = "."
+            };
+            var service = new MarkdigMarkdownService(parameter);
+            return service.Markup(source, "Topic.md");
+        }
+
         [Fact]
-        public void CodeSnippetGeneral()
+        [Trait("Related", "DfmMarkdown")]
+        public void TestDfm_InvalidYamlHeader_YamlUtilityThrowException()
+        {
+            var source = @"---
+- Jon Schlinkert
+- Brian Woodward
+
+---";
+            var expected = @"<hr />
+<ul>
+<li>Jon Schlinkert</li>
+<li>Brian Woodward</li>
+</ul>
+<hr />
+";
+            var marked = SimpleMarkup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+        }
+
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestDfmYamlHeader_YamlUtilityReturnNull()
+        {
+            var source = @"---
+
+### /Unconfigure
+
+---";
+            var expected = @"<hr />
+<h3 id=""unconfigure"">/Unconfigure</h3>
+<hr />
+";
+            var marked = SimpleMarkup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+        }
+        
+        [Fact]
+        public void TestDfmYamlHeader_General()
         {
             //arange
             var content = @"---
@@ -50,7 +98,7 @@ ms.openlocfilehash: 2ea129ac94cb1ddc7486ba69280dc0390896e088
             var marked = service.Markup(content, "Topic.md");
 
             // assert
-            var expected = @"<yamlheader>title: &quot;如何使用 Visual C++ 工具集报告问题 | Microsoft Docs&quot;
+            var expected = @"<yamlheader start=""1"" end=""26"">title: &quot;如何使用 Visual C++ 工具集报告问题 | Microsoft Docs&quot;
 ms.custom: 
 ms.date: 11/04/2016
 ms.reviewer: 
