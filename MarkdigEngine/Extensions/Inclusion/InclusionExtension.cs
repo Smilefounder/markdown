@@ -86,7 +86,7 @@ namespace MarkdigEngine
                 if (markdownObject is LinkInline linkInline)
                 {
                     var originalUrl = linkInline.Url;
-                    if (PathUtility.IsRelativePath(originalUrl) && !RelativePath.IsPathFromWorkingFolder(originalUrl) && !originalUrl.StartsWith("#"))
+                    if (RelativePath.IsRelativePath(originalUrl) && PathUtility.IsRelativePath(originalUrl) && !RelativePath.IsPathFromWorkingFolder(originalUrl) && !originalUrl.StartsWith("#"))
                     {
                         var currentFilePath = ((RelativePath)context.FilePath);
                         var newUrl = ((RelativePath)originalUrl).BasedOn(currentFilePath);

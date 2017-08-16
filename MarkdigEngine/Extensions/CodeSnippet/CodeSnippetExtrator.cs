@@ -37,7 +37,7 @@ namespace MarkdigEngine
                     tagLines.Add(index);
                     if (!IsEndLineContainsTagName)
                     {
-                        tagName = tagStack.Pop();
+                        tagName = tagStack.Count > 0 ? tagStack.Pop() : string.Empty;
                     }
 
                     if(!result.ContainsKey(tagName))
