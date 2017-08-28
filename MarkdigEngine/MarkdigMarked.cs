@@ -2,8 +2,6 @@
 using System.IO;
 
 using Markdig;
-using Markdig.Renderers;
-using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.Plugins;
 
 namespace MarkdigEngine

@@ -5,8 +5,7 @@ using Microsoft.DocAsCode.Plugins;
 namespace MarkdigEngine
 {
     [Export("markdig", typeof(IMarkdownServiceProvider))]
-    public class MarkdigServiceProvider
-        : IMarkdownServiceProvider
+    public class MarkdigServiceProvider : IMarkdownServiceProvider
     {
         public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
         {

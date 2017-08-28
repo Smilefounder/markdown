@@ -1,12 +1,11 @@
 ﻿using Markdig.Renderers;
 using Markdig;
 using Markdig.Parsers.Inlines;
-using Microsoft.DocAsCode.Plugins;
 using Markdig.Parsers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using static Markdig.Syntax.Inlines.LinkInline;
 using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Plugins;
 
 namespace MarkdigEngine
 {
@@ -15,13 +14,13 @@ namespace MarkdigEngine
     /// </summary>
     public class InclusionExtension : IMarkdownExtension
     {
-        public MarkdownContext Context { get; set; }
+        private MarkdownContext _context;
 
         private MarkdownServiceParameters _parameters;
 
         public InclusionExtension(MarkdownContext context, MarkdownServiceParameters parameters)
         {
-            Context = context;
+            _context = context;
             _parameters = parameters;
         }
 
@@ -37,12 +36,12 @@ namespace MarkdigEngine
             {
                 if (!htmlRenderer.ObjectRenderers.Contains<HtmlInclusionInlineRenderer>())
                 {
-                    htmlRenderer.ObjectRenderers.Insert(0, new HtmlInclusionInlineRenderer(pipeline, Context, _parameters));
+                    htmlRenderer.ObjectRenderers.Insert(0, new HtmlInclusionInlineRenderer(_context, _parameters));
                 }
 
                 if (!htmlRenderer.ObjectRenderers.Contains<HtmlInclusionBlockRenderer>())
                 {
-                    htmlRenderer.ObjectRenderers.Insert(0, new HtmlInclusionBlockRenderer(Context, _parameters));
+                    htmlRenderer.ObjectRenderers.Insert(0, new HtmlInclusionBlockRenderer(_context, _parameters));
                 }
             }
         }

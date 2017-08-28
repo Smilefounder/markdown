@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 
 namespace MarkdigEngine
 {
@@ -40,11 +39,6 @@ namespace MarkdigEngine
             FilePath = context.FilePath;
             InclusionSet = context.InclusionSet;
             Dependency = context.Dependency;
-        }
-
-        public MarkdownContext SetInclusionSet(ImmutableHashSet<string> set)
-        {
-            return new MarkdownContext(FilePath, BasePath, IsInline, set, Dependency);
         }
 
         public MarkdownContext AddIncludeFile(string filePath)

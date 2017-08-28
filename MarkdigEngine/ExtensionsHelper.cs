@@ -200,29 +200,29 @@ namespace MarkdigEngine
             slice.NextChar();
             SkipWhitespace(ref slice);
 
-            string refFilePath;
+            string includedFilePath;
             if (slice.CurrentChar == '<')
             {
-                refFilePath = TryGetStringBeforeChars(new char[] { ')', '>' }, ref slice, breakOnWhitespace: true);
+                includedFilePath = TryGetStringBeforeChars(new char[] { ')', '>' }, ref slice, breakOnWhitespace: true);
             }
             else
             {
-                refFilePath = TryGetStringBeforeChars(new char[] { ')' }, ref slice, breakOnWhitespace: true);
+                includedFilePath = TryGetStringBeforeChars(new char[] { ')' }, ref slice, breakOnWhitespace: true);
             };
 
-            if (refFilePath == null)
+            if (includedFilePath == null)
             {
                 return false;
             }
 
-            if(refFilePath.Length >= 1 && refFilePath.First() == '<' && slice.CurrentChar == '>')
+            if(includedFilePath.Length >= 1 && includedFilePath.First() == '<' && slice.CurrentChar == '>')
             {
-                refFilePath = refFilePath.Substring(1, refFilePath.Length - 1).Trim();
+                includedFilePath = includedFilePath.Substring(1, includedFilePath.Length - 1).Trim();
             }
 
             if (slice.CurrentChar == ')')
             {
-                context.RefFilePath = refFilePath;
+                context.IncludedFilePath = includedFilePath;
                 slice.NextChar();
                 return true;
             }
@@ -243,7 +243,7 @@ namespace MarkdigEngine
                     {
                         title = title.Substring(1, title.Length - 2).Trim();
                     }
-                    context.RefFilePath = refFilePath;
+                    context.IncludedFilePath = includedFilePath;
                     slice.NextChar();
                     return true;
                 }
