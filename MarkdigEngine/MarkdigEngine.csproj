@@ -94,8 +94,13 @@
     <Compile Include="Extensions\QuoteSectionNote\QuoteSectionNoteExtension.cs" />
     <Compile Include="Extensions\QuoteSectionNote\QuoteSectionNoteParser.cs" />
     <Compile Include="Extensions\QuoteSectionNote\QuoteSectionNoteRender.cs" />
+    <Compile Include="Extensions\Validation\MarkdownSytleConfig.cs" />
+    <Compile Include="Extensions\Validation\MarkdownSytleDefinition.cs" />
     <Compile Include="Extensions\Validation\MarkdownTagValidationRule.cs" />
+    <Compile Include="Extensions\Validation\MarkdownValidationSetting.cs" />
     <Compile Include="Extensions\Validation\MarkdownValidatorBuilder.cs" />
+    <Compile Include="Extensions\Validation\TagRelation.cs" />
+    <Compile Include="Extensions\Validation\TagValidationBehavior.cs" />
     <Compile Include="Extensions\Xref\XrefInlineExtension.cs" />
     <Compile Include="Extensions\Xref\XrefInline.cs" />
     <Compile Include="Extensions\Xref\HtmlXrefInlineRender.cs" />
