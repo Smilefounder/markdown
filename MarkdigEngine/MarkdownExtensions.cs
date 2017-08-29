@@ -1,10 +1,8 @@
 ﻿using Markdig;
 using Markdig.Parsers;
-using Markdig.Parsers.Inlines;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
 
-using Markdig.Extensions;
 using Markdig.Extensions.AutoIdentifiers;
 
 namespace MarkdigEngine
@@ -22,6 +20,14 @@ namespace MarkdigEngine
                 .UseQuoteSectionNote(parameters)
                 .UseXref()
                 .UseEmojiAndSmiley();
+        }
+
+        public static MarkdownPipelineBuilder UseValidators(this MarkdownPipelineBuilder pipeline)
+        {
+            var builder = new MarkdownValidatorBuilder();
+            pipeline.DocumentProcessed += builder.CreateValidation();
+
+            return pipeline;
         }
 
         /// <summary>

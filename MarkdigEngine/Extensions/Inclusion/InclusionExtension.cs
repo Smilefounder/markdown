@@ -48,10 +48,7 @@ namespace MarkdigEngine
 
         internal static ProcessDocumentDelegate GetProcessDocumentDelegate(MarkdownContext context)
         {
-            return (MarkdownDocument document) =>
-            {
-                UpdateLinks(document, context);
-            };
+            return document => UpdateLinks(document, context);
         }
 
         private static void UpdateLinks(MarkdownObject markdownObject, MarkdownContext context)
