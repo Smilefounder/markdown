@@ -22,9 +22,9 @@ namespace MarkdigEngine
                 .UseEmojiAndSmiley();
         }
 
-        public static MarkdownPipelineBuilder UseValidators(this MarkdownPipelineBuilder pipeline)
+        public static MarkdownPipelineBuilder UseValidators(this MarkdownPipelineBuilder pipeline, MarkdownServiceParameters parameters)
         {
-            var builder = new MarkdownValidatorBuilder();
+            var builder = MarkdownValidatorBuilder.Create(null, parameters.BasePath, parameters.TemplateDir);
             pipeline.DocumentProcessed += builder.CreateValidation();
 
             return pipeline;

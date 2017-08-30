@@ -97,7 +97,9 @@
     <Compile Include="Extensions\Validation\MarkdownSytleConfig.cs" />
     <Compile Include="Extensions\Validation\MarkdownSytleDefinition.cs" />
     <Compile Include="Extensions\Validation\MarkdownTagValidationRule.cs" />
+    <Compile Include="Extensions\Validation\MarkdownValidationRule.cs" />
     <Compile Include="Extensions\Validation\MarkdownValidationSetting.cs" />
+    <Compile Include="Extensions\Validation\MarkdownValidator.cs" />
     <Compile Include="Extensions\Validation\MarkdownValidatorBuilder.cs" />
     <Compile Include="Extensions\Validation\TagRelation.cs" />
     <Compile Include="Extensions\Validation\TagValidationBehavior.cs" />
