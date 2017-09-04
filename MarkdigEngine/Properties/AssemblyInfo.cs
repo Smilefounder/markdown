@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
@@ -18,9 +19,10 @@ using System.Runtime.InteropServices;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
+[assembly: InternalsVisibleTo("MarkdigEngine.Test")]
+
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("ed4d7b44-31f0-4c8c-85ee-7545b0c893d9")]
-
 // Version information for an assembly consists of the following four values:
 //
 //      Major Version

@@ -30,8 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Markdig, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Markdig.0.11.0\lib\net40\Markdig.dll</HintPath>
+    <Reference Include="Markdig, Version=0.13.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Markdig.0.13.3\lib\net40\Markdig.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.DocAsCode.Common, Version=2.17.5.12, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.DocAsCode.Common.2.17.5\lib\net46\Microsoft.DocAsCode.Common.dll</HintPath>
@@ -123,9 +123,16 @@
     <Compile Include="MarkdownExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\MarkdigEngine.Plugin\MarkdigEngine.Plugin.csproj">
+      <Project>{2f2a5dd1-edc3-4352-81e1-939248728f94}</Project>
+      <Name>MarkdigEngine.Plugin</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
