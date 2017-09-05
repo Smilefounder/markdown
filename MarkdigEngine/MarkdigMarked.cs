@@ -8,7 +8,7 @@ namespace MarkdigEngine
 {
     public static class MarkdigMarked
     {
-        public static string Markup(string content, MarkdownContext context, MarkdownServiceParameters parameters)
+        public static string Markup(string content, MarkdownContext context, MarkdownServiceParameters parameters, ICompositionContainer container)
         {
             if (content == null)
             {
@@ -20,12 +20,12 @@ namespace MarkdigEngine
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var pipeline = CreatePipeline(context, parameters, content);
+            var pipeline = CreatePipeline(context, parameters, content, container);
 
             return Markdown.ToHtml(content, pipeline);
         }
 
-        public static MarkdownPipeline CreatePipeline(MarkdownContext context, MarkdownServiceParameters parameters, string content = null)
+        public static MarkdownPipeline CreatePipeline(MarkdownContext context, MarkdownServiceParameters parameters, string content = null, ICompositionContainer container = null)
         {
             if (context == null)
             {
@@ -34,7 +34,7 @@ namespace MarkdigEngine
 
             var pipeline = new MarkdownPipelineBuilder()
                 .UseAdvancedExtensions()
-                .UseDfmExtensions(context, parameters);
+                .UseDfmExtensions(context, parameters, container);
 
             object enableSourceInfo = null;
             parameters?.Extensions?.TryGetValue(LineNumberExtension.EnableSourceInfo, out enableSourceInfo);

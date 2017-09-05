@@ -21,24 +21,24 @@ namespace MarkdigEngine
 
         public const string DefaultValidatorName = "default";
         public const string MarkdownValidatePhaseName = "Markdown style";
-
         public ICompositionContainer Container { get; }
-
-        public static MarkdownValidatorBuilder Create(ICompositionContainer container, string baseDir, string templateDir)
-        {
-            var builder = new MarkdownValidatorBuilder(container);
-            LoadValidatorConfig(baseDir, templateDir, builder);
-            return builder;
-        }
 
         public MarkdownValidatorBuilder(ICompositionContainer container)
         {
             Container = container;
         }
 
-        public ProcessDocumentDelegate CreateValidation()
+        public static MarkdownValidatorBuilder Create(ICompositionContainer container, MarkdownServiceParameters parameters)
         {
-            return document => Validate(document);
+            var builder = new MarkdownValidatorBuilder(container);
+            LoadValidatorConfig(parameters.BasePath, parameters.TemplateDir, builder);
+
+            return builder;
+        }
+
+        public IMarkdownObjectRewriter CreateRewriter()
+        {
+            throw new NotImplementedException();
         }
 
         public void AddTagValidators(MarkdownTagValidationRule[] validators)
