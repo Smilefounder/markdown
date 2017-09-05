@@ -94,9 +94,8 @@
     <Compile Include="Extensions\QuoteSectionNote\QuoteSectionNoteExtension.cs" />
     <Compile Include="Extensions\QuoteSectionNote\QuoteSectionNoteParser.cs" />
     <Compile Include="Extensions\QuoteSectionNote\QuoteSectionNoteRender.cs" />
-    <Compile Include="Extensions\Rewriter\IMarkdownRewriteEngine.cs" />
-    <Compile Include="Extensions\Rewriter\IMarkdownDocumentRewriter.cs" />
-    <Compile Include="Extensions\Rewriter\MarkdownRewriteEngine.cs" />
+    <Compile Include="Extensions\Rewriter\IMarkdownObjectRewriter.cs" />
+    <Compile Include="Extensions\Rewriter\MarkdownDocumentRewriter.cs" />
     <Compile Include="Extensions\Validation\MarkdownSytleConfig.cs" />
     <Compile Include="Extensions\Validation\MarkdownSytleDefinition.cs" />
     <Compile Include="Extensions\Validation\MarkdownTagValidationRule.cs" />
