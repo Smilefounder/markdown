@@ -17,11 +17,11 @@ namespace MarkdigEngine
 
         public MarkupResult Markup(string content, string path)
         {
-            var context = new MarkdownContext(path, _parameters.BasePath);
+            var context = new MarkdownContext(path, _parameters.BasePath, false, null, null, _container);
 
             return new MarkupResult
             {
-                Html = MarkdigMarked.Markup(content, context, _parameters, _container),
+                Html = MarkdigMarked.Markup(content, context, _parameters),
                 Dependency = context.Dependency.ToImmutableArray()
             };
         }

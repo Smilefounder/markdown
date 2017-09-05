@@ -1,9 +1,8 @@
 ﻿using Markdig;
 using Markdig.Parsers;
+using Markdig.Extensions.AutoIdentifiers;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
-
-using Markdig.Extensions.AutoIdentifiers;
 
 namespace MarkdigEngine
 {
