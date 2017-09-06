@@ -4,6 +4,6 @@ namespace MarkdigEngine
 {
     public interface IMarkdownObjectRewriter
     {
-        IMarkdownObject Rewrite(IMarkdownObject token);
+        IMarkdownObject Rewrite(IMarkdownObject markdownObject);
     }
 }

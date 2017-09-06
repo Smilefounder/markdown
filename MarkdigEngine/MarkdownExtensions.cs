@@ -1,6 +1,7 @@
 ﻿using Markdig;
 using Markdig.Parsers;
 using Markdig.Extensions.AutoIdentifiers;
+
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
 
@@ -24,11 +25,11 @@ namespace MarkdigEngine
         public static MarkdownPipelineBuilder UseValidators(this MarkdownPipelineBuilder pipeline, MarkdownServiceParameters parameters, ICompositionContainer container)
         {
             var tokenRewriter = MarkdownValidatorBuilder.Create(container, parameters).CreateRewriter();
-            var documentRewriter = new MarkdownDocumentRewriter(tokenRewriter);
+            var documentRewriter = new MarkdownDocumentVisitor(tokenRewriter);
 
             pipeline.DocumentProcessed += document =>
             {
-                documentRewriter.Rewrite(document);
+                documentRewriter.Visit(document);
             };
 
             return pipeline;

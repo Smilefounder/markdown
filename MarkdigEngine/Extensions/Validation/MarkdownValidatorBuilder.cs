@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 
-using Markdig.Parsers;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.Plugins;
 using Microsoft.DocAsCode.Common;
-using System.Collections.Immutable;
+using System.Linq;
+using MarkdigEngine.Plugin;
 
 namespace MarkdigEngine
 {
     internal class MarkdownValidatorBuilder
     {
+        private readonly List<RuleWithId<MarkdownValidationRule>> _validators =
+            new List<RuleWithId<MarkdownValidationRule>>();
         private readonly List<RuleWithId<MarkdownTagValidationRule>> _tagValidators =
             new List<RuleWithId<MarkdownTagValidationRule>>();
         private readonly Dictionary<string, MarkdownValidationRule> _globalValidators =
@@ -38,6 +41,17 @@ namespace MarkdigEngine
 
         public IMarkdownObjectRewriter CreateRewriter()
         {
+            return MarkdownObjectRewriterFactory.FromValidators(
+                    GetEnabledRules().Concat(
+                        new[]
+                        {
+                            MarkdownObjectValidatorFactory.FromLambda<IMarkdownObject>(ValidateTagRules)
+                        }));
+        }
+
+        public void ValidateTagRules(IMarkdownObject markdownObject)
+        {
+            // TODO: implement
             throw new NotImplementedException();
         }
 
@@ -95,16 +109,9 @@ namespace MarkdigEngine
             {
                 _globalValidators[DefaultValidatorName] = new MarkdownValidationRule
                 {
-                    ContractName = DefaultValidatorName,
+                    ContractName = DefaultValidatorName
                 };
             }
-        }
-
-        private void Validate(MarkdownDocument document)
-        {
-            var tagRules = GetEnabledTagRules().ToImmutableList();
-            var validator = new MarkdownValidator(Container, tagRules);
-            validator.Validate(document);
         }
 
         private static void LoadValidatorConfig(string baseDir, string templateDir, MarkdownValidatorBuilder builder)
@@ -145,6 +152,41 @@ namespace MarkdigEngine
                     builder.AddTagValidators(category, config.TagRules);
                 }
             }
+        }
+
+        private IEnumerable<IMarkdownObjectValidator> GetEnabledRules()
+        {
+            HashSet<string> enabledContractName = new HashSet<string>();
+            foreach (var item in _validators)
+            {
+                if (IsDisabledBySetting(item) ?? item.Rule.Disable)
+                {
+                    enabledContractName.Remove(item.Rule.ContractName);
+                }
+                else
+                {
+                    enabledContractName.Add(item.Rule.ContractName);
+                }
+            }
+            foreach (var pair in _globalValidators)
+            {
+                if (pair.Value.Disable)
+                {
+                    enabledContractName.Remove(pair.Value.ContractName);
+                }
+                else
+                {
+                    enabledContractName.Add(pair.Value.ContractName);
+                }
+            }
+            if (Container == null)
+            {
+                return Enumerable.Empty<IMarkdownObjectValidator>();
+            }
+            return from name in enabledContractName
+                   from vp in Container.GetExports<IMarkdownObjectValidatorProvider>(name)
+                   from v in vp.GetValidators()
+                   select v;
         }
 
         private IEnumerable<MarkdownTagValidationRule> GetEnabledTagRules()
