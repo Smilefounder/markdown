@@ -9,7 +9,7 @@ namespace MarkdigEngine
         private readonly MarkdownServiceParameters _parameters;
         private readonly ICompositionContainer _container;
 
-        public MarkdigMarkdownService(MarkdownServiceParameters parameters, ICompositionContainer container)
+        public MarkdigMarkdownService(MarkdownServiceParameters parameters, ICompositionContainer container = null)
         {
             _parameters = parameters;
             _container = container;

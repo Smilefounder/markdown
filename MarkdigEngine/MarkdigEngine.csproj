@@ -100,6 +100,8 @@
     <Compile Include="Extensions\Rewriter\MarkdownObjectRewriterFactory.cs" />
     <Compile Include="Extensions\Rewriter\MarkdownObjectValidatorFactory.cs" />
     <Compile Include="Extensions\Rewriter\MarkdownTokenValidatorAdapter.cs" />
+    <Compile Include="Extensions\Validation\Tag.cs" />
+    <Compile Include="Extensions\Validation\TagValidator.cs" />
     <Compile Include="Extensions\Validation\MarkdownSytleConfig.cs" />
     <Compile Include="Extensions\Validation\MarkdownSytleDefinition.cs" />
     <Compile Include="Extensions\Validation\MarkdownTagValidationRule.cs" />

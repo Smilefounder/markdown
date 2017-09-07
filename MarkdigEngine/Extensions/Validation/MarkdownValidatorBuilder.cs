@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 
@@ -34,25 +33,23 @@ namespace MarkdigEngine
         public static MarkdownValidatorBuilder Create(ICompositionContainer container, MarkdownServiceParameters parameters)
         {
             var builder = new MarkdownValidatorBuilder(container);
-            LoadValidatorConfig(parameters.BasePath, parameters.TemplateDir, builder);
+            if (parameters != null)
+            {
+                LoadValidatorConfig(parameters.BasePath, parameters.TemplateDir, builder);
+            }
 
             return builder;
         }
 
         public IMarkdownObjectRewriter CreateRewriter()
         {
+            var tagValidator = new TagValidator(Container, GetEnabledTagRules().ToImmutableList());
             return MarkdownObjectRewriterFactory.FromValidators(
                     GetEnabledRules().Concat(
                         new[]
                         {
-                            MarkdownObjectValidatorFactory.FromLambda<IMarkdownObject>(ValidateTagRules)
+                            MarkdownObjectValidatorFactory.FromLambda<IMarkdownObject>(tagValidator.Validate)
                         }));
-        }
-
-        public void ValidateTagRules(IMarkdownObject markdownObject)
-        {
-            // TODO: implement
-            throw new NotImplementedException();
         }
 
         public void AddTagValidators(MarkdownTagValidationRule[] validators)
@@ -70,6 +67,22 @@ namespace MarkdigEngine
                     Id = null,
                     Rule = item
                 });
+            }
+        }
+
+        public void AddValidators(MarkdownValidationRule[] rules)
+        {
+            if (rules == null)
+            {
+                return;
+            }
+            foreach (var rule in rules)
+            {
+                if (string.IsNullOrEmpty(rule.ContractName))
+                {
+                    continue;
+                }
+                _globalValidators[rule.ContractName] = rule;
             }
         }
 

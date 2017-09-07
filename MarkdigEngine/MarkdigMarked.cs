@@ -22,7 +22,7 @@ namespace MarkdigEngine
 
             var pipeline = CreatePipeline(context, parameters, content);
 
-            return Markdown.ToHtml(content, pipeline);
+            return Markup(content, pipeline);
         }
 
         public static MarkdownPipeline CreatePipeline(MarkdownContext context, MarkdownServiceParameters parameters, string content = null)
@@ -51,6 +51,11 @@ namespace MarkdigEngine
             }
 
             return pipeline.Build();
+        }
+
+        internal static string Markup(string content, MarkdownPipeline pipeline)
+        {
+            return Markdown.ToHtml(content, pipeline);
         }
     }
 }
