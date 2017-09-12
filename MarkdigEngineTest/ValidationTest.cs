@@ -3,8 +3,10 @@ using System.Composition.Hosting;
 using System.Linq;
 
 using Markdig;
+using Markdig.Syntax;
 using Microsoft.DocAsCode.Common;
 using Xunit;
+using MarkdigEngine.Plugin;
 
 namespace MarkdigEngine.Test
 {
@@ -28,10 +30,11 @@ namespace MarkdigEngine.Test
 <script>alert(1);</script>";
 
             var builder = MarkdownValidatorBuilder.Create(
+                null,
                 new CompositionContainer(
                     new ContainerConfiguration()
                         .WithAssembly(typeof(ValidationTest).Assembly)
-                        .CreateContainer()), null);
+                        .CreateContainer()));
 
             builder.AddTagValidators(new[]
             {
@@ -71,8 +74,9 @@ namespace MarkdigEngine.Test
                 }
             });
 
+            builder.LoadEnabledRulesProvider();
             var listener = new TestLoggerListener(logItem => logItem.LogLevel >= LogLevel.Warning);
-            var html = Markup(content, builder, listener);
+            var html = Markup(content, builder.CreateRewriter(), listener);
 
             Assert.Equal(@"<div class='a'>
     <i>x</i>
@@ -131,7 +135,7 @@ namespace MarkdigEngine.Test
             });
 
             var listener = new TestLoggerListener(logItem => logItem.LogLevel >= LogLevel.Warning);
-            var html = Markup(content, builder, listener);
+            var html = Markup(content, builder.CreateRewriter(), listener);
 
             Assert.Equal(@"<div class='a'>
     <i>x</i>
@@ -163,10 +167,11 @@ namespace MarkdigEngine.Test
 <script>alert(1);</script> end.";
 
             var builder = MarkdownValidatorBuilder.Create(
+                null,
                 new CompositionContainer(
                     new ContainerConfiguration()
                         .WithAssembly(typeof(ValidationTest).Assembly)
-                        .CreateContainer()), null);
+                        .CreateContainer()));
 
             builder.AddTagValidators(new[]
             {
@@ -199,7 +204,7 @@ namespace MarkdigEngine.Test
             });
 
             var listener = new TestLoggerListener(logItem => logItem.LogLevel >= LogLevel.Warning);
-            var html = Markup(content, builder, listener);
+            var html = Markup(content, builder.CreateRewriter(), listener);
 
             Assert.Equal(@"<p>This is inline html: <div class='a'><i>x</i><EM>y</EM><h1>z<pre><code>a<em>b</em>c</code></pre></h1></div></p>
 <script>alert(1);</script> end.
@@ -217,18 +222,94 @@ namespace MarkdigEngine.Test
             }, from item in listener.Items select item.Message);
         }
 
-        private string Markup(string content, MarkdownValidatorBuilder builder, TestLoggerListener listener)
+        [Fact]
+        [Trait("Related", "Validation")]
+        public void TestTokenValidator()
+        {
+            const string content = "# Hello World";
+            const string expected = "<h1>Hello World</h1>\n";
+            const string expectedMessage = "a space is expected after '#'";
+            string message = null;
+
+            var rewriter = MarkdownObjectRewriterFactory.FromValidator(
+                MarkdownObjectValidatorFactory.FromLambda<HeadingBlock>(
+                    block =>
+                    {
+                        if (!block.Lines.ToString().StartsWith("# "))
+                        {
+                            message = expectedMessage;
+                        }
+                    })
+                );
+
+            var html = Markup(content, rewriter, null);
+            Assert.Equal(expected.Replace("\r\n", "\n"), html);
+            Assert.Equal(expectedMessage, message);
+        }
+
+        [Fact]
+        [Trait("Related", "Validation")]
+        public void TestValidatorWithContext()
+        {
+            const string content = @"# Title-1
+# Title-2";
+            const string expected = @"<h1>Title-1</h1>
+<h1>Title-2</h1>
+";
+            const string expectedMessage = "expected one title in one document.";
+            string message = null;
+
+            var context = new Dictionary<string, object>();
+            var rewriter = MarkdownObjectRewriterFactory.FromValidator(
+                MarkdownObjectValidatorFactory.FromLambda<HeadingBlock>(
+                    block =>
+                    {
+                        if (block.Level == 1)
+                        {
+                            if (context.TryGetValue("count", out object countObj) && countObj is int count)
+                            {
+                                context["count"] = count + 1;
+                            }
+                        }
+                    }),
+                    block =>
+                    {
+                        context.Add("count", 0);
+                    },
+                    block =>
+                    {
+                        if (context.TryGetValue("count", out object countObj) && countObj is int count)
+                        {
+                            if (count != 1)
+                            {
+                                message = expectedMessage;
+                            }
+                        }
+                    }
+                );
+
+            var html = Markup(content, rewriter, null);
+            Assert.Equal(expected.Replace("\r\n", "\n"), html);
+            Assert.Equal(expectedMessage, message);
+        }
+
+        private string Markup(string content, IMarkdownObjectRewriter rewriter, TestLoggerListener listener = null)
         {
             var pipelineBuilder = new MarkdownPipelineBuilder();
-            var rewriter = builder.CreateRewriter();
             var documentRewriter = new MarkdownDocumentVisitor(rewriter);
             pipelineBuilder.DocumentProcessed += document => documentRewriter.Visit(document);
 
             var pipeline = pipelineBuilder.Build();
 
-            Logger.RegisterListener(listener);
+            if (listener != null)
+            {
+                Logger.RegisterListener(listener);
+            }
             var html = MarkdigMarked.Markup(content, pipeline);
-            Logger.UnregisterListener(listener);
+            if (listener != null)
+            {
+                Logger.UnregisterListener(listener);
+            }
 
             return html;
         }

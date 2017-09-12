@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
+using System.Linq;
 
 using Markdig.Syntax;
+using MarkdigEngine.Plugin;
 using Microsoft.DocAsCode.Plugins;
 using Microsoft.DocAsCode.Common;
-using System.Linq;
-using MarkdigEngine.Plugin;
 
 namespace MarkdigEngine
 {
-    internal class MarkdownValidatorBuilder
+    public class MarkdownValidatorBuilder
     {
         private readonly List<RuleWithId<MarkdownValidationRule>> _validators =
             new List<RuleWithId<MarkdownValidationRule>>();
@@ -20,17 +20,25 @@ namespace MarkdigEngine
             new Dictionary<string, MarkdownValidationRule>();
         private readonly List<MarkdownValidationSetting> _settings =
             new List<MarkdownValidationSetting>();
+        private List<IMarkdownObjectValidatorProvider> _validatorProviders =
+            new List<IMarkdownObjectValidatorProvider>();
+
+        private ImmutableArray<IMarkdownObjectValidator> _importedValidators;
 
         public const string DefaultValidatorName = "default";
         public const string MarkdownValidatePhaseName = "Markdown style";
+
         public ICompositionContainer Container { get; }
 
-        public MarkdownValidatorBuilder(ICompositionContainer container)
+        public MarkdownValidatorBuilder(
+            ICompositionContainer container)
         {
             Container = container;
         }
 
-        public static MarkdownValidatorBuilder Create(ICompositionContainer container, MarkdownServiceParameters parameters)
+        public static MarkdownValidatorBuilder Create(
+            MarkdownServiceParameters parameters,
+            ICompositionContainer container)
         {
             var builder = new MarkdownValidatorBuilder(container);
             if (parameters != null)
@@ -38,18 +46,64 @@ namespace MarkdigEngine
                 LoadValidatorConfig(parameters.BasePath, parameters.TemplateDir, builder);
             }
 
+            if (container != null)
+            {
+                builder.LoadEnabledRulesProvider();
+            }
+
             return builder;
         }
 
         public IMarkdownObjectRewriter CreateRewriter()
         {
-            var tagValidator = new TagValidator(Container, GetEnabledTagRules().ToImmutableList());
+            var tagValidator = new TagValidator(GetEnabledTagRules().ToImmutableList());
+            var validators = from vp in _validatorProviders
+                             from p in vp.GetValidators()
+                             select p;
+
             return MarkdownObjectRewriterFactory.FromValidators(
-                    GetEnabledRules().Concat(
+                    validators.Concat(
                         new[]
                         {
                             MarkdownObjectValidatorFactory.FromLambda<IMarkdownObject>(tagValidator.Validate)
                         }));
+        }
+
+        public void AddValidators(MarkdownValidationRule[] rules)
+        {
+            if (rules == null)
+            {
+                return;
+            }
+            foreach (var rule in rules)
+            {
+                if (string.IsNullOrEmpty(rule.ContractName))
+                {
+                    continue;
+                }
+                _globalValidators[rule.ContractName] = rule;
+            }
+        }
+
+        public void AddValidators(string category, Dictionary<string, MarkdownValidationRule> validators)
+        {
+            if (validators == null)
+            {
+                return;
+            }
+            foreach (var pair in validators)
+            {
+                if (string.IsNullOrEmpty(pair.Value.ContractName))
+                {
+                    continue;
+                }
+                _validators.Add(new RuleWithId<MarkdownValidationRule>
+                {
+                    Category = category,
+                    Id = pair.Key,
+                    Rule = pair.Value,
+                });
+            }
         }
 
         public void AddTagValidators(MarkdownTagValidationRule[] validators)
@@ -67,22 +121,6 @@ namespace MarkdigEngine
                     Id = null,
                     Rule = item
                 });
-            }
-        }
-
-        public void AddValidators(MarkdownValidationRule[] rules)
-        {
-            if (rules == null)
-            {
-                return;
-            }
-            foreach (var rule in rules)
-            {
-                if (string.IsNullOrEmpty(rule.ContractName))
-                {
-                    continue;
-                }
-                _globalValidators[rule.ContractName] = rule;
             }
         }
 
@@ -147,6 +185,7 @@ namespace MarkdigEngine
             if (EnvironmentContext.FileAbstractLayer.Exists(configFile))
             {
                 var config = JsonUtility.Deserialize<MarkdownSytleConfig>(configFile);
+                builder.AddValidators(config.Rules);
                 builder.AddTagValidators(config.TagRules);
                 builder.AddSettings(config.Settings);
             }
@@ -163,11 +202,12 @@ namespace MarkdigEngine
                     var category = fileName.Remove(fileName.Length - MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix.Length);
                     var config = JsonUtility.Deserialize<MarkdownSytleDefinition>(configFile);
                     builder.AddTagValidators(category, config.TagRules);
+                    builder.AddValidators(category, config.Rules);
                 }
             }
         }
 
-        private IEnumerable<IMarkdownObjectValidator> GetEnabledRules()
+        public void LoadEnabledRulesProvider()
         {
             HashSet<string> enabledContractName = new HashSet<string>();
             foreach (var item in _validators)
@@ -192,14 +232,9 @@ namespace MarkdigEngine
                     enabledContractName.Add(pair.Value.ContractName);
                 }
             }
-            if (Container == null)
-            {
-                return Enumerable.Empty<IMarkdownObjectValidator>();
-            }
-            return from name in enabledContractName
-                   from vp in Container.GetExports<IMarkdownObjectValidatorProvider>(name)
-                   from v in vp.GetValidators()
-                   select v;
+            _validatorProviders = (from name in enabledContractName
+                                   from vp in Container?.GetExports<IMarkdownObjectValidatorProvider>(name)
+                                   select vp).ToList();
         }
 
         private IEnumerable<MarkdownTagValidationRule> GetEnabledTagRules()

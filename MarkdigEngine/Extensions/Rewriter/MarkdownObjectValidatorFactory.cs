@@ -8,11 +8,10 @@ namespace MarkdigEngine
 {
     public static class MarkdownObjectValidatorFactory
     {
-        public static IMarkdownObjectValidator FromLambda<TObject>(
-               Action<TObject> validator)
-               where TObject : class, IMarkdownObject
+        public static IMarkdownObjectValidator FromLambda<TObject>(Action<TObject> validator)
+                where TObject : class, IMarkdownObject
         {
-            return new MarkdownLambdaTokenValidator<TObject>(validator);
+            return new MarkdownLambdaObjectValidator<TObject>(validator);
         }
     }
 }

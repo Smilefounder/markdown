@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace MarkdigEngine
 {
-    internal class MarkdownValidationRule
+    public class MarkdownValidationRule
     {
         /// <summary>
         /// The contract name of rule.

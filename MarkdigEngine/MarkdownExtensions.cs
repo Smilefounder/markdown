@@ -9,7 +9,7 @@ namespace MarkdigEngine
 {
     public static class MarkdownExtensions
     {
-        public static MarkdownPipelineBuilder UseDfmExtensions(this MarkdownPipelineBuilder pipeline, MarkdownContext context, MarkdownServiceParameters parameters, ICompositionContainer container)
+        public static MarkdownPipelineBuilder UseDfmExtensions(this MarkdownPipelineBuilder pipeline, MarkdownContext context, MarkdownServiceParameters parameters)
         {
             return pipeline
                 .UseDFMHeadingId()
@@ -22,14 +22,14 @@ namespace MarkdigEngine
                 .UseEmojiAndSmiley();
         }
 
-        public static MarkdownPipelineBuilder UseValidators(this MarkdownPipelineBuilder pipeline, MarkdownServiceParameters parameters, ICompositionContainer container)
+        public static MarkdownPipelineBuilder UseValidators(this MarkdownPipelineBuilder pipeline, MarkdownContext context, MarkdownServiceParameters parameters)
         {
-            var tokenRewriter = MarkdownValidatorBuilder.Create(container, parameters).CreateRewriter();
-            var documentRewriter = new MarkdownDocumentVisitor(tokenRewriter);
+            var tokenRewriter = context.Mvb.CreateRewriter();
+            var visitor = new MarkdownDocumentVisitor(tokenRewriter);
 
             pipeline.DocumentProcessed += document =>
             {
-                documentRewriter.Visit(document);
+                visitor.Visit(document);
             };
 
             return pipeline;

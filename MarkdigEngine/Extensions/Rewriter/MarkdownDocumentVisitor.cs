@@ -1,5 +1,6 @@
 ﻿using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using MarkdigEngine.Plugin;
 
 namespace MarkdigEngine
 {
@@ -19,7 +20,9 @@ namespace MarkdigEngine
                 return;
             }
 
+            _rewriter.PreProcess(document);
             RewriteContainerBlock(document);
+            _rewriter.PostProcess(document);
         }
 
         private void RewriteContainerBlock(ContainerBlock blocks)

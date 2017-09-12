@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace MarkdigEngine
 {
-    internal class MarkdownTagValidationRule
+    public class MarkdownTagValidationRule
     {
         /// <summary>
         /// The names of tag.

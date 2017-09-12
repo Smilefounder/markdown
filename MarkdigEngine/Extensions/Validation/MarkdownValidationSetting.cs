@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace MarkdigEngine
 {
-    internal class MarkdownValidationSetting
+    public class MarkdownValidationSetting
     {
         /// <summary>
         /// The category of rule

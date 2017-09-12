@@ -61,7 +61,7 @@ namespace MarkdigEngine
             }
 
             _context.ReportDependency(includedFilePath);
-            var context = new MarkdownContext(includedFilePath.RemoveWorkingFolder(), _context.BasePath, _context.IsInline, _context.InclusionSet, _context.Dependency);
+            var context = new MarkdownContext(includedFilePath.RemoveWorkingFolder(), _context.BasePath, _context.Mvb, _context.IsInline, _context.InclusionSet, _context.Dependency);
             context = context.AddIncludeFile(currentFilePath);
 
             var content = File.ReadAllText(filePath);

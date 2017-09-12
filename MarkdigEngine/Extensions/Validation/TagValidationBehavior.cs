@@ -1,6 +1,6 @@
 ﻿namespace MarkdigEngine
 {
-    internal enum TagValidationBehavior
+    public enum TagValidationBehavior
     {
         None,
         Warning,

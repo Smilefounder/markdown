@@ -4,19 +4,15 @@ using System.Linq;
 
 using Markdig.Syntax;
 using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Plugins;
 
 namespace MarkdigEngine
 {
     internal class TagValidator
     {
-        public TagValidator(ICompositionContainer container, ImmutableList<MarkdownTagValidationRule> validators)
+        public TagValidator(ImmutableList<MarkdownTagValidationRule> validators)
         {
-            Container = container;
             Validators = validators;
         }
-
-        public ICompositionContainer Container { get; }
 
         public ImmutableList<MarkdownTagValidationRule> Validators { get; }
 

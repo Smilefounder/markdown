@@ -94,12 +94,12 @@
     <Compile Include="Extensions\QuoteSectionNote\QuoteSectionNoteExtension.cs" />
     <Compile Include="Extensions\QuoteSectionNote\QuoteSectionNoteParser.cs" />
     <Compile Include="Extensions\QuoteSectionNote\QuoteSectionNoteRender.cs" />
-    <Compile Include="Extensions\Rewriter\IMarkdownObjectRewriter.cs" />
     <Compile Include="Extensions\Rewriter\MarkdownDocumentVisitor.cs" />
     <Compile Include="Extensions\Rewriter\MarkdownLambdaObjectValidator.cs" />
     <Compile Include="Extensions\Rewriter\MarkdownObjectRewriterFactory.cs" />
     <Compile Include="Extensions\Rewriter\MarkdownObjectValidatorFactory.cs" />
     <Compile Include="Extensions\Rewriter\MarkdownTokenValidatorAdapter.cs" />
+    <Compile Include="Extensions\Validation\MarkdownMetadataValidationRule.cs" />
     <Compile Include="Extensions\Validation\Tag.cs" />
     <Compile Include="Extensions\Validation\TagValidator.cs" />
     <Compile Include="Extensions\Validation\MarkdownSytleConfig.cs" />

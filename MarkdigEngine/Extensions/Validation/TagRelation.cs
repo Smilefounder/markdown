@@ -1,6 +1,6 @@
 ﻿namespace MarkdigEngine
 {
-    internal enum TagRelation
+    public enum TagRelation
     {
         In,
         NotIn,

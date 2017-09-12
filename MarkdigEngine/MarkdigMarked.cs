@@ -34,7 +34,7 @@ namespace MarkdigEngine
 
             var pipeline = new MarkdownPipelineBuilder()
                 .UseAdvancedExtensions()
-                .UseDfmExtensions(context, parameters, context.Container);
+                .UseDfmExtensions(context, parameters);
 
             object enableSourceInfo = null;
             parameters?.Extensions?.TryGetValue(LineNumberExtension.EnableSourceInfo, out enableSourceInfo);

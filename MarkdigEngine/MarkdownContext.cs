@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 
-using Microsoft.DocAsCode.Plugins;
-
 namespace MarkdigEngine
 {
     public class MarkdownContext
@@ -22,25 +20,26 @@ namespace MarkdigEngine
         /// </summary>
         public bool IsInline { get; }
 
-        public ICompositionContainer Container { get; }
-
         public ImmutableHashSet<string> InclusionSet { get; }
 
         public List<string> Dependency { get; private set; }
 
+        public MarkdownValidatorBuilder Mvb { get; }
+
         public MarkdownContext(string filePath,
             string basePath,
+            MarkdownValidatorBuilder mvb,
             bool isInline = false,
             ImmutableHashSet<string> inclusionSet = null,
-            List<string> dependency = null,
-            ICompositionContainer container = null)
+            List<string> dependency = null
+            )
         {
             FilePath = filePath;
             BasePath = basePath;
+            Mvb = mvb;
             IsInline = isInline;
             InclusionSet = inclusionSet;
             Dependency = dependency ?? new List<string>();
-            Container = container;
         }
 
         public MarkdownContext(MarkdownContext context)
@@ -56,7 +55,7 @@ namespace MarkdigEngine
             var set = InclusionSet ?? ImmutableHashSet<string>.Empty;
             var cloneSet = set.Add(filePath);
 
-            return new MarkdownContext(FilePath, BasePath, IsInline, cloneSet, Dependency);
+            return new MarkdownContext(FilePath, BasePath, Mvb, IsInline, cloneSet, Dependency);
         }
 
         public void ReportDependency(string filePath)
