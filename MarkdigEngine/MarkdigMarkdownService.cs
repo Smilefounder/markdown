@@ -1,4 +1,7 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
+
+using MarkdigEngine.Plugin;
 
 using Microsoft.DocAsCode.Plugins;
 
@@ -8,13 +11,16 @@ namespace MarkdigEngine
     {
         private readonly MarkdownServiceParameters _parameters;
         private readonly MarkdownValidatorBuilder _mvb;
+        private readonly ImmutableArray<IMarkdigCustomizer> _markdigCustomizers;
 
         public MarkdigMarkdownService(
             MarkdownServiceParameters parameters,
-            ICompositionContainer container = null)
+            ICompositionContainer container,
+            IEnumerable<IMarkdigCustomizer> markdigCustomizers)
         {
             _parameters = parameters;
             _mvb = MarkdownValidatorBuilder.Create(parameters, container);
+            _markdigCustomizers = markdigCustomizers.ToImmutableArray();
         }
 
         public MarkupResult Markup(string content, string path)

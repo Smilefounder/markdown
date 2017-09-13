@@ -50,6 +50,11 @@ namespace MarkdigEngine
                 pipeline.UseInineParserOnly();
             }
 
+            foreach(var customizer in context.MarkdigCustomizers)
+            {
+                pipeline = customizer.Customize(pipeline);
+            }
+
             return pipeline.Build();
         }
 

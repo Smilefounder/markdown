@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 
+using MarkdigEngine.Plugin;
+
 namespace MarkdigEngine
 {
     public class MarkdownContext
@@ -25,6 +27,8 @@ namespace MarkdigEngine
         public List<string> Dependency { get; private set; }
 
         public MarkdownValidatorBuilder Mvb { get; }
+
+        public ImmutableArray<IMarkdigCustomizer> MarkdigCustomizers { get; }
 
         public MarkdownContext(string filePath,
             string basePath,
