@@ -23,15 +23,12 @@ namespace MarkdigEngine
         private List<IMarkdownObjectValidatorProvider> _validatorProviders =
             new List<IMarkdownObjectValidatorProvider>();
 
-        private ImmutableArray<IMarkdownObjectValidator> _importedValidators;
-
         public const string DefaultValidatorName = "default";
         public const string MarkdownValidatePhaseName = "Markdown style";
 
         public ICompositionContainer Container { get; }
 
-        public MarkdownValidatorBuilder(
-            ICompositionContainer container)
+        public MarkdownValidatorBuilder(ICompositionContainer container)
         {
             Container = container;
         }

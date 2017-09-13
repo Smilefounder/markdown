@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <AssemblyName>MarkdigEngine.Tests</AssemblyName>
+    <RootNamespace>MarkdigEngine.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.DocAsCode.Build.Engine" Version="2.24.0" />
+    <PackageReference Include="Microsoft.DocAsCode.Plugins" Version="2.24.0" />
+    <PackageReference Include="xunit" Version="2.2.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MarkdigEngine.Plugin\MarkdigEngine.Plugin.csproj" />
+    <ProjectReference Include="..\MarkdigEngine\MarkdigEngine.csproj" />
+  </ItemGroup>
+
+</Project>

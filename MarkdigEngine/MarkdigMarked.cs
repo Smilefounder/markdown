@@ -53,7 +53,7 @@ namespace MarkdigEngine
             return pipeline.Build();
         }
 
-        internal static string Markup(string content, MarkdownPipeline pipeline)
+        public static string Markup(string content, MarkdownPipeline pipeline)
         {
             return Markdown.ToHtml(content, pipeline);
         }

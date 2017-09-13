@@ -1,146 +1,23 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{ED4D7B44-31F0-4C8C-85EE-7545B0C893D9}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MarkdigEngine</RootNamespace>
+    <TargetFramework>net461</TargetFramework>
     <AssemblyName>MarkdigEngine</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <RootNamespace>MarkdigEngine</RootNamespace>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Markdig, Version=0.13.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Markdig.0.13.3\lib\net40\Markdig.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.DocAsCode.Common, Version=2.17.5.12, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.DocAsCode.Common.2.17.5\lib\net46\Microsoft.DocAsCode.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.DocAsCode.Plugins, Version=2.17.5.12, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.DocAsCode.Plugins.2.17.5\lib\net46\Microsoft.DocAsCode.Plugins.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.DocAsCode.YamlSerialization, Version=2.17.5.12, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.DocAsCode.YamlSerialization.2.17.5\lib\net46\Microsoft.DocAsCode.YamlSerialization.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Composition.AttributedModel, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.AttributedModel.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Composition.Convention, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Convention.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Composition.Hosting, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Hosting.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Composition.Runtime, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Composition.TypedParts, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="YamlDotNet, Version=4.1.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
-      <HintPath>..\packages\YamlDotNet.Signed.4.1.0\lib\net35\YamlDotNet.dll</HintPath>
-    </Reference>
+    <PackageReference Include="Markdig" Version="0.13.3" />
+    <PackageReference Include="Microsoft.Composition" Version="1.0.27" />
+    <PackageReference Include="Microsoft.DocAsCode.Common" Version="2.24.0" />
+    <PackageReference Include="Microsoft.DocAsCode.YamlSerialization" Version="2.24.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
+    <PackageReference Include="YamlDotNet.Signed" Version="4.1.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Extensions\CodeSnippet\CodeSnippetExtrator.cs" />
-    <Compile Include="Extensions\DFMHeadingId\DFMHeadingIdExtension.cs" />
-    <Compile Include="Extensions\DFMHelperExtensions\InlineOnlyExtentsion.cs" />
-    <Compile Include="Extensions\Inclusion\InclusionBlock\HtmlInclusionBlockRenderer.cs" />
-    <Compile Include="ExtensionsHelper.cs" />
-    <Compile Include="Extensions\Inclusion\InclusionInline\HtmlInclusionInlineRenderer.cs" />
-    <Compile Include="Extensions\Inclusion\InclusionBlock\InclusionBlock.cs" />
-    <Compile Include="Extensions\Inclusion\InclusionBlock\InclusionBlockParser.cs" />
-    <Compile Include="Extensions\Inclusion\InclusionContext.cs" />
-    <Compile Include="Extensions\Inclusion\InclusionExtension.cs" />
-    <Compile Include="Extensions\Inclusion\InclusionInline\InclusionInline.cs" />
-    <Compile Include="Extensions\Inclusion\InclusionInline\InclusionInlineParser.cs" />
-    <Compile Include="Extensions\LineNumber\LineNumberExtension.cs" />
-    <Compile Include="Extensions\LineNumber\LineNumberExtensionContext.cs" />
-    <Compile Include="Extensions\QuoteSectionNote\QuoteSectionNoteBlock.cs" />
-    <Compile Include="Extensions\QuoteSectionNote\QuoteSectionNoteExtension.cs" />
-    <Compile Include="Extensions\QuoteSectionNote\QuoteSectionNoteParser.cs" />
-    <Compile Include="Extensions\QuoteSectionNote\QuoteSectionNoteRender.cs" />
-    <Compile Include="Extensions\Rewriter\MarkdownDocumentVisitor.cs" />
-    <Compile Include="Extensions\Rewriter\MarkdownLambdaObjectValidator.cs" />
-    <Compile Include="Extensions\Rewriter\MarkdownObjectRewriterFactory.cs" />
-    <Compile Include="Extensions\Rewriter\MarkdownObjectValidatorFactory.cs" />
-    <Compile Include="Extensions\Rewriter\MarkdownTokenValidatorAdapter.cs" />
-    <Compile Include="Extensions\Validation\MarkdownMetadataValidationRule.cs" />
-    <Compile Include="Extensions\Validation\Tag.cs" />
-    <Compile Include="Extensions\Validation\TagValidator.cs" />
-    <Compile Include="Extensions\Validation\MarkdownSytleConfig.cs" />
-    <Compile Include="Extensions\Validation\MarkdownSytleDefinition.cs" />
-    <Compile Include="Extensions\Validation\MarkdownTagValidationRule.cs" />
-    <Compile Include="Extensions\Validation\MarkdownValidationRule.cs" />
-    <Compile Include="Extensions\Validation\MarkdownValidationSetting.cs" />
-    <Compile Include="Extensions\Validation\MarkdownValidator.cs" />
-    <Compile Include="Extensions\Validation\MarkdownValidatorBuilder.cs" />
-    <Compile Include="Extensions\Validation\TagRelation.cs" />
-    <Compile Include="Extensions\Validation\TagValidationBehavior.cs" />
-    <Compile Include="Extensions\Xref\XrefInlineExtension.cs" />
-    <Compile Include="Extensions\Xref\XrefInline.cs" />
-    <Compile Include="Extensions\Xref\HtmlXrefInlineRender.cs" />
-    <Compile Include="Extensions\Xref\XrefInlineParser.cs" />
-    <Compile Include="Extensions\Xref\XrefInlineShortParser.cs" />
-    <Compile Include="Extensions\YamlHeader\YamlHeaderExtension.cs" />
-    <Compile Include="Extensions\YamlHeader\YamlHeaderRenderer.cs" />
-    <Compile Include="MarkdigMarked.cs" />
-    <Compile Include="Extensions\CodeSnippet\CodeRange.cs" />
-    <Compile Include="Extensions\CodeSnippet\HtmlCodeSnippetRenderer.cs" />
-    <Compile Include="Extensions\CodeSnippet\CodeSnippet.cs" />
-    <Compile Include="Extensions\CodeSnippet\CodeSnippetExtension.cs" />
-    <Compile Include="Extensions\CodeSnippet\CodeSnippetParser.cs" />
-    <Compile Include="MarkdigMarkdownService.cs" />
-    <Compile Include="MarkdigServiceProvider.cs" />
-    <Compile Include="MarkdownContext.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MarkdownExtensions.cs" />
+    <ProjectReference Include="..\MarkdigEngine.Plugin\MarkdigEngine.Plugin.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MarkdigEngine.Plugin\MarkdigEngine.Plugin.csproj">
-      <Project>{2f2a5dd1-edc3-4352-81e1-939248728f94}</Project>
-      <Name>MarkdigEngine.Plugin</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>
