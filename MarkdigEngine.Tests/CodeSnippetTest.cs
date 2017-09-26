@@ -1,8 +1,10 @@
-﻿using MarkdigEngine;
-using Microsoft.DocAsCode.Plugins;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using MarkdigEngine;
+
+using Microsoft.DocAsCode.Plugins;
 using Xunit;
 
 namespace MarkdigEngineTest

@@ -1,12 +1,9 @@
-﻿using MarkdigEngine;
-using Microsoft.DocAsCode.Plugins;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
+
+using MarkdigEngine;
+using Microsoft.DocAsCode.Plugins;
 using Xunit;
 
 namespace MarkdigEngineTest

@@ -1,10 +1,10 @@
 ﻿using System.IO;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 
 using Microsoft.DocAsCode.Plugins;
 using Xunit;
-using System.Linq;
 
 namespace MarkdigEngine.Tests
 {

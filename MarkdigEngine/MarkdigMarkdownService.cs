@@ -1,5 +1,7 @@
 ﻿using System.Collections.Immutable;
 
+using MarkdigEngine.Extensions;
+
 using Microsoft.DocAsCode.Plugins;
 
 namespace MarkdigEngine

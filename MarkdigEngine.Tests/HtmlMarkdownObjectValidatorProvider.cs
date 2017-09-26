@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using MarkdigEngine.Plugin;
 
 using Markdig.Syntax;
+using MarkdigEngine.Extensions;
 using Microsoft.DocAsCode.Common;
 
 namespace MarkdigEngine.Test
