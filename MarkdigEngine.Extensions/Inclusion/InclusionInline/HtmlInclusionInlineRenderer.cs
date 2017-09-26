@@ -60,15 +60,13 @@ namespace MarkdigEngine.Extensions
             }
 
             _context.ReportDependency(includeFilePath);
-
-            var context = new MarkdownContext(includeFilePath.RemoveWorkingFolder(), _context.BasePath, _context.Mvb, true, _context.InclusionSet, _context.Dependency);
-            context = context.AddIncludeFile(currentFilePath);
-
             var content = File.ReadAllText(filePath);
+            var context = new MarkdownContext(includeFilePath.RemoveWorkingFolder(), _context.BasePath, _context.Mvb, content, true, _context.InclusionSet, _context.Dependency);
+            context = context.AddIncludeFile(currentFilePath);
 
             // Do not need to check if content is a single paragragh
             // context.IsInline = true will force it into a single paragragh and render with no <p></p>
-            renderer.Write(MarkdigMarked.Markup(content, context, _parameters));
+            renderer.Write(MarkdigMarked.Markup(context, _parameters));
         }
     }
 }

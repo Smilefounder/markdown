@@ -61,11 +61,11 @@ namespace MarkdigEngine.Extensions
             }
 
             _context.ReportDependency(includedFilePath);
-            var context = new MarkdownContext(includedFilePath.RemoveWorkingFolder(), _context.BasePath, _context.Mvb, _context.IsInline, _context.InclusionSet, _context.Dependency);
+            var content = File.ReadAllText(filePath);
+            var context = new MarkdownContext(includedFilePath.RemoveWorkingFolder(), _context.BasePath, _context.Mvb, content, _context.IsInline, _context.InclusionSet, _context.Dependency);
             context = context.AddIncludeFile(currentFilePath);
 
-            var content = File.ReadAllText(filePath);
-            var result = MarkdigMarked.Markup(content, context, _parameters);
+            var result = MarkdigMarked.Markup(context, _parameters);
 
             renderer.Write(result);
         }

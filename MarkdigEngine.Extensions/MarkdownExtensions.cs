@@ -1,4 +1,6 @@
-﻿using Markdig;
+﻿using System.IO;
+
+using Markdig;
 using Markdig.Parsers;
 using Markdig.Extensions.AutoIdentifiers;
 
@@ -19,7 +21,9 @@ namespace MarkdigEngine.Extensions
                 .UseDFMCodeInfoPrefix()
                 .UseQuoteSectionNote(parameters)
                 .UseXref()
-                .UseEmojiAndSmiley();
+                .UseEmojiAndSmiley()
+                .UseLineNumber(context, parameters)
+                .UseInineParserOnly(context);
         }
 
         public static MarkdownPipelineBuilder UseValidators(this MarkdownPipelineBuilder pipeline, MarkdownContext context, MarkdownServiceParameters parameters)
@@ -41,9 +45,13 @@ namespace MarkdigEngine.Extensions
         /// <param name="pipeline"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static MarkdownPipelineBuilder UseInineParserOnly(this MarkdownPipelineBuilder pipeline)
+        public static MarkdownPipelineBuilder UseInineParserOnly(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Add(new InlineOnlyExtentsion());
+            if (context.IsInline)
+            {
+                pipeline.Extensions.Add(new InlineOnlyExtentsion());
+            }
+
             return pipeline;
         }
 
@@ -86,10 +94,23 @@ namespace MarkdigEngine.Extensions
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseLineNumber(this MarkdownPipelineBuilder pipeline, LineNumberExtensionContext lineNumberContext)
+        public static MarkdownPipelineBuilder UseLineNumber(this MarkdownPipelineBuilder pipeline, MarkdownContext context, MarkdownServiceParameters parameters)
         {
+            object enableSourceInfo = null;
+            parameters?.Extensions?.TryGetValue(LineNumberExtension.EnableSourceInfo, out enableSourceInfo);
+
+            var enabled = enableSourceInfo as bool?;
+            if (enabled == null || enabled == false)
+            {
+                return pipeline;
+            }
+
+            var absoluteFilePath = Path.Combine(context.BasePath, context.FilePath);
+            var lineNumberContext = LineNumberExtensionContext.Create(context.Content, absoluteFilePath, context.FilePath);
+
             pipeline.PreciseSourceLocation = true;
             pipeline.DocumentProcessed += LineNumberExtension.GetProcessDocumentDelegate(lineNumberContext);
+
             return pipeline;
         }
 
