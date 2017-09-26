@@ -55,6 +55,12 @@ http://spec.commonmark.org/0.27/)";
             var content = @"// <tag>
 line1
 // </tag>";
+
+            if (!Directory.Exists("LineNumber"))
+            {
+                Directory.CreateDirectory("LineNumber");
+            }
+
             File.WriteAllText("LineNumber/Program.cs", content.Replace("\r\n", "\n"));
 
             // act
