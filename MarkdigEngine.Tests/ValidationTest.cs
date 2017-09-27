@@ -306,7 +306,8 @@ namespace MarkdigEngine.Test
             {
                 Logger.RegisterListener(listener);
             }
-            var html = MarkdigMarked.Markup(content, pipeline);
+
+            var html = Markdown.ToHtml(content, pipeline);
             if (listener != null)
             {
                 Logger.UnregisterListener(listener);

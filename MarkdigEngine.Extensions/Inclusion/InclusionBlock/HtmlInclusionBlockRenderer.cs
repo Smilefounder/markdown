@@ -2,7 +2,6 @@
 
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
-
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
 
@@ -10,11 +9,13 @@ namespace MarkdigEngine.Extensions
 {
     public class HtmlInclusionBlockRenderer : HtmlObjectRenderer<InclusionBlock>
     {
+        private IMarkdigCompositor _compositor;
         private MarkdownContext _context;
         private MarkdownServiceParameters _parameters;
 
-        public HtmlInclusionBlockRenderer(MarkdownContext context, MarkdownServiceParameters parameters)
+        public HtmlInclusionBlockRenderer(IMarkdigCompositor compositor, MarkdownContext context, MarkdownServiceParameters parameters)
         {
+            _compositor = compositor;
             _context = context;
             _parameters = parameters;
         }
@@ -65,7 +66,7 @@ namespace MarkdigEngine.Extensions
             var context = new MarkdownContext(includedFilePath.RemoveWorkingFolder(), _context.BasePath, _context.Mvb, content, _context.IsInline, _context.InclusionSet, _context.Dependency);
             context = context.AddIncludeFile(currentFilePath);
 
-            var result = MarkdigMarked.Markup(context, _parameters);
+            var result = _compositor.Markup(context, _parameters);
 
             renderer.Write(result);
         }

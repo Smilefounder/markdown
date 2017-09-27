@@ -22,10 +22,11 @@ namespace MarkdigEngine
         public MarkupResult Markup(string content, string path)
         {
             var context = new MarkdownContext(path, _parameters.BasePath, _mvb, content);
+            var compositor = new MarkdigCompositor();
 
             return new MarkupResult
             {
-                Html = MarkdigMarked.Markup(context, _parameters),
+                Html = compositor.Markup(context, _parameters),
                 Dependency = context.Dependency.ToImmutableArray()
             };
         }

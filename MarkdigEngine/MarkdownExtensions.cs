@@ -3,19 +3,20 @@
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Extensions.AutoIdentifiers;
-
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
 
-namespace MarkdigEngine.Extensions
+using MarkdigEngine.Extensions;
+
+namespace MarkdigEngine
 {
     public static class MarkdownExtensions
     {
-        public static MarkdownPipelineBuilder UseDfmExtensions(this MarkdownPipelineBuilder pipeline, MarkdownContext context, MarkdownServiceParameters parameters)
+        public static MarkdownPipelineBuilder UseDfmExtensions(this MarkdownPipelineBuilder pipeline, MarkdigCompositor compositor, MarkdownContext context, MarkdownServiceParameters parameters)
         {
             return pipeline
                 .UseDFMHeadingId()
-                .UseIncludeFile(context, parameters)
+                .UseIncludeFile(compositor, context, parameters)
                 .UseCodeSnippet(context)
                 .UseYamlHeader()
                 .UseDFMCodeInfoPrefix()
@@ -114,9 +115,9 @@ namespace MarkdigEngine.Extensions
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseIncludeFile(this MarkdownPipelineBuilder pipeline, MarkdownContext context, MarkdownServiceParameters parameters)
+        public static MarkdownPipelineBuilder UseIncludeFile(this MarkdownPipelineBuilder pipeline, MarkdigCompositor compositor, MarkdownContext context, MarkdownServiceParameters parameters)
         {
-            pipeline.Extensions.Insert(0, new InclusionExtension(context, parameters));
+            pipeline.Extensions.Insert(0, new InclusionExtension(compositor, context, parameters));
             if (context.InclusionSet != null && !context.InclusionSet.IsEmpty)
             {
                 pipeline.DocumentProcessed += InclusionExtension.GetProcessDocumentDelegate(context);

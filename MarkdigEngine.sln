@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdigEngine.Plugin", "Mar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdigEngine", "MarkdigEngine\MarkdigEngine.csproj", "{A1C1B5E5-0E38-408D-9D0B-265EC7442ECC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkdigEngine.Extensions", "MarkdigEngine.Extensions\MarkdigEngine.Extensions.csproj", "{EAD08DD7-016C-43AE-AC64-50B60F9681CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdigEngine.Extensions", "MarkdigEngine.Extensions\MarkdigEngine.Extensions.csproj", "{EAD08DD7-016C-43AE-AC64-50B60F9681CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
