@@ -17,7 +17,7 @@ namespace MarkdigEngine.Extensions
                 throw new ArgumentNullException(nameof(validators));
             }
 
-            return new MarkdownTokenValidatorAdapter(validators, preProcess, postProcess);
+            return new MarkdownObjectValidatorAdapter(validators, preProcess, postProcess);
         }
 
         public static IMarkdownObjectRewriter FromValidator(
@@ -30,7 +30,7 @@ namespace MarkdigEngine.Extensions
                 throw new ArgumentNullException(nameof(validator));
             }
 
-            return new MarkdownTokenValidatorAdapter(validator, preProcess, postProcess);
+            return new MarkdownObjectValidatorAdapter(validator, preProcess, postProcess);
         }
     }
 }

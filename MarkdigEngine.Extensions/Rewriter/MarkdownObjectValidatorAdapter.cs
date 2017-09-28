@@ -6,14 +6,14 @@ using Markdig.Syntax;
 
 namespace MarkdigEngine.Extensions
 {
-    internal class MarkdownTokenValidatorAdapter : IMarkdownObjectRewriter
+    internal class MarkdownObjectValidatorAdapter : IMarkdownObjectRewriter
     {
         private Action<IMarkdownObject> _preProcess;
         private Action<IMarkdownObject> _postProcess;
 
         public ImmutableArray<IMarkdownObjectValidator> Validators { get; }
 
-        public MarkdownTokenValidatorAdapter(
+        public MarkdownObjectValidatorAdapter(
             IEnumerable<IMarkdownObjectValidator> validators, 
             Action<IMarkdownObject> preProcess, 
             Action<IMarkdownObject> postProcess)
@@ -23,7 +23,7 @@ namespace MarkdigEngine.Extensions
             _postProcess = postProcess;
         }
 
-        public MarkdownTokenValidatorAdapter(
+        public MarkdownObjectValidatorAdapter(
             IMarkdownObjectValidator validator,
             Action<IMarkdownObject> preProcess,
             Action<IMarkdownObject> postProcess)
