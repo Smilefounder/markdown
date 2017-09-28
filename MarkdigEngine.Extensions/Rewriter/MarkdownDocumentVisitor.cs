@@ -1,6 +1,5 @@
 ﻿using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using MarkdigEngine.Plugin;
 
 namespace MarkdigEngine.Extensions
 {

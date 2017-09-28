@@ -1,7 +1,5 @@
 ﻿using System;
 
-using MarkdigEngine.Plugin;
-
 using Markdig.Syntax;
 
 namespace MarkdigEngine.Extensions

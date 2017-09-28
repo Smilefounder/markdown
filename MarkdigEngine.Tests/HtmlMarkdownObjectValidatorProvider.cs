@@ -1,7 +1,7 @@
 ﻿using System.Composition;
 using System.Collections.Immutable;
 
-using MarkdigEngine.Plugin;
+using MarkdigEngine.Extensions;
 
 using Markdig.Syntax;
 using MarkdigEngine.Extensions;

@@ -9,8 +9,4 @@
     <PackageReference Include="Microsoft.DocAsCode.Common" Version="2.24.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\MarkdigEngine.Plugin\MarkdigEngine.Plugin.csproj" />
-  </ItemGroup>
-
 </Project>
