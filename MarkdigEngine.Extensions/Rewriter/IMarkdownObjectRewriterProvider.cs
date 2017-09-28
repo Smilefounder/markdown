@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 
-namespace MarkdigEngine.Plugin
+namespace MarkdigEngine.Extensions
 {
     public interface IMarkdownObjectRewriterProvider
     {

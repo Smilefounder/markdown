@@ -1,6 +1,5 @@
 ﻿using Markdig;
 using Markdig.Renderers;
-using MarkdigEngine.Plugin;
 
 namespace MarkdigEngine.Extensions
 {

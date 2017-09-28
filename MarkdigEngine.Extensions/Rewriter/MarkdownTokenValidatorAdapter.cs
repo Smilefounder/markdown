@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-using MarkdigEngine.Plugin;
-
 using Markdig.Syntax;
 
 namespace MarkdigEngine.Extensions

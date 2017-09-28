@@ -4,7 +4,6 @@ using Markdig.Renderers;
 using Markdig.Renderers.Html;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
-using MarkdigEngine.Plugin;
 
 namespace MarkdigEngine.Extensions
 {

@@ -1,6 +1,6 @@
 ﻿using Markdig.Syntax;
 
-namespace MarkdigEngine.Plugin
+namespace MarkdigEngine.Extensions
 {
     public interface IMarkdownObjectRewriter
     {

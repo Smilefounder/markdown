@@ -9,7 +9,6 @@ using Markdig.Renderers.Html;
 
 using Microsoft.DocAsCode.Common;
 using Markdig.Helpers;
-using MarkdigEngine.Plugin;
 
 namespace MarkdigEngine.Extensions
 {

@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdigEngine.Tests", "MarkdigEngine.Tests\MarkdigEngine.Tests.csproj", "{940939C3-2B41-4B9A-B380-CCCCBD3B5B7D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdigEngine.Plugin", "MarkdigEngine.Plugin\MarkdigEngine.Plugin.csproj", "{2F2A5DD1-EDC3-4352-81E1-939248728F94}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdigEngine", "MarkdigEngine\MarkdigEngine.csproj", "{A1C1B5E5-0E38-408D-9D0B-265EC7442ECC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdigEngine.Extensions", "MarkdigEngine.Extensions\MarkdigEngine.Extensions.csproj", "{EAD08DD7-016C-43AE-AC64-50B60F9681CB}"
@@ -21,10 +19,6 @@ Global
 		{940939C3-2B41-4B9A-B380-CCCCBD3B5B7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{940939C3-2B41-4B9A-B380-CCCCBD3B5B7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{940939C3-2B41-4B9A-B380-CCCCBD3B5B7D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2F2A5DD1-EDC3-4352-81E1-939248728F94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F2A5DD1-EDC3-4352-81E1-939248728F94}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2F2A5DD1-EDC3-4352-81E1-939248728F94}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2F2A5DD1-EDC3-4352-81E1-939248728F94}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A1C1B5E5-0E38-408D-9D0B-265EC7442ECC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A1C1B5E5-0E38-408D-9D0B-265EC7442ECC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1C1B5E5-0E38-408D-9D0B-265EC7442ECC}.Release|Any CPU.ActiveCfg = Release|Any CPU

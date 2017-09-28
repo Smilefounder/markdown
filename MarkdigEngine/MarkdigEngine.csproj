@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MarkdigEngine.Extensions\MarkdigEngine.Extensions.csproj" />
-    <ProjectReference Include="..\MarkdigEngine.Plugin\MarkdigEngine.Plugin.csproj" />
   </ItemGroup>
 
 </Project>
