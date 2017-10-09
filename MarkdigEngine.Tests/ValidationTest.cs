@@ -6,6 +6,7 @@ using Markdig;
 using Markdig.Syntax;
 using MarkdigEngine.Extensions;
 using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Plugins;
 using Xunit;
 
 namespace MarkdigEngine.Test

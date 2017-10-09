@@ -4,6 +4,7 @@ using System.Linq;
 
 using Markdig.Syntax;
 using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Plugins;
 
 namespace MarkdigEngine.Extensions
 {
