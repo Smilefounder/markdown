@@ -57,12 +57,14 @@ namespace MarkdigEngine.Extensions
                              from p in vp.GetValidators()
                              select p;
 
-            return MarkdownObjectRewriterFactory.FromValidators(
+            return new MarkdownTokenRewriteWithScope(
+                MarkdownObjectRewriterFactory.FromValidators(
                     validators.Concat(
                         new[]
                         {
                             MarkdownObjectValidatorFactory.FromLambda<IMarkdownObject>(tagValidator.Validate)
-                        }));
+                        })),
+                MarkdownValidatePhaseName);
         }
 
         public void AddValidators(MarkdownValidationRule[] rules)

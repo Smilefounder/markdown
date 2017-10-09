@@ -12,6 +12,8 @@ namespace MarkdigEngine.Test
 {
     public class ValidationTest
     {
+        public const string MarkdownValidatePhaseName = "Markdown style";
+
         [Fact]
         [Trait("Related", "Validation")]
         public void TestHtmlBlockTagValidation()
@@ -75,7 +77,7 @@ namespace MarkdigEngine.Test
             });
 
             builder.LoadEnabledRulesProvider();
-            var listener = new TestLoggerListener(logItem => logItem.LogLevel >= LogLevel.Warning);
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(MarkdownValidatePhaseName);
             var html = Markup(content, builder.CreateRewriter(), listener);
 
             Assert.Equal(@"<div class='a'>
@@ -134,7 +136,7 @@ namespace MarkdigEngine.Test
                 }
             });
 
-            var listener = new TestLoggerListener(logItem => logItem.LogLevel >= LogLevel.Warning);
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(MarkdownValidatePhaseName);
             var html = Markup(content, builder.CreateRewriter(), listener);
 
             Assert.Equal(@"<div class='a'>
@@ -203,7 +205,7 @@ namespace MarkdigEngine.Test
                 },
             });
 
-            var listener = new TestLoggerListener(logItem => logItem.LogLevel >= LogLevel.Warning);
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(MarkdownValidatePhaseName);
             var html = Markup(content, builder.CreateRewriter(), listener);
 
             Assert.Equal(@"<p>This is inline html: <div class='a'><i>x</i><EM>y</EM><h1>z<pre><code>a<em>b</em>c</code></pre></h1></div></p>

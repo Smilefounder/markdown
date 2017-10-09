@@ -35,5 +35,23 @@ namespace MarkdigEngine.Test
                 Items.Add(item);
             }
         }
+
+        public static TestLoggerListener CreateLoggerListenerWithPhaseEqualFilter(string phase, LogLevel logLevel = LogLevel.Warning)
+        {
+            return new TestLoggerListener(iLogItem =>
+            {
+                if (iLogItem.LogLevel < logLevel)
+                {
+                    return false;
+                }
+
+                if (phase == null || (iLogItem?.Phase != null && iLogItem.Phase == phase))
+                {
+                    return true;
+                }
+
+                return false;
+            });
+        }
     }
 }
