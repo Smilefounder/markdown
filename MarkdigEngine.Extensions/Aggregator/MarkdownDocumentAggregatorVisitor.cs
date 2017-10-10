@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-using Markdig.Syntax;
+﻿using Markdig.Syntax;
 
 namespace MarkdigEngine.Extensions
 {

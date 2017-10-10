@@ -1,12 +1,12 @@
 ﻿using System.IO;
 
+using MarkdigEngine.Extensions;
+
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Extensions.AutoIdentifiers;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
-
-using MarkdigEngine.Extensions;
 
 namespace MarkdigEngine
 {
@@ -24,6 +24,7 @@ namespace MarkdigEngine
                 .UseXref()
                 .UseEmojiAndSmiley()
                 .UseLineNumber(context, parameters)
+                .UseTabGroup()
                 .UseInineParserOnly(context);
         }
 
@@ -53,6 +54,20 @@ namespace MarkdigEngine
                 pipeline.Extensions.Add(new InlineOnlyExtentsion());
             }
 
+            return pipeline;
+        }
+
+        public static MarkdownPipelineBuilder UseTabGroup(this MarkdownPipelineBuilder pipeline)
+        {
+            var tabGroupAggregator = new TabGroupAggregator();
+            var visitor = new MarkdownDocumentAggregatorVisitor(tabGroupAggregator);
+
+            pipeline.DocumentProcessed += document =>
+            {
+                visitor.Visit(document);
+            };
+
+            pipeline.Extensions.Add(new TabGroupExtension());
             return pipeline;
         }
 

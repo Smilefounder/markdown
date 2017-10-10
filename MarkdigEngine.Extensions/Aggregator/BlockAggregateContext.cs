@@ -55,7 +55,6 @@ namespace MarkdigEngine.Extensions
             {
                 count--;
                 _blocks.RemoveAt(index);
-                index++;
             }
         }
     }
