@@ -1,15 +1,15 @@
 ﻿using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
+
 
 namespace MarkdigEngine.Extensions
 {
-    public class TabTitleBlock
+    public class TabTitleBlock : LeafBlock
     {
-        public HeadingBlock HeadToken { get; }
-        public string Content { get; }
+        public LinkInline Content { get; }
 
-        public TabTitleBlock(HeadingBlock headToken, string content)
+        public TabTitleBlock(LinkInline content) : base(null)
         {
-            HeadToken = headToken;
             Content = content;
         }
     }

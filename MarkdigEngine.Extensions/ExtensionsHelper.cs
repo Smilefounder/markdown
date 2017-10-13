@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 using Markdig.Helpers;
 using Markdig.Renderers;
@@ -11,6 +12,44 @@ namespace MarkdigEngine.Extensions
 {
     public static class ExtensionsHelper
     {
+        public static readonly Regex HtmlEscapeWithEncode = new Regex(@"&", RegexOptions.Compiled);
+        public static readonly Regex HtmlEscapeWithoutEncode = new Regex(@"&(?!#?\w+;)", RegexOptions.Compiled);
+        public static readonly Regex HtmlUnescape = new Regex(@"&([#\w]+);", RegexOptions.Compiled);
+
+        public static string Escape(string html, bool encode = false)
+        {
+            return html
+                .ReplaceRegex(encode ? HtmlEscapeWithEncode : HtmlEscapeWithoutEncode, "&amp;")
+                .Replace("<", "&lt;")
+                .Replace(">", "&gt;")
+                .Replace("\"", "&quot;")
+                .Replace("'", "&#39;");
+        }
+
+        public static string Unescape(string html)
+        {
+            return HtmlUnescape.Replace(html, match =>
+            {
+                var n = match.Groups[1].Value;
+
+                n = n.ToLower();
+                if (n == "amp") return "&";
+                if (n == "colon") return ":";
+                if (n[0] == '#')
+                {
+                    return n[1] == 'x'
+                        ? ((char)Convert.ToInt32(n.Substring(2), 16)).ToString()
+                        : ((char)Convert.ToInt32(n.Substring(1))).ToString();
+                }
+                return string.Empty;
+            });
+        }
+
+        public static string ReplaceRegex(this string input, Regex pattern, string replacement)
+        {
+            return pattern.Replace(input, replacement);
+        }
+
         public static string NormalizePath(string path)
         {
             if (string.IsNullOrEmpty(path))

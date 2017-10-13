@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Markdig.Extensions.AutoIdentifiers;
+using Microsoft.DocAsCode.Common;
 
 namespace MarkdigEngine.Extensions
 {
@@ -44,12 +45,7 @@ namespace MarkdigEngine.Extensions
                         goto case null;
                     case null:
                         items.Add(CreateTabItem(headBlock, pair, list));
-                        context.AggregateTo(
-                            new TabGroupBlock(
-                                headBlock,
-                                Guid.NewGuid().ToString(),
-                                items.ToImmutableArray()),
-                            offset);
+                        AggregateCore(headBlock, context, offset, items);
                         return true;
                     default:
                         list.Add(block);
@@ -59,23 +55,38 @@ namespace MarkdigEngine.Extensions
             }
         }
 
+        private static void AggregateCore(
+            HeadingBlock headBlock,
+            BlockAggregateContext context,
+            int offset,
+            List<TabItemBlock> items)
+        {
+            var groupId = (items[0].Content.ToString() ?? string.Empty).GetMd5String().Replace("/", "-").Remove(10);
+            context.AggregateTo(
+                            new TabGroupBlock(
+                                groupId,
+                                items.ToImmutableArray(),
+                                0),
+                            offset);
+        }
+
         private static TabItemBlock CreateTabItem(
             HeadingBlock headToken,
-            Tuple<string, string, string> pair,
+            Tuple<string, string, LinkInline> pair,
             List<Block> list)
         {
-            var title = new TabTitleBlock(headToken, pair.Item3);
-            var content = new TabContentBlock(headToken, list.ToImmutableArray());
+            var title = new TabTitleBlock(pair.Item3);
+            var content = new TabContentBlock(list.ToImmutableArray());
 
             return new TabItemBlock(
-                headToken,
                 pair.Item1,
                 pair.Item2,
                 title,
-                content);
+                content,
+                true);
         }
 
-        private static Tuple<string, string, string> ParseHeading(HeadingBlock block)
+        private static Tuple<string, string, LinkInline> ParseHeading(HeadingBlock block)
         {
             var inlines = block.Inline.ToList();
             if (inlines.Count == 1 && inlines.First() is LinkInline link)
@@ -83,7 +94,7 @@ namespace MarkdigEngine.Extensions
                 var m = HrefRegex.Match(link.Url);
                 if (m.Success)
                 {
-                    return Tuple.Create(m.Groups[1].Value, m.Groups[2].Value, link.ToString());
+                    return Tuple.Create(m.Groups[1].Value, m.Groups[2].Value, link);
                 }
             }
 

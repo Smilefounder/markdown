@@ -17,6 +17,16 @@ namespace MarkdigEngine.Extensions
                 {
                     htmlRenderer.ObjectRenderers.Add(new HtmlTabGroupBlockRenderer());
                 }
+
+                if (!htmlRenderer.ObjectRenderers.Contains<HtmlTabTitleBlockRenderer>())
+                {
+                    htmlRenderer.ObjectRenderers.Add(new HtmlTabTitleBlockRenderer());
+                }
+
+                if (!htmlRenderer.ObjectRenderers.Contains<HtmlTabContentBlockRenderer>())
+                {
+                    htmlRenderer.ObjectRenderers.Add(new HtmlTabContentBlockRenderer());
+                }
             }
         }
     }

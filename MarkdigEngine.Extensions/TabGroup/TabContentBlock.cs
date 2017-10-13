@@ -3,15 +3,13 @@ using Markdig.Syntax;
 
 namespace MarkdigEngine.Extensions
 {
-    public class TabContentBlock
+    public class TabContentBlock : LeafBlock
     {
-        private HeadingBlock block;
-        private ImmutableArray<Block> blocks;
+        public ImmutableArray<Block> Content { get; }
 
-        public TabContentBlock(HeadingBlock block, ImmutableArray<Block> blocks)
+        public TabContentBlock(ImmutableArray<Block> content) : base(null)
         {
-            this.block = block;
-            this.blocks = blocks;
+            Content = content;
         }
     }
 }

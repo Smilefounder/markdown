@@ -1,11 +1,7 @@
-﻿using Markdig.Syntax;
-
-namespace MarkdigEngine.Extensions
+﻿namespace MarkdigEngine.Extensions
 {
     public class TabItemBlock
     {
-        public HeadingBlock HeadToken { get; }
-
         public string Id { get; }
 
         public string Condition { get; }
@@ -16,13 +12,13 @@ namespace MarkdigEngine.Extensions
 
         public bool Visible { get; }
 
-        public TabItemBlock(HeadingBlock headToken, string id, string condition, TabTitleBlock title, TabContentBlock content)
+        public TabItemBlock(string id, string condition, TabTitleBlock title, TabContentBlock content, bool visible)
         {
-            HeadToken = headToken;
             Id = id;
             Condition = condition;
             Title = title;
             Content = content;
+            Visible = visible;
         }
     }
 }

@@ -6,15 +6,17 @@ namespace MarkdigEngine.Extensions
 {
     public class TabGroupBlock : LeafBlock
     {
-        private string guid;
-        private HeadingBlock headBlock;
-        private ImmutableArray<TabItemBlock> blocks;
+        public string Id { get; }
 
-        public TabGroupBlock(HeadingBlock headBlock, string guid, ImmutableArray<TabItemBlock> blocks) : base(null)
+        public int ActiveTabIndex { get; }
+
+        public ImmutableArray<TabItemBlock> Items { get; }
+
+        public TabGroupBlock(string id, ImmutableArray<TabItemBlock> blocks, int activeTabIndex) : base(null)
         {
-            this.headBlock = headBlock;
-            this.guid = guid;
-            this.blocks = blocks;
+            Id = id;
+            ActiveTabIndex = activeTabIndex;
+            Items = blocks;
         }
     }
 }
