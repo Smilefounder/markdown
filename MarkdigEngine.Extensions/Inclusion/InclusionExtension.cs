@@ -85,9 +85,10 @@ namespace MarkdigEngine.Extensions
                     var originalUrl = linkInline.Url;
                     if (RelativePath.IsRelativePath(originalUrl) && PathUtility.IsRelativePath(originalUrl) && !RelativePath.IsPathFromWorkingFolder(originalUrl) && !originalUrl.StartsWith("#"))
                     {
-                        var currentFilePath = ((RelativePath)context.FilePath);
-                        var newUrl = ((RelativePath)originalUrl).BasedOn(currentFilePath);
-                        linkInline.GetDynamicUrl = () => { return newUrl; };
+                        linkInline.GetDynamicUrl = () =>
+                        {
+                            return (RelativePath)originalUrl - (RelativePath)context.FilePath;
+                        };
                     }
                 }
             }

@@ -340,9 +340,9 @@ Paragraph1
 			var marked = service.Markup(root, "r/root.md");
 			var dependency = marked.Dependency;
             var expected = @"<p>Paragraph1
-<a href=""r/b/a.md"">link</a>
-<a href=""r/link/md/c.md"">link</a>
-<img src=""r/b/img/img.jpg"" alt=""Image"" />
+<a href=""../../a.md"">link</a>
+<a href=""../../md/c.md"">link</a>
+<img src=""../../img/img.jpg"" alt=""Image"" />
 <!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](../root.md)]: Circular dependency found in &quot;r/b/linkAndRefRoot.md&quot; -->[!include[root](../root.md)]<!--END ERROR INCLUDE --></p>
 <p><strong>Hello</strong></p>
 <p><strong>Hello</strong></p>
@@ -401,11 +401,11 @@ Paragraph1
 			};
 			var service = new MarkdigMarkdownService(parameter);
 			var marked = service.Markup(a, "r/a/a.md");
-			var expected = @"<p><img src=""r/img/img.jpg"" alt="""" />
+			var expected = @"<p><img src=""../../../img/img.jpg"" alt="""" />
 <a href=""#anchor""></a>
-<a href=""r/a/a.md"">a</a>
-<a href=""r/b/invalid.md""></a>
-<a href=""r/c/d/d.md#anchor"">d</a></p>".Replace("\r\n", "\n") + "\n";
+<a href=""../../../a/a.md"">a</a>
+<a href=""../../invalid.md""></a>
+<a href=""../../../c/d/d.md#anchor"">d</a></p>".Replace("\r\n", "\n") + "\n";
 			var dependency = marked.Dependency;
 			Assert.Equal(expected, marked.Html);
 			Assert.Equal(
@@ -698,6 +698,48 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 			  new[] { "~/inc1.md", "~/inc2.md", "~/inc3.md" },
 			  dependency.OrderBy(x => x).ToArray());
 		}
+
+        [Fact]
+        [Trait("ButItem", "1101156")]
+        public void TestBlockInclude_ImageRelativePath()
+        {
+            var root = @"
+# Hello World
+
+Test Include File
+
+[!include[refa](../../include/a.md)]
+
+";
+
+            var refa = @"
+# Hello Include File A
+
+![img](./media/refb.png)
+";
+
+            var rootPath = "r/parent_folder/child_folder/root.md";
+            WriteToFile(rootPath, root);
+            WriteToFile("r/include/a.md", refa);
+
+            var parameter = new MarkdownServiceParameters
+            {
+                BasePath = "."
+            };
+            var service = new MarkdigMarkdownService(parameter);
+
+            var result = service.Markup(root, rootPath);
+            var expected = @"<h1 id=""hello-world"">Hello World</h1>
+<p>Test Include File</p>
+<h1 id=""hello-include-file-a"">Hello Include File A</h1>
+<p><img src=""../../media/refb.png"" alt=""img"" /></p>
+";
+            Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
+
+            var dependency = result.Dependency;
+            var expectedDependency = new List<string> { "~/r/include/a.md" };
+            Assert.Equal(expectedDependency.ToImmutableList(), dependency);
+        }
 
 		private static void WriteToFile(string file, string content)
         {
