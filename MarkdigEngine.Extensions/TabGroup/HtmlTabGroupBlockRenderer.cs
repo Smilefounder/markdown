@@ -11,6 +11,7 @@ namespace MarkdigEngine.Extensions
             var groupId = ExtensionsHelper.Escape(block.Id);
             renderer.Write(groupId);
             renderer.Write("\"");
+            renderer.WriteAttributes(block);
             renderer.Write(">\n");
 
             WriteTabHeaders(renderer, block, groupId);
@@ -50,6 +51,7 @@ namespace MarkdigEngine.Extensions
                 {
                     renderer.Write("\" tabindex=\"-1\"");
                 }
+                renderer.WriteAttributes(item.Title);
                 renderer.Write(">");
                 renderer.Render(item.Title);
                 renderer.Write("</a>\n");
@@ -76,11 +78,11 @@ namespace MarkdigEngine.Extensions
 
                 if (i == block.ActiveTabIndex)
                 {
-                    renderer.Write("\">\n");
+                    renderer.Write("\">");
                 }
                 else
                 {
-                    renderer.Write("\" aria-hidden=\"true\" hidden=\"hidden\">\n");
+                    renderer.Write("\" aria-hidden=\"true\" hidden=\"hidden\">");
                 }
                 renderer.Render(item.Content);
                 renderer.Write("</section>\n");

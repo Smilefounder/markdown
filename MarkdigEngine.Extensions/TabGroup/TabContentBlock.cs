@@ -1,15 +1,16 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
 using Markdig.Syntax;
 
 namespace MarkdigEngine.Extensions
 {
-    public class TabContentBlock : LeafBlock
+    public class TabContentBlock : ContainerBlock
     {
-        public ImmutableArray<Block> Content { get; }
-
-        public TabContentBlock(ImmutableArray<Block> content) : base(null)
+        public TabContentBlock(List<Block> blocks) : base(null)
         {
-            Content = content;
+            foreach(var item in blocks)
+            {
+                Add(item);
+            }
         }
     }
 }

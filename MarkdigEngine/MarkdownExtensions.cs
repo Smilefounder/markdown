@@ -23,9 +23,9 @@ namespace MarkdigEngine
                 .UseQuoteSectionNote(parameters)
                 .UseXref()
                 .UseEmojiAndSmiley()
-                .UseLineNumber(context, parameters)
                 .UseTabGroup()
-                .UseInineParserOnly(context);
+                .UseInineParserOnly(context)
+                .UseLineNumber(context, parameters);
         }
 
         public static MarkdownPipelineBuilder UseValidators(this MarkdownPipelineBuilder pipeline, MarkdownContext context, MarkdownServiceParameters parameters)

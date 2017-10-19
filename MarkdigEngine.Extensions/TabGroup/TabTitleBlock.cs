@@ -6,11 +6,8 @@ namespace MarkdigEngine.Extensions
 {
     public class TabTitleBlock : LeafBlock
     {
-        public LinkInline Content { get; }
-
-        public TabTitleBlock(LinkInline content) : base(null)
+        public TabTitleBlock() : base(null)
         {
-            Content = content;
         }
     }
 }

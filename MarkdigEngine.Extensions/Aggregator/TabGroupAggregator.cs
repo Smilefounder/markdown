@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 using Markdig.Syntax;
@@ -36,7 +35,7 @@ namespace MarkdigEngine.Extensions
                         {
                             goto default;
                         }
-                        items.Add(CreateTabItem(headBlock, pair, list));
+                        items.Add(CreateTabItem(headBlock, pair, list, ref offset));
                         pair = temp;
                         list.Clear();
                         break;
@@ -44,7 +43,7 @@ namespace MarkdigEngine.Extensions
                         offset++;
                         goto case null;
                     case null:
-                        items.Add(CreateTabItem(headBlock, pair, list));
+                        items.Add(CreateTabItem(headBlock, pair, list, ref offset));
                         AggregateCore(headBlock, context, offset, items);
                         return true;
                     default:
@@ -62,21 +61,34 @@ namespace MarkdigEngine.Extensions
             List<TabItemBlock> items)
         {
             var groupId = (items[0].Content.ToString() ?? string.Empty).GetMd5String().Replace("/", "-").Remove(10);
-            context.AggregateTo(
-                            new TabGroupBlock(
+
+            context.AggregateTo(new TabGroupBlock(
                                 groupId,
+                                headBlock,
                                 items.ToImmutableArray(),
                                 0),
-                            offset);
+                                offset);
         }
 
         private static TabItemBlock CreateTabItem(
-            HeadingBlock headToken,
+            HeadingBlock headBlock,
             Tuple<string, string, LinkInline> pair,
-            List<Block> list)
+            List<Block> blocks,
+            ref int offset)
         {
-            var title = new TabTitleBlock(pair.Item3);
-            var content = new TabContentBlock(list.ToImmutableArray());
+            foreach (var block in blocks)
+            {
+                block.Parent.Remove(block);
+            }
+            offset -= blocks.Count;
+
+            var title = new TabTitleBlock
+            {
+                Inline = pair.Item3,
+                Line = pair.Item3.Line,
+                Span = pair.Item3.Span
+            };
+            var content = new TabContentBlock(blocks);
 
             return new TabItemBlock(
                 pair.Item1,

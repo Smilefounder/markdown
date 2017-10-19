@@ -7,7 +7,7 @@ namespace MarkdigEngine.Extensions
     {
         protected override void Write(HtmlRenderer renderer, TabTitleBlock block)
         {
-            foreach(var inline in block.Content)
+            foreach(var inline in block.Inline)
             {
                 renderer.Render(inline);
             }
