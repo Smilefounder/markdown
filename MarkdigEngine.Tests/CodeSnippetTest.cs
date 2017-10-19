@@ -7,18 +7,13 @@ using MarkdigEngine;
 using Microsoft.DocAsCode.Plugins;
 using Xunit;
 
-namespace MarkdigEngineTest
+namespace MarkdigEngine.Tests
 {
     public class CodeSnippetTest
     {
         private static MarkupResult SimpleMarkup(string source)
         {
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            return service.Markup(source, "Topic.md");
+            return TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
         }
 
         [Fact]
@@ -33,13 +28,7 @@ namespace MarkdigEngineTest
 
             File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
-            // act
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            var marked = service.Markup("[!code-csharp[name](Program.cs?start=1&end=1&name=tag&range=5-&highlight=1,2-2,4-&dedent=3#tag1)]", "Topic.md");
+            var marked = TestUtility.MarkupWithoutSourceInfo("[!code-csharp[name](Program.cs?start=1&end=1&name=tag&range=5-&highlight=1,2-2,4-&dedent=3#tag1)]", "Topic.md");
 
             // assert
             var expected = @"<pre><code class=""lang-csharp"" name=""name"" highlight-lines=""1,2,4-""> line1
@@ -50,13 +39,7 @@ namespace MarkdigEngineTest
         [Fact]
         public void CodeSnippetShouldNotWorkInParagragh()
         {
-            // act
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            var marked = service.Markup("text [!code[test](CodeSnippet.cs)]", "Topic.md");
+            var marked = TestUtility.MarkupWithoutSourceInfo("text [!code[test](CodeSnippet.cs)]", "Topic.md");
 
             // assert
             var expected = @"<p>text [!code<a href=""CodeSnippet.cs"">test</a>]</p>
@@ -79,13 +62,7 @@ line3
 ";
             File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
-            // act
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            var marked = service.Markup("[!code[tag1](Program.cs#Tag1)]", "Topic.md");
+            var marked = TestUtility.MarkupWithoutSourceInfo("[!code[tag1](Program.cs#Tag1)]", "Topic.md");
 
             // assert
             var expected = "<pre><code name=\"tag1\">line1\nline2\nline3\n</code></pre>";
@@ -109,13 +86,7 @@ line4
 ";
             File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
-            // act
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            var marked = service.Markup("[!code[tag2](Program.cs#Tag2)]", "Topic.md");
+            var marked = TestUtility.MarkupWithoutSourceInfo("[!code[tag2](Program.cs#Tag2)]", "Topic.md");
 
             // assert
             var expected = "<pre><code name=\"tag2\">line4\n</code></pre>";
@@ -139,13 +110,7 @@ line4
 ";
             File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
-            // act
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            var result = service.Markup("[!code[tag1](Program.cs#Tag1)]", "Topic.md");
+            var result = TestUtility.MarkupWithoutSourceInfo("[!code[tag1](Program.cs#Tag1)]", "Topic.md");
 
             // assert
             var expected = "<pre><code name=\"tag1\">line2\n</code></pre>";
@@ -170,13 +135,7 @@ public class MyClass
 #endregion";
             File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
-            // act
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            var marked = service.Markup("[!code[MyClass](Program.cs#main)]", "Topic.md");
+            var marked = TestUtility.MarkupWithoutSourceInfo("[!code[MyClass](Program.cs#main)]", "Topic.md");
 
             // assert
             var expected = @"<pre><code name=""MyClass"">static void Main()
@@ -192,12 +151,8 @@ public class MyClass
         {
             var source = @"[!code-cs[not exist](not_exist_folder/file.cs)]";
             var expected = "<!-- BEGIN ERROR CODESNIPPET: Unable to find not_exist_folder/file.cs -->[!code-cs[not exist](not_exist_folder/file.cs)]<!--END ERROR CODESNIPPET -->";
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            var marked = service.Markup(source, "Topic.md");
+
+            var marked = TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
         }
 
@@ -206,12 +161,8 @@ public class MyClass
         public void TestCodeFenceWithSpaceInFileName()
         {
             var source = @"  [!code-csharp  [  Test Space  ] ( test space in\) link.cs#abc ""title test"" ) ]  ";
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            var marked = service.Markup(source, "Topic.md");
+
+            var marked = TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
             Assert.Equal(@"<!-- BEGIN ERROR CODESNIPPET: Unable to find test space in) link.cs -->[!code-csharp  [  Test Space  ] ( test space in\) link.cs#abc &quot;title test&quot; ) ]<!--END ERROR CODESNIPPET -->", marked.Html);
         }
 

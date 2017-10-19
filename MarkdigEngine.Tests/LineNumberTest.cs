@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-using MarkdigEngine;
 using MarkdigEngine.Extensions;
 using Microsoft.DocAsCode.Plugins;
 using Xunit;
 
-namespace MarkdigEngineTest
+namespace MarkdigEngine.Tests
 {
     public class LineNumberTest
     {
@@ -24,16 +23,7 @@ namespace MarkdigEngineTest
 http://spec.commonmark.org/0.27/)";
 
             // act
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = ".",
-                Extensions = new Dictionary<string, object>
-                {
-                    { LineNumberExtension.EnableSourceInfo, true }
-                }
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            var marked = service.Markup(content, "Topic.md");
+            var marked = TestUtility.Markup(content, "Topic.md");
 
             // assert
             var expected = @"<h1 id=""a-simple-test-for-line-number"" sourceFile=""Topic.md"" sourceStartLineNumber=""2"" sourceEndLineNumber=""2"">a simple test for line number</h1>
@@ -105,17 +95,7 @@ http://spec.commonmark.org/0.27/)";
             File.WriteAllText("LineNumber/a.md", refa);
             File.WriteAllText("LineNumber/b.md", refb);
 
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = ".",
-                Extensions = new Dictionary<string, object>
-                {
-                    { LineNumberExtension.EnableSourceInfo, true }
-                }
-            };
-            var service = new MarkdigMarkdownService(parameter);
-
-            var result = service.Markup(root, "LineNumber/root.md");
+            var result = TestUtility.Markup(root, "LineNumber/root.md");
             var expected = @"<h1 id=""root-content"" sourceFile=""LineNumber/root.md"" sourceStartLineNumber=""2"" sourceEndLineNumber=""2"">Root content</h1>
 <p sourceFile=""LineNumber/root.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3"">This is inline <a href=""http://spec.commonmark.org/0.27/"" sourceFile=""LineNumber/a.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""2"">inline</a> inclusion</p>
 <p sourceFile=""LineNumber/b.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""2""><a href=""http://spec.commonmark.org/0.27/"" sourceFile=""LineNumber/b.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""2"">block</a></p>

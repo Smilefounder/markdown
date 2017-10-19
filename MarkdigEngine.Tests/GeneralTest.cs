@@ -1,23 +1,12 @@
 ﻿using System.IO;
 
-using MarkdigEngine;
 using Microsoft.DocAsCode.Plugins;
 using Xunit;
 
-namespace MarkdigEngineTest
+namespace MarkdigEngine.Tests
 {
     public class GeneralTest
     {
-        private static MarkupResult SimpleMarkup(string source)
-        {
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            return service.Markup(source, "Topic.md");
-        }
-
         [Fact]
         [Trait("Related", "DfmMarkdown")]
         public void TestDfm_EncodeInStrongEM()
@@ -28,8 +17,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
             var expected = @"<p>tag started with non-alphabet should be encoded &lt;1-100&gt;, &lt;_hello&gt;, &lt;?world&gt;, &lt;1_2 href=&quot;good&quot;&gt;, &lt;1 att='bcd'&gt;.
 tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; &lt;a_b href=&quot;good&quot;&gt; <AC att='bcd'></p>
 ";
-            var marked = SimpleMarkup(source);
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
         }
 
         [Fact]
@@ -40,8 +28,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
 
             var expected = @"<p><img src=""girl.png"" alt=""This is image alt text with quotation ' and double quotation &quot;hello&quot; world"" /></p>
 ";
-            var marked = SimpleMarkup(source);
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
         }
 
         [Theory]
@@ -86,8 +73,7 @@ b:
         #endregion
         public void TestDfmInGeneral(string source, string expected)
         {
-            var result = SimpleMarkup(source).Html;
-            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
         }
 
         [Fact]
@@ -98,8 +84,7 @@ b:
             var source = @"[text's string](https://www.google.com.sg/?gfe_rd=cr&ei=Xk ""Google's homepage"")";
             var expected = @"<p><a href=""https://www.google.com.sg/?gfe_rd=cr&amp;ei=Xk"" title=""Google's homepage"">text's string</a></p>
 ";
-            var marked = SimpleMarkup(source);
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
         }
 
         [Fact]
@@ -110,15 +95,14 @@ b:
 
             var expected = @"<p><a href=""girl.png"" title=""title is &quot;hello&quot; world."">This is link text with quotation ' and double quotation &quot;hello&quot; world</a></p>
 ";
-            var marked = SimpleMarkup(source);
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
         }
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
         public void TestDfmTagValidate()
         {
-            var result = SimpleMarkup(@"<div><i>x</i><EM>y</EM><h1>z<pre><code>a*b*c</code></pre></h1></div>
+            var result = TestUtility.MarkupWithoutSourceInfo(@"<div><i>x</i><EM>y</EM><h1>z<pre><code>a*b*c</code></pre></h1></div>
 
 <script>alert(1);</script>");
 
@@ -134,8 +118,7 @@ b:
             var source = @"[User-Defined Date/Time Formats (Format Function)](http://msdn2.microsoft.com/library/73ctwf33\(VS.90\).aspx)";
             var expected = @"<p><a href=""http://msdn2.microsoft.com/library/73ctwf33(VS.90).aspx"">User-Defined Date/Time Formats (Format Function)</a></p>
 ";
-            var marked = SimpleMarkup(source);
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
         }
 
         [Fact]
@@ -152,8 +135,7 @@ hello world";
 <h2 id=""not-yaml-syntax"">Not yaml syntax</h2>
 <p>hello world</p>
 ";
-            var marked = SimpleMarkup(source);
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
         }
 
 
@@ -187,7 +169,7 @@ content-b
 </section>
 </div>
 ";
-            Assert.Equal(expected.Replace("\r\n", "\n"), actual);
+            TestUtility.AssertEqual(expected, actual, TestUtility.Markup);
         }
 
         [Fact]
@@ -241,7 +223,7 @@ content-b
 </section>
 </div>
 ";
-            Assert.Equal(expected.Replace("\r\n", "\n"), actual);
+            TestUtility.AssertEqual(expected, actual, TestUtility.Markup);
         }
 
         [Fact]
@@ -538,8 +520,7 @@ csr
 baz</li>
 </ul>
 ";
-            var marked = SimpleMarkup(source);
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+            TestUtility.AssertEqual(expected, source, str => TestUtility.MarkupWithoutSourceInfo(str));
         }
     }
 }

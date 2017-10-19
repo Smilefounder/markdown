@@ -39,13 +39,7 @@ This is a file A included by another file.
             WriteToFile("r/a.md", refa);
             WriteToFile("r/b.md", refb);
 
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-
-            var result = service.Markup(root, "r/root.md");
+            var result = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Include File</p>
 <h1 id=""hello-include-file-a"">Hello Include File A</h1>
@@ -81,13 +75,7 @@ This is a file A included by another file.
             WriteToFile("r/root.md", root);
             WriteToFile("r/a(x).md", refa);
 
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-
-            var result = service.Markup(root, "r/root.md");
+            var result = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Include File</p>
 <h1 id=""hello-include-file-a"">Hello Include File A</h1>
@@ -122,13 +110,7 @@ This is a file A included by another file.
             WriteToFile("r/root.md", root);
             WriteToFile("r/a.md", refa);
 
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-
-            var result = service.Markup(root, "r/root.md");
+            var result = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Include File</p>
 <h1 id=""hello-include-file-a"">Hello Include File A</h1>
@@ -172,13 +154,7 @@ This is a file A included by another file.
             WriteToFile("r/a.md", refa);
             WriteToFile("r/b.md", refb);
 
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-
-            var result = service.Markup(root, "r/root.md");
+            var result = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Include File</p>
 <h1 id=""hello-include-file-a"">Hello Include File A</h1>
@@ -205,13 +181,7 @@ Test Inline Included File: [!include[refa](~/r/a.md)].
             WriteToFile("r/root.md", root);
             WriteToFile("r/a.md", refa);
 
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-
-            var result = service.Markup(root, "r/root.md"); ;
+            var result = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md"); ;
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Inline Included File: This is a <strong>included</strong> token.</p>
 ";
@@ -238,13 +208,7 @@ Test Inline Included File: [!include[refa](~/r/a.md)].
             WriteToFile("r/root.md", root);
             WriteToFile("r/a.md", refa);
 
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-
-            var result = service.Markup(root, "r/root.md");
+            var result = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Inline Included File: This is a <strong>included</strong> token with <!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](~/r/root.md)]: Circular dependency found in &quot;r/a.md&quot; -->[!include[root](~/r/root.md)]<!--END ERROR INCLUDE -->.</p>
 ";
@@ -270,13 +234,7 @@ block content in Inline Inclusion.";
             WriteToFile("r/root.md", root);
             WriteToFile("r/a.md", refa);
 
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-
-            var result = service.Markup(root, "r/root.md");
+            var result = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Inline Included File: ## This is a included tokenblock content in Inline Inclusion..</p>
 ";
@@ -332,12 +290,7 @@ Paragraph1
 			WriteToFile("r/link/link2.md", link2);
 			WriteToFile("r/c/c.md", c);
 			WriteToFile("r/empty.md", string.Empty);
-			var parameter = new MarkdownServiceParameters
-			{
-				BasePath = "."
-			};
-			var service = new MarkdigMarkdownService(parameter);
-			var marked = service.Markup(root, "r/root.md");
+			var marked = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
 			var dependency = marked.Dependency;
             var expected = @"<p>Paragraph1
 <a href=""../../a.md"">link</a>
@@ -395,12 +348,7 @@ Paragraph1
 			WriteToFile("r/a/a.md", a);
 			WriteToFile("r/b/token.md", token);
 			WriteToFile("r/c/d/d.md", d);
-			var parameter = new MarkdownServiceParameters
-			{
-				BasePath = "."
-			};
-			var service = new MarkdigMarkdownService(parameter);
-			var marked = service.Markup(a, "r/a/a.md");
+			var marked = TestUtility.MarkupWithoutSourceInfo(a, "r/a/a.md");
 			var expected = @"<p><img src=""../../../img/img.jpg"" alt="""" />
 <a href=""#anchor""></a>
 <a href=""../../../a/a.md"">a</a>
@@ -412,7 +360,7 @@ Paragraph1
 				new[] { "~/r/b/token.md" },
 				dependency.OrderBy(x => x).ToArray());
 
-			marked = service.Markup(d, "r/c/d/d.md");
+			marked = TestUtility.MarkupWithoutSourceInfo(d, "r/c/d/d.md");
 			dependency = marked.Dependency;
 			Assert.Equal(expected, marked.Html);
 			Assert.Equal(
@@ -420,7 +368,7 @@ Paragraph1
 				dependency.OrderBy(x => x).ToArray());
 
 			dependency.Clear();
-			marked = service.Markup(r, "r/r.md");
+			marked = TestUtility.MarkupWithoutSourceInfo(r, "r/r.md");
 			dependency = marked.Dependency;
 			Assert.Equal($@"{expected}{expected}", marked.Html);
 			Assert.Equal(
@@ -440,12 +388,7 @@ Paragraph1
 			var linkAndRefRoot = @"Paragraph1";
 			WriteToFile("r/root.md", root);
 			WriteToFile("r/b/linkAndRefRoot.md", linkAndRefRoot);
-			var parameter = new MarkdownServiceParameters
-			{
-				BasePath = "."
-			};
-			var service = new MarkdigMarkdownService(parameter);
-			var marked = service.Markup(root, "r/root.md");
+			var marked = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
 			var expected = @"<p>Paragraph1</p>" + "\n";
 			Assert.Equal(expected, marked.Html);
 		}
@@ -646,12 +589,7 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 			File.WriteAllText("ref2.md", ref2);
 			File.WriteAllText("ref3.md", ref3);
 
-			var parameter = new MarkdownServiceParameters
-			{
-				BasePath = "."
-			};
-			var service = new MarkdigMarkdownService(parameter);
-			var marked = service.Markup(root, "root.md");
+			var marked = TestUtility.MarkupWithoutSourceInfo(root, "root.md");
 			var dependency = marked.Dependency;
             var expected = "<p>Inline ## Inline inclusion do not parse header <!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](root.md)]: Circular dependency found in &quot;ref2.md&quot; -->[!include[root](root.md)]<!--END ERROR INCLUDE -->\nInline <strong>Hello</strong></p>\n";
 
@@ -686,12 +624,7 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 			File.WriteAllText("inc2.md", inc2);
 			File.WriteAllText("inc3.md", inc3);
 
-			var parameter = new MarkdownServiceParameters
-			{
-				BasePath = "."
-			};
-			var service = new MarkdigMarkdownService(parameter);
-			var marked = service.Markup(root, "root.md");
+			var marked = TestUtility.MarkupWithoutSourceInfo(root, "root.md");
 			var dependency = marked.Dependency;
 			Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
 			Assert.Equal(
@@ -722,13 +655,7 @@ Test Include File
             WriteToFile(rootPath, root);
             WriteToFile("r/include/a.md", refa);
 
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-
-            var result = service.Markup(root, rootPath);
+            var result = TestUtility.MarkupWithoutSourceInfo(root, rootPath);
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Include File</p>
 <h1 id=""hello-include-file-a"">Hello Include File A</h1>
