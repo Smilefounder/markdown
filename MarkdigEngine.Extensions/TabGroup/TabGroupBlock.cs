@@ -6,18 +6,18 @@ namespace MarkdigEngine.Extensions
 {
     public class TabGroupBlock : ContainerBlock
     {
-        public string Id { get; }
+        public string Id { get; set; }
 
         public int ActiveTabIndex { get; }
 
         public ImmutableArray<TabItemBlock> Items { get; }
 
-        public TabGroupBlock(string id, HeadingBlock headBlock, ImmutableArray<TabItemBlock> blocks, int activeTabIndex) : base(null)
+        public TabGroupBlock(string id, ImmutableArray<TabItemBlock> blocks, int startLine, int startSpan, int activeTabIndex) : base(null)
         {
             Id = id;
             ActiveTabIndex = activeTabIndex;
             Items = blocks;
-            Line = headBlock.Line;
+            Line = startLine;
 
             foreach (var item in blocks)
             {
@@ -26,7 +26,7 @@ namespace MarkdigEngine.Extensions
             }
 
             var length = blocks.Length;
-            Span = new SourceSpan(headBlock.Span.Start, blocks[length-1].Content.Span.End);
+            Span = new SourceSpan(startSpan, blocks[length-1].Content.Span.End);
         }
     }
 }

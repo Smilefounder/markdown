@@ -1,5 +1,6 @@
 ﻿using Markdig.Renderers;
 using Markdig.Renderers.Html;
+using Markdig.Syntax;
 
 namespace MarkdigEngine.Extensions
 {
@@ -9,7 +10,10 @@ namespace MarkdigEngine.Extensions
         {
             foreach(var item in block)
             {
-                renderer.Render(item);
+                if (!(item is ThematicBreakBlock))
+                {
+                    renderer.Render(item);
+                }
             }
         }
     }

@@ -23,7 +23,7 @@ content-a
 content-b
 - - -",
                 $@"<p sourceFile=""Topic.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""1"">Tab group test case</p>
-<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sourceStartLineNumber=""2"" sourceEndLineNumber=""5"">
+<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sourceStartLineNumber=""2"" sourceEndLineNumber=""6"">
 <ul role=""tablist"">
 <li role=""presentation"">
 <a href=""#tabpanel_{groupId}_a"" role=""tab"" aria-controls=""tabpanel_{groupId}_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""Topic.md"" sourceStartLineNumber=""2"" sourceEndLineNumber=""2"">title-a</a>
@@ -33,9 +33,11 @@ content-b
 </li>
 </ul>
 <section id=""tabpanel_{groupId}_a"" role=""tabpanel"" data-tab=""a"">
+
 <p sourceFile=""Topic.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3"">content-a</p>
 </section>
 <section id=""tabpanel_{groupId}_b_c"" role=""tabpanel"" data-tab=""b"" data-condition=""c"" aria-hidden=""true"" hidden=""hidden"">
+
 <p sourceFile=""Topic.md"" sourceStartLineNumber=""5"" sourceEndLineNumber=""5"">content-b</p>
 </section>
 </div>

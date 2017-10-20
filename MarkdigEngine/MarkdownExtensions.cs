@@ -60,11 +60,15 @@ namespace MarkdigEngine
         public static MarkdownPipelineBuilder UseTabGroup(this MarkdownPipelineBuilder pipeline)
         {
             var tabGroupAggregator = new TabGroupAggregator();
-            var visitor = new MarkdownDocumentAggregatorVisitor(tabGroupAggregator);
+            var aggregateVisitor = new MarkdownDocumentAggregatorVisitor(tabGroupAggregator);
+
+            var tagGroupIdRewriter = new TabGroupIdRewriter();
+            var rewriteVisitor = new MarkdownDocumentVisitor(tagGroupIdRewriter);
 
             pipeline.DocumentProcessed += document =>
             {
-                visitor.Visit(document);
+                aggregateVisitor.Visit(document);
+                rewriteVisitor.Visit(document);
             };
 
             pipeline.Extensions.Add(new TabGroupExtension());

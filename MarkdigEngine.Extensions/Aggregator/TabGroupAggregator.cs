@@ -41,10 +41,13 @@ namespace MarkdigEngine.Extensions
                         break;
                     case ThematicBreakBlock hr:
                         offset++;
+                        list.Add(block);
                         goto case null;
                     case null:
                         items.Add(CreateTabItem(headBlock, pair, list, ref offset));
-                        AggregateCore(headBlock, context, offset, items);
+                        var startLine = headBlock.Line;
+                        var startSpan = headBlock.Span.Start;
+                        AggregateCore(context, items, startLine, startSpan, offset);
                         return true;
                     default:
                         list.Add(block);
@@ -55,17 +58,20 @@ namespace MarkdigEngine.Extensions
         }
 
         private static void AggregateCore(
-            HeadingBlock headBlock,
             BlockAggregateContext context,
-            int offset,
-            List<TabItemBlock> items)
+            List<TabItemBlock> items,
+            int startLine,
+            int startSpan,
+            int offset
+            )
         {
-            var groupId = (items[0].Content.ToString() ?? string.Empty).GetMd5String().Replace("/", "-").Remove(10);
+            var groupId = (items[0]?.Content?.ToString() ?? string.Empty).GetMd5String().Replace("/", "-").Remove(10);
 
             context.AggregateTo(new TabGroupBlock(
                                 groupId,
-                                headBlock,
                                 items.ToImmutableArray(),
+                                startLine,
+                                startSpan,
                                 0),
                                 offset);
         }

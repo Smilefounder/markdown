@@ -78,11 +78,11 @@ namespace MarkdigEngine.Extensions
 
                 if (i == block.ActiveTabIndex)
                 {
-                    renderer.Write("\">");
+                    renderer.Write("\">\n");
                 }
                 else
                 {
-                    renderer.Write("\" aria-hidden=\"true\" hidden=\"hidden\">");
+                    renderer.Write("\" aria-hidden=\"true\" hidden=\"hidden\">\n");
                 }
                 renderer.Render(item.Content);
                 renderer.Write("</section>\n");

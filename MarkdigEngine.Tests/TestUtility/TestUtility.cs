@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 
 using MarkdigEngine.Extensions;
-using System.IO;
 
 using Microsoft.DocAsCode.Plugins;
 using Xunit;
-using System;
 
 namespace MarkdigEngine.Tests
 {

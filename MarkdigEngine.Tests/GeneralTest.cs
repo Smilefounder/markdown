@@ -143,11 +143,8 @@ hello world";
         [Trait("Related", "DfmMarkdown")]
         public void TestTabGroup()
         {
-            //var options = DocfxFlavoredMarked.CreateDefaultOptions();
-            //options.ShouldExportSourceInfo = true;
-            //var actual = DocfxFlavoredMarked.Markup(null, null, options, @"# [title-a](#tab/a)
             string actual = @"# [title-a](#tab/a)
-            content - a
+content-a
 # <a id=""x""></a>[title-b](#tab/b/c)
 content-b
 - - -";
@@ -169,18 +166,15 @@ content-b
 </section>
 </div>
 ";
-            TestUtility.AssertEqual(expected, actual, TestUtility.Markup);
+            TestUtility.AssertEqual(expected, actual, content => TestUtility.Markup(content, "test.md"));
         }
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
         public void TestTabGroup_2()
         {
-            //var options = DocfxFlavoredMarked.CreateDefaultOptions();
-            //options.ShouldExportSourceInfo = true;
-            //var actual = DocfxFlavoredMarked.Markup(null, null, options, @"# [title-a](#tab/a)
             string actual = @"# [title-a](#tab/a)
-            content - a
+content-a
 # [title-b](#tab/b/c)
 content-b
 - - -
@@ -189,7 +183,7 @@ content-a
 # [title-b](#tab/b/a)
 content-b
 - - -";
-            var groupId = "uBn0rykxXo";
+            var groupId = "w61hnTEDJ7";
             var expected = $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""test.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""5"">
 <ul role=""tablist"">
 <li role=""presentation"">
@@ -209,21 +203,23 @@ content-b
 <div class=""tabGroup"" id=""tabgroup_{groupId}-1"" sourceFile=""test.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""10"">
 <ul role=""tablist"">
 <li role=""presentation"">
-<a href=""#tabpanel_{groupId}-1_a"" role=""tab"" aria-controls=""tabpanel_uBn0rykxXo-1_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""test.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""6"">title-a</a>
+<a href=""#tabpanel_{groupId}-1_a"" role=""tab"" aria-controls=""tabpanel_{groupId}-1_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""test.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""6"">title-a</a>
 </li>
 <li role=""presentation"">
-<a href=""#tabpanel_{groupId}-1_b_a"" role=""tab"" aria-controls=""tabpanel_uBn0rykxXo-1_b_a"" data-tab=""b"" data-condition=""a"" tabindex=""-1"" sourceFile=""test.md"" sourceStartLineNumber=""8"" sourceEndLineNumber=""8"">title-b</a>
+<a href=""#tabpanel_{groupId}-1_b_a"" role=""tab"" aria-controls=""tabpanel_{groupId}-1_b_a"" data-tab=""b"" data-condition=""a"" tabindex=""-1"" sourceFile=""test.md"" sourceStartLineNumber=""8"" sourceEndLineNumber=""8"">title-b</a>
 </li>
 </ul>
 <section id=""tabpanel_{groupId}-1_a"" role=""tabpanel"" data-tab=""a"">
+
 <p sourceFile=""test.md"" sourceStartLineNumber=""7"" sourceEndLineNumber=""7"">content-a</p>
 </section>
 <section id=""tabpanel_{groupId}-1_b_a"" role=""tabpanel"" data-tab=""b"" data-condition=""a"" aria-hidden=""true"" hidden=""hidden"">
+
 <p sourceFile=""test.md"" sourceStartLineNumber=""9"" sourceEndLineNumber=""9"">content-b</p>
 </section>
 </div>
 ";
-            TestUtility.AssertEqual(expected, actual, TestUtility.Markup);
+            TestUtility.AssertEqual(expected, actual, content => TestUtility.Markup(content, "test.md"));
         }
 
         [Fact]
