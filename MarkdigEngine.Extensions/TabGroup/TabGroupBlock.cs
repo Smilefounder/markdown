@@ -8,7 +8,7 @@ namespace MarkdigEngine.Extensions
     {
         public string Id { get; set; }
 
-        public int ActiveTabIndex { get; }
+        public int ActiveTabIndex { get; set; }
 
         public ImmutableArray<TabItemBlock> Items { get; }
 

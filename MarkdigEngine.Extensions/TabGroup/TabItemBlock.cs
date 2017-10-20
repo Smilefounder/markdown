@@ -10,7 +10,7 @@
 
         public TabContentBlock Content { get; }
 
-        public bool Visible { get; }
+        public bool Visible { get; set; }
 
         public TabItemBlock(string id, string condition, TabTitleBlock title, TabContentBlock content, bool visible)
         {
