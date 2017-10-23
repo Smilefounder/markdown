@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using Microsoft.DocAsCode.Common;
 
-namespace MarkdigEngine.Test
+namespace MarkdigEngine.Tests
 {
     internal class TestLoggerListener : ILoggerListener
     {

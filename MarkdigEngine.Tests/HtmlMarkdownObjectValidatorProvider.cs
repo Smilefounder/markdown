@@ -4,10 +4,9 @@ using System.Collections.Immutable;
 using MarkdigEngine.Extensions;
 
 using Markdig.Syntax;
-using MarkdigEngine.Extensions;
 using Microsoft.DocAsCode.Common;
 
-namespace MarkdigEngine.Test
+namespace MarkdigEngine.Tests
 {
     [Export(ContractName, typeof(IMarkdownObjectValidatorProvider))]
     public class HtmlMarkdownObjectValidatorProvider : IMarkdownObjectValidatorProvider

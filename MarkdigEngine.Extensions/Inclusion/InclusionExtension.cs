@@ -87,7 +87,7 @@ namespace MarkdigEngine.Extensions
                     {
                         linkInline.GetDynamicUrl = () =>
                         {
-                            return (RelativePath)originalUrl - (RelativePath)context.FilePath;
+                            return ((RelativePath)context.FilePath + (RelativePath)originalUrl).GetPathFromWorkingFolder();
                         };
                     }
                 }

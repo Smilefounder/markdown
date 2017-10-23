@@ -9,7 +9,7 @@ using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
 using Xunit;
 
-namespace MarkdigEngine.Test
+namespace MarkdigEngine.Tests
 {
     public class ValidationTest
     {
