@@ -25,7 +25,8 @@ namespace MarkdigEngine
                 .UseEmojiAndSmiley()
                 .UseTabGroup()
                 .UseInineParserOnly(context)
-                .UseLineNumber(context, parameters);
+                .UseLineNumber(context, parameters)
+                .UseMonikerRange();
         }
 
         public static MarkdownPipelineBuilder UseValidators(this MarkdownPipelineBuilder pipeline, MarkdownContext context, MarkdownServiceParameters parameters)
@@ -157,6 +158,12 @@ namespace MarkdigEngine
         public static MarkdownPipelineBuilder UseXref(this MarkdownPipelineBuilder pipeline)
         {
             pipeline.Extensions.Insert(0, new XrefInlineExtension());
+            return pipeline;
+        }
+
+        public static MarkdownPipelineBuilder UseMonikerRange(this MarkdownPipelineBuilder pipeline)
+        {
+            pipeline.Extensions.AddIfNotAlready<MonikerRangeExtension>();
             return pipeline;
         }
 

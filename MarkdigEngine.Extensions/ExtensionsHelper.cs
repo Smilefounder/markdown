@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 using Markdig.Helpers;
+using Markdig.Parsers;
 using Markdig.Renderers;
 using Microsoft.DocAsCode.Common;
 
@@ -73,6 +74,20 @@ namespace MarkdigEngine.Extensions
             while (c != '\0' && index < startString.Length && CharEqual(c, startString[index], isCaseSensitive))
             {
                 c = slice.NextChar();
+                index++;
+            }
+
+            return index == startString.Length;
+        }
+
+        public static bool MatchStart(BlockProcessor processor, string startString, bool isCaseSensitive = true)
+        {
+            var c = processor.CurrentChar;
+            var index = 0;
+
+            while (c != '\0' && index < startString.Length && CharEqual(c, startString[index], isCaseSensitive))
+            {
+                c = processor.NextChar();
                 index++;
             }
 
@@ -223,7 +238,7 @@ namespace MarkdigEngine.Extensions
             return false;
         }
 
-        private static bool IsEscaped(StringSlice slice)
+        public static bool IsEscaped(StringSlice slice)
         {
             return slice.PeekCharExtra(-1) == '\\';
         }
