@@ -1,11 +1,6 @@
 ﻿using Markdig;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Markdig.Renderers;
 using Markdig.Extensions.CustomContainers;
+using Markdig.Renderers;
 
 namespace MarkdigEngine.Extensions
 {
@@ -13,7 +8,14 @@ namespace MarkdigEngine.Extensions
     {
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
-            pipeline.BlockParsers.InsertBefore<CustomContainerParser>(new MonikerRangeParser());
+            if (pipeline.BlockParsers.Contains<CustomContainerParser>())
+            {
+                pipeline.BlockParsers.InsertBefore<CustomContainerParser>(new MonikerRangeParser());
+            }
+            else
+            {
+                pipeline.BlockParsers.AddIfNotAlready<MonikerRangeParser>();
+            }            
         }
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)

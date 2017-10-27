@@ -11,7 +11,9 @@ namespace MarkdigEngine
         {
             var builder = new MarkdownPipelineBuilder()
                                 .UseAdvancedExtensions()
-                                .UseDfmExtensions(this, context, parameters);
+                                .UseDfmExtensions(this, context, parameters)
+                                .RemoveUnusedExtensions();
+
             var pipeline = builder.Build();
 
             return Markdown.ToHtml(context.Content, pipeline);

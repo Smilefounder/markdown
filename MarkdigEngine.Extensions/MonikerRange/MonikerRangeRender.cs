@@ -9,7 +9,7 @@ namespace MarkdigEngine.Extensions
     {
         protected override void Write(HtmlRenderer renderer, MonikerRangeBlock obj)
         {
-            renderer.Write("<div").Write($" range=\"{obj.MonikerRange}\"").WriteAttributes(obj).WriteLine(">");
+            renderer.Write("<div").WriteAttributes(obj).Write($" range=\"{obj.MonikerRange}\"").WriteLine(">");
             renderer.WriteChildren(obj);
             renderer.WriteLine("</div>");
         }

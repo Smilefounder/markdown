@@ -1,6 +1,7 @@
 ﻿using System.IO;
 
 using MarkdigEngine.Extensions;
+using Markdig.Extensions.CustomContainers;
 
 using Markdig;
 using Markdig.Parsers;
@@ -27,6 +28,13 @@ namespace MarkdigEngine
                 .UseInineParserOnly(context)
                 .UseLineNumber(context, parameters)
                 .UseMonikerRange();
+        }
+
+        public static MarkdownPipelineBuilder RemoveUnusedExtensions(this MarkdownPipelineBuilder pipeline)
+        {
+            pipeline.Extensions.RemoveAll(extension => extension is CustomContainerExtension);
+
+            return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseValidators(this MarkdownPipelineBuilder pipeline, MarkdownContext context, MarkdownServiceParameters parameters)
