@@ -22,7 +22,8 @@ namespace MarkdigEngine.Extensions
                 return BlockState.None;
             }
 
-            if (ExtensionsHelper.IsEscaped(processor.Line))
+            var slice = processor.Line;
+            if (ExtensionsHelper.IsEscaped(slice))
             {
                 return BlockState.None;
             }
@@ -31,36 +32,36 @@ namespace MarkdigEngine.Extensions
             var sourcePosition = processor.Start;
             var colonCount = 0;
 
-            var c = processor.CurrentChar;
+            var c = slice.CurrentChar;
             while (c == Colon)
             {
-                c = processor.NextChar();
+                c = slice.NextChar();
                 colonCount++;
             }
 
             if (colonCount < 3) return BlockState.None;
 
-            SkipSapces(processor);
+            SkipSapces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(processor, "moniker", false))
+            if (!ExtensionsHelper.MatchStart(ref slice, "moniker", false))
             {
                 return BlockState.None;
             }
 
-            SkipSapces(processor);
+            SkipSapces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(processor, "range=\"", false))
+            if (!ExtensionsHelper.MatchStart(ref slice, "range=\"", false))
             {
                 return BlockState.None;
             }
 
             var range = processor.StringBuilders.Get();
-            c = processor.CurrentChar;
+            c = slice.CurrentChar;
 
             while (c != '"')
             {
                 range.Append(c);
-                c = processor.NextChar();
+                c = slice.NextChar();
             }
 
             if (c != '"')
@@ -68,10 +69,10 @@ namespace MarkdigEngine.Extensions
                 return BlockState.None;
             }
 
-            c = processor.NextChar();
+            c = slice.NextChar();
             while (c.IsSpace())
             {
-                c = processor.NextChar();
+                c = slice.NextChar();
             }
 
             if (!c.IsZero())
@@ -84,12 +85,12 @@ namespace MarkdigEngine.Extensions
                 MonikerRange = range.ToString(),
                 ColonCount = colonCount,
                 Column = column,
-                Span = new SourceSpan(sourcePosition, processor.Line.End),
+                Span = new SourceSpan(sourcePosition, slice.End),
             });
 
             processor.StringBuilders.Release(range);
 
-            return BlockState.Continue;
+            return BlockState.ContinueDiscard;
         }
 
         public override BlockState TryContinue(BlockProcessor processor, Block block)
@@ -99,40 +100,42 @@ namespace MarkdigEngine.Extensions
                 return BlockState.Continue;
             }
 
+            var slice = processor.Line;
             var monikerRange = (MonikerRangeBlock)block;
 
-            SkipSapces(processor);
+            SkipSapces(ref slice);
 
-            if(!ExtensionsHelper.MatchStart(processor, new string(':', monikerRange.ColonCount)))
+            if(!ExtensionsHelper.MatchStart(ref slice, new string(':', monikerRange.ColonCount)))
             {
                 return BlockState.Continue;
             }
 
-            SkipSapces(processor);
+            SkipSapces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(processor, "moniker-end", false))
+            if (!ExtensionsHelper.MatchStart(ref slice, "moniker-end", false))
             {
                 return BlockState.Continue;
             }
 
-            var c = SkipSapces(processor);
+            var c = SkipSapces(ref slice);
 
             if (!c.IsZero())
             {
                 Logger.LogWarning($"MonikerRange have some invalid chars in the ending.");
             }
-            block.UpdateSpanEnd(processor.Line.End);
 
-            return BlockState.Break;
+            block.UpdateSpanEnd(slice.End);
+
+            return BlockState.BreakDiscard;
         }
 
-        public char SkipSapces(BlockProcessor processor)
+        public char SkipSapces(ref StringSlice slice)
         {
-            var c = processor.CurrentChar;
+            var c = slice.CurrentChar;
 
             while (c.IsSpaceOrTab())
             {
-                c = processor.NextChar();
+                c = slice.NextChar();
             }
 
             return c;
