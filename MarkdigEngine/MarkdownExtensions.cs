@@ -23,17 +23,11 @@ namespace MarkdigEngine
                 .UseDFMCodeInfoPrefix()
                 .UseQuoteSectionNote(parameters)
                 .UseXref()
-                .UseEmoji()
+                .UseEmojiAndSmiley(false)
                 .UseTabGroup()
                 .UseInineParserOnly(context)
                 .UseLineNumber(context, parameters)
                 .UseMonikerRange();
-        }
-
-        public static MarkdownPipelineBuilder UseEmoji(this MarkdownPipelineBuilder pipeline)
-        {
-            pipeline.Extensions.AddIfNotAlready<EmojiExtension>();
-            return pipeline;
         }
 
         public static MarkdownPipelineBuilder RemoveUnusedExtensions(this MarkdownPipelineBuilder pipeline)
