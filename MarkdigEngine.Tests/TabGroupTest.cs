@@ -28,7 +28,7 @@ content-b
 <li role=""presentation"">
 <a href=""#tabpanel_{groupId}_a"" role=""tab"" aria-controls=""tabpanel_{groupId}_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""Topic.md"" sourceStartLineNumber=""2"" sourceEndLineNumber=""2"">title-a</a>
 </li>
-<li role=""presentation"">
+<li role=""presentation"" aria-hidden=""true"" hidden=""hidden"">
 <a href=""#tabpanel_{groupId}_b_c"" role=""tab"" aria-controls=""tabpanel_{groupId}_b_c"" data-tab=""b"" data-condition=""c"" tabindex=""-1"" sourceFile=""Topic.md"" sourceStartLineNumber=""4"" sourceEndLineNumber=""4"">title-b</a>
 </li>
 </ul>
