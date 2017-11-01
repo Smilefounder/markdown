@@ -5,12 +5,19 @@
   version: 1.0.{build}
   image: Visual Studio 2017
   build_script:
-    - nuget restore MarkdigEngine.sln
+    - dotnet restore MarkdigEngine.sln
     - msbuild MarkdigEngine.sln /p:Configuration=Release
+    - cd MarkdigEngine.Tests
+    - dotnet xunit
+    - cd ..
+    - ps: |
+          if (-not $env:APPVEYOR_PULL_REQUEST_NUMBER)
+          {
+            & nuget pack Microsoft.DocAsCode.MarkdigEngine.nuspec -version $env:APPVEYOR_BUILD_VERSION -Prop Configuration=Release
+            & nuget push ./Microsoft.DocAsCode.MarkdigEngine.$env:APPVEYOR_BUILD_VERSION.nupkg $env:mygetKey -Source $env:mygetMasterUrl
+          }
   test: off
-  on_success:
-    - nuget pack Microsoft.DocAsCode.MarkdigEngine.nuspec -version %APPVEYOR_BUILD_VERSION% -Prop Configuration=Release
-    - nuget push ./Microsoft.DocAsCode.MarkdigEngine.%APPVEYOR_BUILD_VERSION%.nupkg %mygetKey% -Source %mygetMasterUrl%
+
 -
   branches:
     only:
@@ -18,9 +25,15 @@
   version: 1.0.{build}
   image: Visual Studio 2017
   build_script:
-    - nuget restore MarkdigEngine.sln
+    - dotnet restore MarkdigEngine.sln
     - msbuild MarkdigEngine.sln /p:Configuration=Release
+    - cd MarkdigEngine.Tests
+    - dotnet xunit
+    - cd ..
+    - ps: |
+          if (-not $env:APPVEYOR_PULL_REQUEST_NUMBER)
+          {
+            & nuget pack Microsoft.DocAsCode.MarkdigEngine.nuspec -version $env:APPVEYOR_BUILD_VERSION -Prop Configuration=Release
+            & nuget push ./Microsoft.DocAsCode.MarkdigEngine.$env:APPVEYOR_BUILD_VERSION.nupkg $env:mygetKey -Source $env:mygetDevUrl
+          }
   test: off
-  on_success:
-    - nuget pack Microsoft.DocAsCode.MarkdigEngine.nuspec -version %APPVEYOR_BUILD_VERSION% -Prop Configuration=Release
-    - nuget push ./Microsoft.DocAsCode.MarkdigEngine.%APPVEYOR_BUILD_VERSION%.nupkg %mygetKey% -Source %mygetDevUrl%
