@@ -1,9 +1,7 @@
-﻿using Markdig;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+using Markdig;
 using Markdig.Renderers;
 using Markdig.Parsers;
 using Markdig.Extensions.AutoIdentifiers;
@@ -17,6 +15,8 @@ namespace MarkdigEngine.Extensions
     public class DFMHeadingIdExtension : IMarkdownExtension
     {
         private const string AutoIdentifierKey = "AutoIdentifier";
+        private static readonly Regex OpenARegex = new Regex(@"^\<a +(?:name|id)=\""([\w \-\.]+)\"" *\>$", RegexOptions.Compiled);
+        private static readonly Regex CloseARegex = new Regex(@"^\<\/a\>$", RegexOptions.Compiled);
 
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
@@ -110,8 +110,11 @@ namespace MarkdigEngine.Extensions
                     return;
                 }
 
-                // Use a HtmlRenderer with 
-                var headingText = LinkHelper.Urilize(source, true);
+                string headingText = GetARegexIdAndRemove(headingBlock);
+                if (string.IsNullOrEmpty(headingText))
+                {
+                    headingText = LinkHelper.Urilize(source, true);
+                }
 
                 var baseHeadingId = string.IsNullOrEmpty(headingText) ? "section" : headingText;
                 int index = 0;
@@ -129,6 +132,38 @@ namespace MarkdigEngine.Extensions
 
                 attributes.Id = headingId;
             };
+        }
+
+        private string GetARegexIdAndRemove(HeadingBlock headingBlock)
+        {
+            if (headingBlock?.Inline == null || headingBlock.Inline.Count() <= 2)
+            {
+                return null;
+            }
+
+            var openInline = headingBlock?.Inline?.FirstChild as HtmlInline;
+            var closeInline = openInline?.NextSibling as HtmlInline;
+
+            if (openInline == null || closeInline == null)
+            {
+                return null;
+            }
+
+            var openMatch = OpenARegex.Match(openInline.Tag);
+
+            if (!openMatch.Success)
+            {
+                return null;
+            }
+
+            if (!CloseARegex.IsMatch(closeInline.Tag))
+            {
+                return null;
+            }
+
+            openInline.Remove();
+            closeInline.Remove();
+            return openMatch.Groups[1].Value;
         }
     }
 }
