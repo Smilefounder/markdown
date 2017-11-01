@@ -547,7 +547,7 @@ public static void Foo()
         }
 
 
-        //[Fact]
+        [Fact(Skip = "won't support")]
         [Trait("Related", "DfmMarkdown")]
         public void TestDfmFencesInlineLevel()
         {
@@ -630,7 +630,7 @@ public static void Foo()
                 marked.Dependency.OrderBy(x => x));
         }
 
-        //[Fact]
+        [Fact(Skip = "won't support")]
         [Trait("Related", "DfmMarkdown")]
         public void TestDfmFencesInlineLevel_Legacy()
         {

@@ -393,10 +393,10 @@ Paragraph1
 			Assert.Equal(expected, marked.Html);
 		}
 
-		#region Fallback folders testing
+        #region Fallback folders testing
 
-		//[Fact]
-		[Trait("Related", "DfmMarkdown")]
+        [Fact(Skip = "won't support")]
+        [Trait("Related", "DfmMarkdown")]
 		public void TestFallback_Inclusion_random_name()
 		{
 			// -root_folder (this is also docset folder)
@@ -461,8 +461,8 @@ markdown token1.md content end.";
 				dependency.OrderBy(x => x).ToArray());
 		}
 
-		//[Fact]
-		[Trait("Related", "DfmMarkdown")]
+        [Fact(Skip = "won't support")]
+        [Trait("Related", "DfmMarkdown")]
 		public void TestFallback_InclusionWithCodeFences()
 		{
 			// -root_folder (this is also docset folder)

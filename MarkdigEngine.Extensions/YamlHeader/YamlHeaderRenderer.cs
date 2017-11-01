@@ -34,6 +34,7 @@ namespace MarkdigEngine.Extensions
             catch (Exception)
             {
                 // not a valid ymlheader, do nothing
+                Logger.LogWarning("Invalid YamlHeader, ignored");
             }
         }
     }

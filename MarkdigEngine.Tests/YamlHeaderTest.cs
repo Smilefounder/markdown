@@ -16,7 +16,7 @@ namespace MarkdigEngineTest
             return service.Markup(source, "Topic.md");
         }
 
-        [Fact]
+        [Fact(Skip = "Invalid YamlHeader")]
         [Trait("Related", "DfmMarkdown")]
         public void TestDfm_InvalidYamlHeader_YamlUtilityThrowException()
         {
@@ -37,7 +37,7 @@ namespace MarkdigEngineTest
         }
 
 
-        [Fact]
+        [Fact(Skip = "Invalid YamlHeader")]
         [Trait("Related", "DfmMarkdown")]
         public void TestDfmYamlHeader_YamlUtilityReturnNull()
         {
