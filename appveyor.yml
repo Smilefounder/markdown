@@ -33,7 +33,7 @@
     - ps: |
           if (-not $env:APPVEYOR_PULL_REQUEST_NUMBER)
           {
-            & nuget pack Microsoft.DocAsCode.MarkdigEngine.nuspec -version $env:APPVEYOR_BUILD_VERSION -Prop Configuration=Release
-            & nuget push ./Microsoft.DocAsCode.MarkdigEngine.$env:APPVEYOR_BUILD_VERSION.nupkg $env:mygetKey -Source $env:mygetDevUrl
+            & nuget pack Microsoft.DocAsCode.MarkdigEngine.nuspec -version $env:APPVEYOR_BUILD_VERSION-alpha -Prop Configuration=Release
+            & nuget push ./Microsoft.DocAsCode.MarkdigEngine.$env:APPVEYOR_BUILD_VERSION-alpha.nupkg $env:mygetKey -Source $env:mygetDevUrl
           }
   test: off
