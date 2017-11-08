@@ -10,7 +10,7 @@ namespace MarkdigEngine
         public string Markup(MarkdownContext context, MarkdownServiceParameters parameters)
         {
             var builder = new MarkdownPipelineBuilder()
-                                .UseAdvancedExtensions()
+                                .UseMarkdigAdvancedExtensions()
                                 .UseDfmExtensions(this, context, parameters)
                                 .RemoveUnusedExtensions();
 

@@ -13,6 +13,15 @@ namespace MarkdigEngine
 {
     public static class MarkdownExtensions
     {
+        public static MarkdownPipelineBuilder UseMarkdigAdvancedExtensions(this MarkdownPipelineBuilder pipeline)
+        {
+            return pipeline
+                .UseEmphasisExtras()
+                .UseMediaLinks()
+                .UsePipeTables()
+                .UseAutoLinks();
+        }
+
         public static MarkdownPipelineBuilder UseDfmExtensions(this MarkdownPipelineBuilder pipeline, MarkdigCompositor compositor, MarkdownContext context, MarkdownServiceParameters parameters)
         {
             return pipeline
