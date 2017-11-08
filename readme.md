@@ -20,13 +20,25 @@ Usage:
        ]
      ```
    - Add configuration item `dependent_packages` at top level.
+     * For stable version:
+     ```json
+     "dependent_packages": [
+       {
+         "id": "Microsoft.DocAsCode.MarkdigEngine",
+         "nuget_feed": "https://www.myget.org/F/op/api/v2",
+         "path_to_root": "_dependentPackages/MarkdigEngine",
+         "version": "latest"
+       }
+     ]
+     ```
+     * For alpha version:
      ```json
      "dependent_packages": [
        {
          "id": "Microsoft.DocAsCode.MarkdigEngine",
          "nuget_feed": "https://www.myget.org/F/op-dev/api/v2",
          "path_to_root": "_dependentPackages/MarkdigEngine",
-         "version": "latest"
+         "version": "latest-prerelease"
        }
      ]
      ```
