@@ -32,7 +32,7 @@ namespace MarkdigEngine
                 .UseDFMCodeInfoPrefix()
                 .UseQuoteSectionNote(parameters)
                 .UseXref()
-                .UseEmojiAndSmiley(false)
+                //.UseEmojiAndSmiley(false)
                 .UseTabGroup()
                 .UseInineParserOnly(context)
                 .UseLineNumber(context, parameters)
