@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
+﻿using Xunit;
 
 namespace MarkdigEngine.Tests
 {
     public class EmojiTest
     {
-        [Fact]
+        [Fact(Skip = "Disable Emoij")]
         public void EmojiTestGeneral()
         {
             //arange
