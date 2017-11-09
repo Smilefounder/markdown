@@ -36,7 +36,8 @@ namespace MarkdigEngine
                 .UseTabGroup()
                 .UseInineParserOnly(context)
                 .UseLineNumber(context, parameters)
-                .UseMonikerRange();
+                .UseMonikerRange()
+                .UseValidators(context, parameters);
         }
 
         public static MarkdownPipelineBuilder RemoveUnusedExtensions(this MarkdownPipelineBuilder pipeline)
