@@ -263,34 +263,34 @@ namespace MarkdigEngine.Tests
             string message = null;
 
             var context = new Dictionary<string, object>();
-            var rewriter = MarkdownObjectRewriterFactory.FromValidator(
-                MarkdownObjectValidatorFactory.FromLambda<HeadingBlock>(
-                    block =>
-                    {
-                        if (block.Level == 1)
-                        {
-                            if (context.TryGetValue("count", out object countObj) && countObj is int count)
-                            {
-                                context["count"] = count + 1;
-                            }
-                        }
-                    }),
-                    block =>
-                    {
-                        context.Add("count", 0);
-                    },
-                    block =>
+            var validator = MarkdownObjectValidatorFactory.FromLambda<HeadingBlock>(
+                block =>
+                {
+                    if (block.Level == 1)
                     {
                         if (context.TryGetValue("count", out object countObj) && countObj is int count)
                         {
-                            if (count != 1)
-                            {
-                                message = expectedMessage;
-                            }
+                            context["count"] = count + 1;
                         }
                     }
+                },
+                tree =>
+                {
+                    context.Add("count", 0);
+                },
+                tree =>
+                {
+                    if (context.TryGetValue("count", out object countObj) && countObj is int count)
+                    {
+                        if (count != 1)
+                        {
+                            message = expectedMessage;
+                        }
+                    }
+                }
                 );
 
+            var rewriter = MarkdownObjectRewriterFactory.FromValidator(validator);
             var html = Markup(content, rewriter, null);
             Assert.Equal(expected.Replace("\r\n", "\n"), html);
             Assert.Equal(expectedMessage, message);

@@ -13,6 +13,10 @@
     - ps: |
           if (-not $env:APPVEYOR_PULL_REQUEST_NUMBER)
           {
+            & dotnet pack -o ../artifacts -c Release /p:Version=$env:APPVEYOR_BUILD_VERSION
+            & nuget push artifacts/MarkdigEngine.$env:APPVEYOR_BUILD_VERSION.nupkg $env:mygetKey -Source $env:mygetMasterUrl
+            & nuget push artifacts/MarkdigEngine.Extensions.$env:APPVEYOR_BUILD_VERSION.nupkg $env:mygetKey -Source $env:mygetMasterUrl
+            
             & nuget pack Microsoft.DocAsCode.MarkdigEngine.nuspec -version $env:APPVEYOR_BUILD_VERSION -Prop Configuration=Release
             & nuget push ./Microsoft.DocAsCode.MarkdigEngine.$env:APPVEYOR_BUILD_VERSION.nupkg $env:mygetKey -Source $env:mygetMasterUrl
           }
@@ -33,6 +37,10 @@
     - ps: |
           if (-not $env:APPVEYOR_PULL_REQUEST_NUMBER)
           {
+            & dotnet pack -o ../artifacts -c Release /p:Version=$env:APPVEYOR_BUILD_VERSION-alpha
+            & nuget push artifacts/MarkdigEngine.$env:APPVEYOR_BUILD_VERSION-alpha.nupkg $env:mygetKey -Source $env:mygetDevUrl
+            & nuget push artifacts/MarkdigEngine.Extensions.$env:APPVEYOR_BUILD_VERSION-alpha.nupkg $env:mygetKey -Source $env:mygetDevUrl
+
             & nuget pack Microsoft.DocAsCode.MarkdigEngine.nuspec -version $env:APPVEYOR_BUILD_VERSION-alpha -Prop Configuration=Release
             & nuget push ./Microsoft.DocAsCode.MarkdigEngine.$env:APPVEYOR_BUILD_VERSION-alpha.nupkg $env:mygetKey -Source $env:mygetDevUrl
           }

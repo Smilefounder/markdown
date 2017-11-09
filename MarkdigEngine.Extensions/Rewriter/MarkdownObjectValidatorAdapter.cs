@@ -46,10 +46,18 @@ namespace MarkdigEngine.Extensions
         public void PreProcess(IMarkdownObject markdownObject)
         {
             _preProcess?.Invoke(markdownObject);
+            foreach (var validator in Validators)
+            {
+                validator.PreValidate(markdownObject);
+            }
         }
 
         public void PostProcess(IMarkdownObject markdownObject)
         {
+            foreach (var validator in Validators)
+            {
+                validator.PostValidate(markdownObject);
+            }
             _postProcess?.Invoke(markdownObject);
         }
     }
