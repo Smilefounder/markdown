@@ -40,7 +40,7 @@ Shared content.
 <h2 id=""section-1"" sourceFile=""fake.md"" sourceStartLineNumber=""5"" sourceEndLineNumber=""5"">Section 1</h2>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""7"" sourceEndLineNumber=""7"">Shared content.</p>
 <div sourceFile=""fake.md"" sourceStartLineNumber=""9"" sourceEndLineNumber=""17"" range="">= myproduct-4.1"">
-<h2 id=""section-for-myproduct-4.1-and-later"" sourceFile=""fake.md"" sourceStartLineNumber=""10"" sourceEndLineNumber=""10"">Section for myproduct-4.1 and Later</h2>
+<h2 id=""section-for-myproduct-41-and-later"" sourceFile=""fake.md"" sourceStartLineNumber=""10"" sourceEndLineNumber=""10"">Section for myproduct-4.1 and Later</h2>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""12"" sourceEndLineNumber=""12"">Some version-specific content here...</p>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""14"" sourceEndLineNumber=""15"">::: nested moniker zone is not allowed. So this line is in plain text.
 Inline ::: should not end moniker zone.</p>

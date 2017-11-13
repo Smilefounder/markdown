@@ -50,7 +50,7 @@ namespace MarkdigEngine.Extensions
                     {
                         noteHeading = $"<h5>{obj.NoteTypeString.ToUpper()}</h5>";
                     };
-                    renderer.Write("<div").Write($" class=\"{obj.NoteTypeString}\"").WriteAttributes(obj).WriteLine(">");
+                    renderer.Write("<div").Write($" class=\"{obj.NoteTypeString.ToUpper()}\"").WriteAttributes(obj).WriteLine(">");
                     savedImplicitParagraph = renderer.ImplicitParagraph;
                     renderer.ImplicitParagraph = false;
                     renderer.WriteLine(noteHeading);

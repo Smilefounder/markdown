@@ -96,6 +96,24 @@ this is also warning</p>
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
+        public void TestDfmNote_NoteCaseSensitive()
+        {
+            var source = @"> [!noTe]
+> hello
+> [!WARNING]";
+            var expected = @"<div class=""NOTE"">
+<h5>NOTE</h5>
+<p>hello</p>
+</div>
+<div class=""WARNING"">
+<h5>WARNING</h5>
+</div>
+";
+            TestMarkup(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
         public void TestDfmNote_NoteWithMix()
         {
             var source = @"# Note not in one line

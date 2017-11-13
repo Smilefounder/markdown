@@ -9,6 +9,29 @@ namespace MarkdigEngine.Tests
     {
         [Fact]
         [Trait("Related", "DfmMarkdown")]
+        public void TestDfm_TaskList()
+        {
+            // Confirm that the [ ] and { } in the middle of list should not be parsed.
+            var source = @"* Not contain a special character: &#92; ! # $ % & * + / = ? ^ &#96; { } | ~ < > ( ) ' ; : , [ ] "" @ _";
+            var expected = @"<ul>
+<li>Not contain a special character: \ ! # $ % &amp; * + / = ? ^ ` { } | ~ &lt; &gt; ( ) ' ; : , [ ] &quot; @ _</li>
+</ul>
+";
+            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestDfm_HeadingId()
+        {
+            var source = @" ### 1. Deploying the network";
+            var expected = @"<h3 id=""1-deploying-the-network"">1. Deploying the network</h3>
+";
+            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
         public void TestDfm_EncodeInStrongEM()
         {
             var source = @"tag started with non-alphabet should be encoded <1-100>, <_hello>, <?world>, <1_2 href=""good"">, <1 att='bcd'>.
