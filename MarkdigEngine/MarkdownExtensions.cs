@@ -17,7 +17,7 @@ namespace MarkdigEngine
         {
             return pipeline
                 .UseMathematics()
-                //.UseEmphasisExtras()
+                .UseEmphasisExtras()
                 .UseMediaLinks()
                 .UsePipeTables()
                 .UseAutoLinks();
