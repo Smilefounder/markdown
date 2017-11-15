@@ -28,7 +28,6 @@ namespace MarkdigEngine.Extensions
                 return false;
             }
 
-            var href = processor.StringBuilders.Get();
             var saved = slice;
             var startChar = '\0';
             int line;
@@ -41,25 +40,34 @@ namespace MarkdigEngine.Extensions
                 startChar = c;
                 c = slice.NextChar();
             }
-            else if(!c.IsAlpha())
+            else if (!c.IsAlpha())
             {
                 return false;
             }
 
-            if(startChar != '\0')
+            var href = processor.StringBuilders.Get();
+            if (startChar != '\0')
             {
                 while (c != startChar && c != '\0' && c != '\n')
                 {
                     href.Append(c);
                     c = slice.NextChar();
                 }
+
+                if (c != startChar)
+                {
+                    slice = saved;
+                    processor.StringBuilders.Release(href);
+                    return false;
+                }
+
                 slice.NextChar();
             }
             else
             {
                 while (c != '\0' && c != ' ' && c != '\n')
                 {
-                    if(Punctuation.Contains(c))
+                    if (Punctuation.Contains(c))
                     {
                         var next = slice.PeekCharExtra(1);
                         if (next == ' ' || next == '\0' || c == '\n' || Punctuation.Contains(next)) break;
@@ -78,9 +86,12 @@ namespace MarkdigEngine.Extensions
             };
 
             var htmlAttributes = xrefInline.GetAttributes();
-            htmlAttributes.AddPropertyIfNotExist("data-throw-if-not-resolved", "False");
-            processor.Inline = xrefInline;
 
+            var sourceContent = startChar == '\0' ? href.Insert(0, '@') : href.Insert(0, startChar).Insert(0, '@').Append(startChar);
+            htmlAttributes.AddPropertyIfNotExist("data-throw-if-not-resolved", "False");
+            htmlAttributes.AddPropertyIfNotExist("data-raw-source", sourceContent.ToString());
+            processor.Inline = xrefInline;
+            processor.StringBuilders.Release(href);
             return true;
         }
     }
