@@ -144,7 +144,7 @@ namespace MarkdigEngine
             parameters?.Extensions?.TryGetValue(LineNumberExtension.EnableSourceInfo, out enableSourceInfo);
 
             var enabled = enableSourceInfo as bool?;
-            if (enabled == null || enabled == false)
+            if (enabled != null && enabled == false)
             {
                 return pipeline;
             }

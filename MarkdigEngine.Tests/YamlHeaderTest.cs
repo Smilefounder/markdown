@@ -2,7 +2,7 @@
 using Microsoft.DocAsCode.Plugins;
 using Xunit;
 
-namespace MarkdigEngineTest
+namespace MarkdigEngine.Tests
 {
     public class YamlHeaderTest
     {
@@ -85,12 +85,7 @@ ms.sourcegitcommit: 5c6fbfc8699d7d66c40b0458972d8b6ef0dcc705
 ms.openlocfilehash: 2ea129ac94cb1ddc7486ba69280dc0390896e088
 ---";
             // act
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = ".",
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            var marked = service.Markup(content, "Topic.md");
+            var marked = TestUtility.MarkupWithoutSourceInfo(content, "Topic.md");
 
             // assert
             var expected = @"<yamlheader start=""1"" end=""26"">title: &quot;如何使用 Visual C++ 工具集报告问题 | Microsoft Docs&quot;

@@ -2,22 +2,17 @@
 using System.Collections.Immutable;
 using System.Xml;
 
-using MarkdigEngine;
+using MarkdigEngine.Extensions;
 using Microsoft.DocAsCode.Plugins;
 using Xunit;
 
-namespace MarkdigEngineTest
+namespace MarkdigEngine.Tests
 {
     public class QuoteSectionNoteTest
     {
         private void TestMarkup(string source, string expected)
         {
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            var marked = service.Markup(source, "Topic.md");
+            var marked = TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
         }
 
@@ -87,7 +82,11 @@ this is also warning</p>
                 {
                     {"note", "<h5>注意</h5>"},
                     {"warning", "<h5>警告</h5>" }
-                }.ToImmutableDictionary()
+                }.ToImmutableDictionary(),
+                Extensions = new Dictionary<string, object>
+                {
+                    { LineNumberExtension.EnableSourceInfo, false }
+                }
             };
             var service = new MarkdigMarkdownService(parameter);
             var marked = service.Markup(source, "Topic.md");

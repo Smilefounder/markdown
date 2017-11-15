@@ -27,11 +27,7 @@ namespace MarkdigEngine.Tests
         {
             var parameter = new MarkdownServiceParameters
             {
-                BasePath = ".",
-                Extensions = new Dictionary<string, object>
-                {
-                    { LineNumberExtension.EnableSourceInfo, true }
-                }
+                BasePath = "."
             };
             var service = new MarkdigMarkdownService(parameter);
 
@@ -42,7 +38,11 @@ namespace MarkdigEngine.Tests
         {
             var parameter = new MarkdownServiceParameters
             {
-                BasePath = "."
+                BasePath = ".",
+                Extensions = new Dictionary<string, object>
+                {
+                    { LineNumberExtension.EnableSourceInfo, false }
+                }
             };
             var service = new MarkdigMarkdownService(parameter);
 

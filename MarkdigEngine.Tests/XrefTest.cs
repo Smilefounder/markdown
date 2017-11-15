@@ -21,12 +21,7 @@ namespace MarkdigEngine.Tests
 <a href=""xref:Microsoft.Build.Tasks?displayProperty=fullName""/>
 ";
             // act
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = ".",
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            var marked = service.Markup(content, "Topic.md");
+            var marked = TestUtility.MarkupWithoutSourceInfo(content, "Topic.md");
 
             // assert
             var expected = @"<p><xref href=""Microsoft.Build.Tasks"" data-throw-if-not-resolved=""True""></xref>
