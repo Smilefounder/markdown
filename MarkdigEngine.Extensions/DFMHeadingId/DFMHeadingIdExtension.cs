@@ -113,7 +113,7 @@ namespace MarkdigEngine.Extensions
                 string headingText = GetARegexIdAndRemove(headingBlock);
                 if (string.IsNullOrEmpty(headingText))
                 {
-                    headingText = LinkHelper.Urilize(source, true, keepOpeningDigits: true, discardDots: true);
+                    headingText = LinkHelper.UrilizeAsGfm(source);
                 }
 
                 var baseHeadingId = string.IsNullOrEmpty(headingText) ? "section" : headingText;

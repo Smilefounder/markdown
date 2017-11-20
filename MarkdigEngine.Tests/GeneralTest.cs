@@ -317,6 +317,8 @@ Token is [!include[TEXT](includes/testtoken.md)]
 
 ## Note / Section / Video
 
+http://your.company.abc, abc
+
 ### Note Sample
 
 > [!NOTE]
@@ -500,7 +502,8 @@ csr
 <xref href=""Microsoft.Build.Tasks?alt=ImmutableArray""/>
 <p><xref href=""Microsoft.Build.Tasks?alt=ImmutableArray"" data-throw-if-not-resolved=""True""></xref></p>
 <a href=""xref:Microsoft.Build.Tasks?displayProperty=fullName""/>
-<h2 id=""note-section-video"">Note / Section / Video</h2>
+<h2 id=""note--section--video"">Note / Section / Video</h2>
+<p><a href=""http://your.company.abc"">http://your.company.abc</a>, abc</p>
 <h3 id=""note-sample"">Note Sample</h3>
 <div class=""NOTE"">
 <h5>NOTE</h5>
