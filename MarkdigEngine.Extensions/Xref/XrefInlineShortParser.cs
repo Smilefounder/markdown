@@ -40,42 +40,32 @@ namespace MarkdigEngine.Extensions
                 startChar = c;
                 c = slice.NextChar();
             }
-            else if (!c.IsAlpha())
+            else
+            {
+                return false;
+            }
+
+            if (!c.IsAlpha())
             {
                 return false;
             }
 
             var href = processor.StringBuilders.Get();
-            if (startChar != '\0')
-            {
-                while (c != startChar && c != '\0' && c != '\n')
-                {
-                    href.Append(c);
-                    c = slice.NextChar();
-                }
 
-                if (c != startChar)
-                {
-                    slice = saved;
-                    processor.StringBuilders.Release(href);
-                    return false;
-                }
-
-                slice.NextChar();
-            }
-            else
+            while (c != startChar && c != '\0' && c != '\n')
             {
-                while (c != '\0' && c != ' ' && c != '\n')
-                {
-                    if (Punctuation.Contains(c))
-                    {
-                        var next = slice.PeekCharExtra(1);
-                        if (next == ' ' || next == '\0' || c == '\n' || Punctuation.Contains(next)) break;
-                    }
-                    href.Append(c);
-                    c = slice.NextChar();
-                }
+                href.Append(c);
+                c = slice.NextChar();
             }
+
+            if (c != startChar)
+            {
+                processor.StringBuilders.Release(href);
+                return false;
+            }
+
+            slice.NextChar();
+
 
             var xrefInline = new XrefInline
             {
@@ -87,7 +77,7 @@ namespace MarkdigEngine.Extensions
 
             var htmlAttributes = xrefInline.GetAttributes();
 
-            var sourceContent = startChar == '\0' ? href.Insert(0, '@') : href.Insert(0, startChar).Insert(0, '@').Append(startChar);
+            var sourceContent = href.Insert(0, startChar).Insert(0, '@').Append(startChar);
             htmlAttributes.AddPropertyIfNotExist("data-throw-if-not-resolved", "False");
             htmlAttributes.AddPropertyIfNotExist("data-raw-source", sourceContent.ToString());
             processor.Inline = xrefInline;

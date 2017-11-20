@@ -25,9 +25,9 @@ namespace MarkdigEngine.Tests
 
             // assert
             var expected = @"<p><xref href=""Microsoft.Build.Tasks"" data-throw-if-not-resolved=""True""></xref>
-<xref href=""Microsoft.Build.Tasks"" data-throw-if-not-resolved=""False"" data-raw-source=""@Microsoft.Build.Tasks""></xref>
+@Microsoft.Build.Tasks
 &quot;@&quot;a<a href=""link"">test</a>
-<xref href=""hehe"" data-throw-if-not-resolved=""False"" data-raw-source=""@hehe""></xref>
+@hehe
 <xref href=""Microsoft.Build.Tasks?text=Tasks"" data-throw-if-not-resolved=""False"" data-raw-source=""@&quot;Microsoft.Build.Tasks?text=Tasks&quot;""></xref>
 <a href=""xref:Microsoft.Build.Tasks"">link_text</a>
 <xref href=""Microsoft.Build.Tasks#Anchor_1"" data-throw-if-not-resolved=""True""></xref>
