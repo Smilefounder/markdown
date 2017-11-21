@@ -1,5 +1,4 @@
-﻿using Microsoft.DocAsCode.Plugins;
-using Xunit;
+﻿using Xunit;
 
 namespace MarkdigEngine.Tests
 {

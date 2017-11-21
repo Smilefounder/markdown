@@ -4,7 +4,7 @@ namespace MarkdigEngine.Tests
 {
     public class MathematicsTest
     {
-        [Fact]
+        [Fact(Skip ="Disable math support")]
         public void Test_Mathematics_Support_0()
         {
             var source = "$ math inline $";
@@ -14,7 +14,7 @@ namespace MarkdigEngine.Tests
             TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
         }
 
-        [Fact]
+        [Fact(Skip ="Disable math support")]
         public void Test_Mathematics_Support_1()
         {
             var source = "$ math^0 **inline** $";

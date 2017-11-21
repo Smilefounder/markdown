@@ -16,8 +16,8 @@ namespace MarkdigEngine
         public static MarkdownPipelineBuilder UseMarkdigAdvancedExtensions(this MarkdownPipelineBuilder pipeline)
         {
             return pipeline
-                .UseMathematics()
-                .UseEmphasisExtras()
+                //.UseMathematics()
+                //.UseEmphasisExtras()
                 .UseMediaLinks()
                 .UsePipeTables()
                 .UseAutoLinks();
