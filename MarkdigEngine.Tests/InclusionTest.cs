@@ -633,7 +633,8 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 		}
 
         [Fact]
-        [Trait("ButItem", "1101156")]
+        [Trait("BugItem", "1101156")]
+        [Trait("Related", "Inclusion")]
         public void TestBlockInclude_ImageRelativePath()
         {
             var root = @"
@@ -668,7 +669,42 @@ Test Include File
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
         }
 
-		private static void WriteToFile(string file, string content)
+        [Fact]
+        [Trait("Related", "Inclusion")]
+        public void TestBlockInclude_WithYamlHeader()
+        {
+            var root = @"
+# Hello World
+
+Test Include File
+
+[!include[refa](../../include/a.md)]
+
+";
+
+            var refa = @"---
+a: b
+---
+body";
+
+            var rootPath = "r/parent_folder/child_folder/root.md";
+            WriteToFile(rootPath, root);
+            WriteToFile("r/include/a.md", refa);
+
+            var result = TestUtility.MarkupWithoutSourceInfo(root, rootPath);
+            var expected = @"<h1 id=""hello-world"">Hello World</h1>
+<p>Test Include File</p>
+
+<p>body</p>
+";
+            Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
+
+            var dependency = result.Dependency;
+            var expectedDependency = new List<string> { "~/r/include/a.md" };
+            Assert.Equal(expectedDependency.ToImmutableList(), dependency);
+        }
+
+        private static void WriteToFile(string file, string content)
         {
             var dir = Path.GetDirectoryName(file);
             if (!string.IsNullOrEmpty(dir))

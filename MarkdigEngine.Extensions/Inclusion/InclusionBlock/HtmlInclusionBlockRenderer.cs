@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text.RegularExpressions;
 
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
@@ -12,6 +13,7 @@ namespace MarkdigEngine.Extensions
         private IMarkdigCompositor _compositor;
         private MarkdownContext _context;
         private MarkdownServiceParameters _parameters;
+        private Regex YamlHeaderRegex = new Regex(@"^<yamlheader[^>]*?>[\s\S]*?<\/yamlheader>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public HtmlInclusionBlockRenderer(IMarkdigCompositor compositor, MarkdownContext context, MarkdownServiceParameters parameters)
         {
@@ -63,12 +65,25 @@ namespace MarkdigEngine.Extensions
 
             _context.ReportDependency(includedFilePath);
             var content = File.ReadAllText(filePath);
-            var context = new MarkdownContext(includedFilePath.RemoveWorkingFolder(), _context.BasePath, _context.Mvb, content, _context.IsInline, _context.InclusionSet, _context.Dependency);
+            var context = new MarkdownContext(
+                includedFilePath.RemoveWorkingFolder(), 
+                _context.BasePath, 
+                _context.Mvb, 
+                content, 
+                _context.IsInline, 
+                _context.InclusionSet, 
+                _context.Dependency);
             context = context.AddIncludeFile(currentFilePath);
 
             var result = _compositor.Markup(context, _parameters);
+            result = SkipYamlHeader(result);
 
             renderer.Write(result);
+        }
+
+        private string SkipYamlHeader(string content)
+        {
+            return YamlHeaderRegex.Replace(content, "");
         }
     }
 }
