@@ -63,18 +63,15 @@ namespace MarkdigEngine.Extensions
                 return;
             }
 
-            _context.ReportDependency(includedFilePath);
             var content = File.ReadAllText(filePath);
-            var context = new MarkdownContext(
-                includedFilePath.RemoveWorkingFolder(), 
-                _context.BasePath, 
-                _context.Mvb, 
-                content, 
-                _context.IsInline, 
-                _context.InclusionSet, 
-                _context.Dependency);
-            context = context.AddIncludeFile(currentFilePath);
+            var context = new MarkdownContextBuilder()
+                            .WithContext(_context)
+                            .WithFilePath(includedFilePath.RemoveWorkingFolder())
+                            .WithContent(content)
+                            .WithAddingIncludedFile(currentFilePath)
+                            .Build();
 
+            _compositor.ReportDependency(includedFilePath);
             var result = _compositor.Markup(context, _parameters);
             result = SkipYamlHeader(result);
 

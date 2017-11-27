@@ -162,7 +162,7 @@ This is a file A included by another file.
 <h1 id=""hello-include-file-b"">Hello Include File B</h1>
 <!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[refa](a.md)]: Circular dependency found in &quot;r/b.md&quot; -->[!include[refa](a.md)]<!--END ERROR INCLUDE -->";
 
-            Assert.Equal<string>(expected.Replace("\r\n", "\n"), result.Html);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
         }
 
         [Fact]
@@ -213,7 +213,7 @@ Test Inline Included File: [!include[refa](~/r/a.md)].
 <p>Test Inline Included File: This is a <strong>included</strong> token with <!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](~/r/root.md)]: Circular dependency found in &quot;r/a.md&quot; -->[!include[root](~/r/root.md)]<!--END ERROR INCLUDE -->.</p>
 ";
 
-            Assert.Equal<string>(expected.Replace("\r\n", "\n"), result.Html);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
         }
 
         [Fact]

@@ -1,4 +1,4 @@
-﻿using Markdig;
+﻿using System.Collections.Generic;
 using Microsoft.DocAsCode.Plugins;
 
 namespace MarkdigEngine.Extensions
@@ -6,5 +6,6 @@ namespace MarkdigEngine.Extensions
     public interface IMarkdigCompositor
     {
         string Markup(MarkdownContext context, MarkdownServiceParameters parameters);
+        void ReportDependency(string file);
     }
 }

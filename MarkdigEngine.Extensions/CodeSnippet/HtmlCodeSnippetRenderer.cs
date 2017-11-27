@@ -15,6 +15,7 @@ namespace MarkdigEngine.Extensions
     public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
     {
         private MarkdownContext _context;
+        private IMarkdigCompositor _compositor;
         private const string tagPrefix = "snippet";
 
         // C# code snippet comment block: // <[/]snippetname>
@@ -224,8 +225,9 @@ namespace MarkdigEngine.Extensions
                 }
             };
 
-        public HtmlCodeSnippetRenderer(MarkdownContext context)
+        public HtmlCodeSnippetRenderer(IMarkdigCompositor compositor, MarkdownContext context)
         {
+            _compositor = compositor;
             _context = context;
         }
 
@@ -255,8 +257,8 @@ namespace MarkdigEngine.Extensions
         {
             var currentFilePath = ((RelativePath)_context.FilePath).GetPathFromWorkingFolder();
             var refFileRelativePath = ((RelativePath)obj.CodePath).BasedOn(currentFilePath);
-            _context.ReportDependency(refFileRelativePath);
-
+            _compositor.ReportDependency(refFileRelativePath);
+            
             var refPath = Path.Combine(_context.BasePath, refFileRelativePath.RemoveWorkingFolder());
             var allLines = File.ReadAllLines(refPath);
 

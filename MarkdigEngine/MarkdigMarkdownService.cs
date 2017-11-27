@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 
 using MarkdigEngine.Extensions;
 
@@ -21,13 +22,20 @@ namespace MarkdigEngine
 
         public MarkupResult Markup(string content, string path)
         {
-            var context = new MarkdownContext(path, _parameters.BasePath, _mvb, content);
-            var compositor = new MarkdigCompositor();
+            var context = new MarkdownContextBuilder()
+                            .WithFilePath(path)
+                            .WithBasePath(_parameters.BasePath)
+                            .WithMvb(_mvb)
+                            .WithContent(content)
+                            .Build();
+
+            var dependency = new HashSet<string>();
+            var compositor = new MarkdigCompositor(dependency);
 
             return new MarkupResult
             {
                 Html = compositor.Markup(context, _parameters),
-                Dependency = context.Dependency.ToImmutableArray()
+                Dependency = dependency.ToImmutableArray()
             };
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Collections.Generic;
 
 using MarkdigEngine.Extensions;
 using Markdig.Extensions.CustomContainers;
@@ -23,12 +24,16 @@ namespace MarkdigEngine
                 .UseAutoLinks();
         }
 
-        public static MarkdownPipelineBuilder UseDfmExtensions(this MarkdownPipelineBuilder pipeline, MarkdigCompositor compositor, MarkdownContext context, MarkdownServiceParameters parameters)
+        public static MarkdownPipelineBuilder UseDfmExtensions(
+            this MarkdownPipelineBuilder pipeline, 
+            MarkdigCompositor compositor, 
+            MarkdownContext context, 
+            MarkdownServiceParameters parameters)
         {
             return pipeline
                 .UseDFMHeadingId()
                 .UseIncludeFile(compositor, context, parameters)
-                .UseCodeSnippet(context)
+                .UseCodeSnippet(compositor, context)
                 .UseYamlHeader()
                 .UseDFMCodeInfoPrefix()
                 .UseQuoteSectionNote(parameters)
@@ -168,9 +173,9 @@ namespace MarkdigEngine
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseCodeSnippet(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
+        public static MarkdownPipelineBuilder UseCodeSnippet(this MarkdownPipelineBuilder pipeline, MarkdigCompositor compositor, MarkdownContext context)
         {
-            pipeline.Extensions.Insert(0, new CodeSnippetExtension(context));
+            pipeline.Extensions.Insert(0, new CodeSnippetExtension(compositor, context));
             return pipeline;
         }
 
