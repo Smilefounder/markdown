@@ -1,6 +1,5 @@
 ﻿using System.IO;
 
-using Microsoft.DocAsCode.Plugins;
 using Xunit;
 
 namespace MarkdigEngine.Tests
@@ -27,6 +26,19 @@ namespace MarkdigEngine.Tests
             var source = @" ### 1. Deploying the network";
             var expected = @"<h3 id=""1-deploying-the-network"">1. Deploying the network</h3>
 ";
+            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+        }
+
+        [Fact]
+        public void TestDfm_LinkDefinition()
+        {
+            var source = @"![scenario image][scenario]
+## Scenario
+[scenario]: ./scenario.png";
+            var expected = @"<p><img src=""./scenario.png"" alt=""scenario image"" /></p>
+<h2 id=""scenario"">Scenario</h2>
+";
+
             TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
         }
 
@@ -71,7 +83,7 @@ b:
 ---", "<yamlheader start=\"1\" end=\"5\">a: b\nb:\n  c: e</yamlheader>")]
         [InlineData(@"# Hello @CrossLink1 @'CrossLink2'dummy 
 @World",
-    "<h1 id=\"hello-crosslink1-crosslink2dummy\">Hello @CrossLink1 <xref href=\"CrossLink2\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@'CrossLink2'\"></xref>dummy</h1>\n<p>@World</p>\n")]
+    "<h1 id=\"hello-crosslink1-dummy\">Hello @CrossLink1 <xref href=\"CrossLink2\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@'CrossLink2'\"></xref>dummy</h1>\n<p>@World</p>\n")]
         [InlineData("a\n```\nc\n```",
     "<p>a</p>\n<pre><code>c\n</code></pre>\n")]
         [InlineData(@" *hello* abc @api__1",

@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Collections.Generic;
 
 using MarkdigEngine.Extensions;
 using Markdig.Extensions.CustomContainers;
@@ -19,19 +18,20 @@ namespace MarkdigEngine
             return pipeline
                 //.UseMathematics()
                 //.UseEmphasisExtras()
+                .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
                 .UseMediaLinks()
                 .UsePipeTables()
                 .UseAutoLinks();
         }
 
         public static MarkdownPipelineBuilder UseDfmExtensions(
-            this MarkdownPipelineBuilder pipeline, 
-            MarkdigCompositor compositor, 
-            MarkdownContext context, 
+            this MarkdownPipelineBuilder pipeline,
+            MarkdigCompositor compositor,
+            MarkdownContext context,
             MarkdownServiceParameters parameters)
         {
             return pipeline
-                .UseDFMHeadingId()
+                .UseHeadingIdRewriter()
                 .UseIncludeFile(compositor, context, parameters)
                 .UseCodeSnippet(compositor, context)
                 .UseYamlHeader()
@@ -104,21 +104,16 @@ namespace MarkdigEngine
             return pipeline;
         }
 
-        /// <summary>
-        /// This extension removes AutoIdentifierExtension. Please use this extension after UseAdvancedExtensions().
-        /// </summary>
-        /// <param name="pipeline"></param>
-        /// <returns></returns>
-        public static MarkdownPipelineBuilder UseDFMHeadingId(this MarkdownPipelineBuilder pipeline)
+        public static MarkdownPipelineBuilder UseHeadingIdRewriter(this MarkdownPipelineBuilder pipeline)
         {
-            if (pipeline.Extensions.Contains<AutoIdentifierExtension>())
+            var tokenRewriter = new HeadingIdRewriter();
+            var visitor = new MarkdownDocumentVisitor(tokenRewriter);
+
+            pipeline.DocumentProcessed += document =>
             {
-                pipeline.Extensions.Replace<AutoIdentifierExtension>(new DFMHeadingIdExtension());
-            }
-            else
-            {
-                pipeline.Extensions.Add(new DFMHeadingIdExtension());
-            }
+                visitor.Visit(document);
+            };
+
             return pipeline;
         }
 
