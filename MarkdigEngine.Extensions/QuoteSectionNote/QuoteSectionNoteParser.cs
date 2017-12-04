@@ -139,7 +139,10 @@ namespace MarkdigEngine.Extensions
                 // "> [!NOTE] content" is invalid, go to end to see it.
                 processor.NextChar();
                 while (processor.CurrentChar.IsSpaceOrTab()) processor.NextChar();
-                if (processor.CurrentChar != '\0')
+                var isNoteVideoDiv = (infoString.StartsWith("[!div", StringComparison.OrdinalIgnoreCase))   ||
+                                     (infoString.StartsWith("[!Video", StringComparison.OrdinalIgnoreCase)) ||
+                                     IsNoteType(infoString);
+                if (processor.CurrentChar != '\0' && isNoteVideoDiv)
                 {
                     Logger.LogWarning("Text in the first line of Note/Section/Video is not valid. Will be rendererd to <blockquote>");
                     processor.GoToColumn(originalColumn);
