@@ -37,10 +37,9 @@ namespace MarkdigEngine.Extensions
                 }
             }
 
-            var stringBuilderCache = processor.StringBuilders;
             var context = new InclusionContext();
 
-            if (!ExtensionsHelper.MatchLink(stringBuilderCache, ref line, ref context))
+            if (!ExtensionsHelper.MatchLink(ref line, ref context))
             {
                 return BlockState.None;
             }

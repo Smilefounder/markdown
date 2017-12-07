@@ -28,9 +28,8 @@ namespace MarkdigEngine.Extensions
 
             var includeFile = new InclusionInline();
             var context = new InclusionContext();
-            var stringBuilderCache = processor.StringBuilders;
 
-            if (!ExtensionsHelper.MatchLink(stringBuilderCache, ref slice, ref context))
+            if (!ExtensionsHelper.MatchLink(ref slice, ref context))
             {
                 return false;
             }

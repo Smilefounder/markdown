@@ -106,7 +106,7 @@ namespace MarkdigEngine.Extensions
                 return false;
             }
 
-            var stringBuilder = processor.StringBuilders.Get();
+            var stringBuilder = StringBuilderCache.Local();
             var c = processor.CurrentChar;
 
             var hasExcape = false;
@@ -126,7 +126,6 @@ namespace MarkdigEngine.Extensions
 
             stringBuilder.Append(c);
             var infoString = stringBuilder.ToString().Trim();
-            processor.StringBuilders.Release(stringBuilder);
 
             if (c == '\0')
             {

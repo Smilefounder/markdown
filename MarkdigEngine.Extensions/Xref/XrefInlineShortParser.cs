@@ -50,7 +50,7 @@ namespace MarkdigEngine.Extensions
                 return false;
             }
 
-            var href = processor.StringBuilders.Get();
+            var href = StringBuilderCache.Local();
 
             while (c != startChar && c != '\0' && c != '\n')
             {
@@ -60,7 +60,6 @@ namespace MarkdigEngine.Extensions
 
             if (c != startChar)
             {
-                processor.StringBuilders.Release(href);
                 return false;
             }
 
@@ -81,7 +80,6 @@ namespace MarkdigEngine.Extensions
             htmlAttributes.AddPropertyIfNotExist("data-throw-if-not-resolved", "False");
             htmlAttributes.AddPropertyIfNotExist("data-raw-source", sourceContent.ToString());
             processor.Inline = xrefInline;
-            processor.StringBuilders.Release(href);
             return true;
         }
     }

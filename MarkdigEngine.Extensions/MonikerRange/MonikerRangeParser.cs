@@ -55,7 +55,7 @@ namespace MarkdigEngine.Extensions
                 return BlockState.None;
             }
 
-            var range = processor.StringBuilders.Get();
+            var range = StringBuilderCache.Local();
             c = slice.CurrentChar;
 
             while (c != '"')
@@ -87,8 +87,6 @@ namespace MarkdigEngine.Extensions
                 Column = column,
                 Span = new SourceSpan(sourcePosition, slice.End),
             });
-
-            processor.StringBuilders.Release(range);
 
             return BlockState.ContinueDiscard;
         }

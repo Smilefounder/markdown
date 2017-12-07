@@ -94,14 +94,14 @@ namespace MarkdigEngine.Extensions
             return index == startString.Length;
         }
 
-        public static bool MatchLink(StringBuilderCache stringBuilderCache, ref StringSlice slice, ref InclusionContext context)
+        public static bool MatchLink(ref StringSlice slice, ref InclusionContext context)
         {
             if (IsEscaped(slice))
             {
                 return false;
             }
 
-            if (MatchTitle(stringBuilderCache, ref slice, ref context) && MatchPath(ref slice, ref context))
+            if (MatchTitle(ref slice, ref context) && MatchPath(ref slice, ref context))
             {
                 slice.NextChar();
                 return true;
@@ -190,7 +190,7 @@ namespace MarkdigEngine.Extensions
             return isCaseSensitive ? ch1 == ch2 : Char.ToLower(ch1) == Char.ToLower(ch2);
         }
 
-        private static bool MatchTitle(StringBuilderCache stringBuilderCache, ref StringSlice slice, ref InclusionContext context)
+        private static bool MatchTitle(ref StringSlice slice, ref InclusionContext context)
         {
             if (IsEscaped(slice))
             {
@@ -208,7 +208,7 @@ namespace MarkdigEngine.Extensions
             }
 
             var c = slice.NextChar();
-            var title = stringBuilderCache.Get();
+            var title = StringBuilderCache.Local();
             var hasExcape = false;
 
             while (c != '\0' && (c != ']' || hasExcape))
@@ -229,12 +229,10 @@ namespace MarkdigEngine.Extensions
             {
                 context.Title = title.ToString().Trim();
                 slice.NextChar();
-                stringBuilderCache.Release(title);
 
                 return true;
             }
 
-            stringBuilderCache.Release(title);
             return false;
         }
 
@@ -268,7 +266,7 @@ namespace MarkdigEngine.Extensions
                 return false;
             }
 
-            if(includedFilePath.Length >= 1 && includedFilePath.First() == '<' && slice.CurrentChar == '>')
+            if (includedFilePath.Length >= 1 && includedFilePath.First() == '<' && slice.CurrentChar == '>')
             {
                 includedFilePath = includedFilePath.Substring(1, includedFilePath.Length - 1).Trim();
             }
@@ -292,7 +290,7 @@ namespace MarkdigEngine.Extensions
                     {
                         title = title.Substring(1, title.Length - 2).Trim();
                     }
-                    else if(title.Length >= 2 && title.First() == '\"' && title.Last() == '\"')
+                    else if (title.Length >= 2 && title.First() == '\"' && title.Last() == '\"')
                     {
                         title = title.Substring(1, title.Length - 2).Trim();
                     }

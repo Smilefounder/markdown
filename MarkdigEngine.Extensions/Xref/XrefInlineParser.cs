@@ -26,7 +26,7 @@ namespace MarkdigEngine.Extensions
                 return false;
             }
 
-            var href = processor.StringBuilders.Get();
+            var href = StringBuilderCache.Local();
             var c = slice.CurrentChar;
             var saved = slice;
             var startChar = '\0';

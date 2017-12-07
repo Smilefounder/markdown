@@ -99,7 +99,7 @@ namespace MarkdigEngine.Extensions
         {
             if (slice.CurrentChar != '-') return false;
 
-            var language = processor.StringBuilders.Get();
+            var language = StringBuilderCache.Local();
             var c = slice.NextChar();
             
             while (c != '\0' && c != '[')
@@ -109,7 +109,6 @@ namespace MarkdigEngine.Extensions
             }
 
             codeSnippet.Language = language.ToString().Trim();
-            processor.StringBuilders.Release(language);
 
             return true;
         }
@@ -122,7 +121,7 @@ namespace MarkdigEngine.Extensions
 
             var bracketNeedToMatch = 0;
 
-            var path = processor.StringBuilders.Get();
+            var path = StringBuilderCache.Local();
             var hasEscape = false;
             while (c != '\0' && (hasEscape || (c != '#' && c != '?' && c != '"' && (c != ')' || bracketNeedToMatch > 0))))
             {
@@ -147,7 +146,6 @@ namespace MarkdigEngine.Extensions
             }
 
             codeSnippet.CodePath = path.ToString().Trim();
-            processor.StringBuilders.Release(path);
 
             return true;
         }
@@ -157,7 +155,7 @@ namespace MarkdigEngine.Extensions
             if (slice.CurrentChar != '[') return false;
 
             var c = slice.NextChar();
-            var name = processor.StringBuilders.Get();
+            var name = StringBuilderCache.Local();
             var hasEscape = false;
 
             while (c != '\0' && (c != ']' || hasEscape))
@@ -175,7 +173,6 @@ namespace MarkdigEngine.Extensions
             }
 
             codeSnippet.Name = name.ToString().Trim();
-            processor.StringBuilders.Release(name);
             
             if (c == ']')
             {
@@ -200,7 +197,7 @@ namespace MarkdigEngine.Extensions
             if (slice.CurrentChar != '?') return false;
 
             var queryChar = slice.CurrentChar;
-            var query = processor.StringBuilders.Get();
+            var query = StringBuilderCache.Local();
             var c = slice.NextChar();
 
             while (c != '\0' && c != '"' && c != ')' && c != '#')
@@ -210,7 +207,6 @@ namespace MarkdigEngine.Extensions
             }
 
             var queryString = query.ToString().Trim();
-            processor.StringBuilders.Release(query);
 
             return TryParseQuery(queryString, ref codeSnippet);
         }
@@ -220,7 +216,7 @@ namespace MarkdigEngine.Extensions
             if (slice.CurrentChar != '#') return false;
 
             var queryChar = slice.CurrentChar;
-            var query = processor.StringBuilders.Get();
+            var query = StringBuilderCache.Local();
             var c = slice.NextChar();
 
             while (c != '\0' && c != '"' && c != ')')
@@ -230,7 +226,6 @@ namespace MarkdigEngine.Extensions
             }
 
             var queryString = query.ToString().Trim();
-            processor.StringBuilders.Release(query);
 
             CodeRange codeRange;
             if (TryGetLineRange(queryString, out codeRange))
@@ -249,7 +244,7 @@ namespace MarkdigEngine.Extensions
         {
             if (slice.CurrentChar != '"') return false;
 
-            var title = processor.StringBuilders.Get();
+            var title = StringBuilderCache.Local();
             var c = slice.NextChar();
             var hasEscape = false;
 
@@ -268,7 +263,6 @@ namespace MarkdigEngine.Extensions
             }
 
             codeSnippet.Title = title.ToString().Trim();
-            processor.StringBuilders.Release(title);
 
             if(c == '"')
             {
