@@ -10,7 +10,7 @@ namespace MarkdigEngine.Extensions
 
         public int ActiveTabIndex { get; set; }
 
-        public ImmutableArray<TabItemBlock> Items { get; }
+        public ImmutableArray<TabItemBlock> Items { get; set; }
 
         public TabGroupBlock(string id, ImmutableArray<TabItemBlock> blocks, int startLine, int startSpan, int activeTabIndex) : base(null)
         {

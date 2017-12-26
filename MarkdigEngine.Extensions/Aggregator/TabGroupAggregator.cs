@@ -12,7 +12,7 @@ namespace MarkdigEngine.Extensions
 {
     public class TabGroupAggregator : BlockAggregator<HeadingBlock>
     {
-        private static readonly Regex HrefRegex = new Regex(@"^#tab\/([a-zA-Z0-9\-]+)(?:\/([a-zA-Z0-9\-]+)?)?$", RegexOptions.Compiled);
+        private static readonly Regex HrefRegex = new Regex(@"^#tab\/(?<id>[a-zA-Z0-9\-]+(?:\+[a-zA-Z0-9\-]+)*)(?:\/(?<condition>[a-zA-Z0-9\-]+)?)?$", RegexOptions.Compiled);
 
         protected override bool AggregateCore(HeadingBlock headBlock, BlockAggregateContext context)
         {
@@ -112,7 +112,7 @@ namespace MarkdigEngine.Extensions
                 var m = HrefRegex.Match(link.Url);
                 if (m.Success)
                 {
-                    return Tuple.Create(m.Groups[1].Value, m.Groups[2].Value, link);
+                    return Tuple.Create(m.Groups["id"].Value, m.Groups["condition"].Value, link);
                 }
             }
 
