@@ -14,6 +14,6 @@
     <tags>Documentation API Metadata docascode docfx plugin</tags>
   </metadata>
   <files>
-    <file src="MarkdigEngine\bin\Release\netstandard2.0\*" target="content\plugins" exclude="**\*.pdb;**\*.xml;resources\**"/>
+    <file src="MarkdigEngine\publish\*" target="content\plugins" exclude="**\*.pdb;**\*.xml;resources\**"/>
   </files>
 </package>

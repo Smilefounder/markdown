@@ -17,6 +17,7 @@
             & nuget push artifacts/MarkdigEngine.$env:APPVEYOR_BUILD_VERSION.nupkg $env:mygetKey -Source $env:mygetMasterUrl
             & nuget push artifacts/MarkdigEngine.Extensions.$env:APPVEYOR_BUILD_VERSION.nupkg $env:mygetKey -Source $env:mygetMasterUrl
             
+            & dotnet publish MarkdigEngine\MarkdigEngine.csproj -c Release -o publish
             & nuget pack Microsoft.DocAsCode.MarkdigEngine.nuspec -version $env:APPVEYOR_BUILD_VERSION -Prop Configuration=Release
             & nuget push ./Microsoft.DocAsCode.MarkdigEngine.$env:APPVEYOR_BUILD_VERSION.nupkg $env:mygetKey -Source $env:mygetMasterUrl
           }
@@ -41,6 +42,7 @@
             & nuget push artifacts/MarkdigEngine.$env:APPVEYOR_BUILD_VERSION-alpha.nupkg $env:mygetKey -Source $env:mygetDevUrl
             & nuget push artifacts/MarkdigEngine.Extensions.$env:APPVEYOR_BUILD_VERSION-alpha.nupkg $env:mygetKey -Source $env:mygetDevUrl
 
+            & dotnet publish MarkdigEngine\MarkdigEngine.csproj -c Release -o publish
             & nuget pack Microsoft.DocAsCode.MarkdigEngine.nuspec -version $env:APPVEYOR_BUILD_VERSION-alpha -Prop Configuration=Release
             & nuget push ./Microsoft.DocAsCode.MarkdigEngine.$env:APPVEYOR_BUILD_VERSION-alpha.nupkg $env:mygetKey -Source $env:mygetDevUrl
           }
