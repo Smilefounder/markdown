@@ -6,7 +6,7 @@
   image: Visual Studio 2017
   build_script:
     - dotnet restore MarkdigEngine.sln
-    - msbuild MarkdigEngine.sln /p:Configuration=Release
+    - dotnet build MarkdigEngine.sln -c Release
     - cd MarkdigEngine.Tests
     - dotnet xunit
     - cd ..
@@ -30,7 +30,7 @@
   image: Visual Studio 2017
   build_script:
     - dotnet restore MarkdigEngine.sln
-    - msbuild MarkdigEngine.sln /p:Configuration=Release
+    - dotnet build MarkdigEngine.sln -c Release
     - cd MarkdigEngine.Tests
     - dotnet xunit
     - cd ..
