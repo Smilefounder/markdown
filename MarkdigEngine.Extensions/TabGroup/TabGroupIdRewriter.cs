@@ -26,8 +26,8 @@ namespace MarkdigEngine
                 {
                     if (_dict.TryGetValue(groupId, out int index))
                     {
+                        _dict[groupId] += 1;
                         groupId = $"{groupId}-{index}";
-                        index += 1;
                         block.Id = groupId;
                         return block;
                     }
