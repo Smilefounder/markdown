@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Collections.Immutable;
-
-using MarkdigEngine.Extensions;
-
-using Microsoft.DocAsCode.Plugins;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine
 {
+    using System.Collections.Generic;
+    using System.Collections.Immutable;
+
+    using MarkdigEngine.Extensions;
+
+    using Microsoft.DocAsCode.Plugins;
+
     public class MarkdigMarkdownService : IMarkdownService
     {
         private readonly MarkdownServiceParameters _parameters;

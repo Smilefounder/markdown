@@ -1,10 +1,13 @@
-﻿using System;
-
-using Markdig.Renderers;
-using Markdig.Renderers.Html;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Extensions
 {
+    using System;
+
+    using Markdig.Renderers;
+    using Markdig.Renderers.Html;
+
     public class MonikerRangeRender : HtmlObjectRenderer<MonikerRangeBlock>
     {
         protected override void Write(HtmlRenderer renderer, MonikerRangeBlock obj)

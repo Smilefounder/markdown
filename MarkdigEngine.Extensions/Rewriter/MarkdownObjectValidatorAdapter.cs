@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-
-using Markdig.Syntax;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Extensions
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.Immutable;
+
+    using Markdig.Syntax;
+
     internal class MarkdownObjectValidatorAdapter : IMarkdownObjectRewriter
     {
         private Action<IMarkdownObject> _preProcess;

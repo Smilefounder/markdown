@@ -1,10 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Markdig.Syntax;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Extensions
 {
+    using System;
+    using System.Collections.Generic;
+
+    using Markdig.Syntax;
+
     public static class MarkdownObjectRewriterFactory
     {
         public static IMarkdownObjectRewriter FromValidators(

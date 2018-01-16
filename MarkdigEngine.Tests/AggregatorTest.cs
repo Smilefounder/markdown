@@ -1,12 +1,15 @@
-﻿using Markdig;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
-using MarkdigEngine.Extensions;
-
-using Xunit;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Tests
 {
+    using MarkdigEngine.Extensions;
+
+    using Markdig;
+    using Markdig.Syntax;
+    using Markdig.Syntax.Inlines;
+    using Xunit;
+
     public class AggregatorTest
     {
         [Theory]

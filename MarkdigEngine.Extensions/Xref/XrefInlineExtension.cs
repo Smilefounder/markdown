@@ -1,14 +1,18 @@
-﻿using Markdig;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Markdig.Renderers;
-using Markdig.Parsers.Inlines;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Extensions
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    using Markdig;
+    using Markdig.Parsers.Inlines;
+    using Markdig.Renderers;
+
     public class XrefInlineExtension : IMarkdownExtension
     {
         public void Setup(MarkdownPipelineBuilder pipeline)

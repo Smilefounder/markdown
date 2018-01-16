@@ -1,13 +1,16 @@
-﻿using System.Composition;
-using System.Collections.Immutable;
-
-using MarkdigEngine.Extensions;
-
-using Markdig.Syntax;
-using Microsoft.DocAsCode.Common;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Tests
 {
+    using System.Collections.Immutable;
+    using System.Composition;
+
+    using MarkdigEngine.Extensions;
+
+    using Markdig.Syntax;
+    using Microsoft.DocAsCode.Common;
+
     [Export(ContractName, typeof(IMarkdownObjectValidatorProvider))]
     public class HtmlMarkdownObjectValidatorProvider : IMarkdownObjectValidatorProvider
     {

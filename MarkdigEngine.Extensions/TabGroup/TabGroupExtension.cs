@@ -1,8 +1,11 @@
-﻿using Markdig;
-using Markdig.Renderers;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Extensions
 {
+    using Markdig;
+    using Markdig.Renderers;
+
     public class TabGroupExtension : IMarkdownExtension
     {
         public void Setup(MarkdownPipelineBuilder pipeline)

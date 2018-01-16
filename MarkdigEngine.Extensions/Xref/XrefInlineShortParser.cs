@@ -1,15 +1,19 @@
-﻿using Markdig.Parsers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Markdig.Helpers;
-using Markdig.Syntax;
-using Markdig.Renderers.Html;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Extensions
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    using Markdig.Helpers;
+    using Markdig.Parsers;
+    using Markdig.Renderers.Html;
+    using Markdig.Syntax;
+
     class XrefInlineShortParser : InlineParser
     {
         private const string Punctuation = ".,;:!?`~";

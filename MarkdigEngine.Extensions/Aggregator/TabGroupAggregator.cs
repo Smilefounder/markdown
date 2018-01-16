@@ -1,15 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text.RegularExpressions;
-
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
-using Microsoft.DocAsCode.Common;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Extensions
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+
+    using Markdig.Syntax;
+    using Markdig.Syntax.Inlines;
+    using Microsoft.DocAsCode.Common;
+
     public class TabGroupAggregator : BlockAggregator<HeadingBlock>
     {
         private static readonly Regex HrefRegex = new Regex(@"^#tab\/(?<id>[a-zA-Z0-9\-]+(?:\+[a-zA-Z0-9\-]+)*)(?:\/(?<condition>[a-zA-Z0-9\-]+)?)?$", RegexOptions.Compiled);

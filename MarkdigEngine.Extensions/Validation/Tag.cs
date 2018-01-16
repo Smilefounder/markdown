@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
-using Markdig.Helpers;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Extensions
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+
+    using Markdig.Helpers;
+    using Markdig.Syntax;
+    using Markdig.Syntax.Inlines;
+
     internal class Tag
     {
         private static readonly Regex OpeningTag = new Regex(@"\<(\w+)((?:""[^""]*""|'[^']*'|[^'"">])*?)\>", RegexOptions.Compiled);

@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-
-using Markdig.Renderers;
-using Markdig.Renderers.Html;
-
-using Microsoft.DocAsCode.Common;
-using Markdig.Helpers;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Extensions
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+
+    using Markdig.Helpers;
+    using Markdig.Renderers;
+    using Markdig.Renderers.Html;
+    using Microsoft.DocAsCode.Common;
+
     public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
     {
         private MarkdownContext _context;

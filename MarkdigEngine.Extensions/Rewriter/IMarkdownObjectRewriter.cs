@@ -1,7 +1,10 @@
-﻿using Markdig.Syntax;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Extensions
 {
+    using Markdig.Syntax;
+
     public interface IMarkdownObjectRewriter
     {
         void PreProcess(IMarkdownObject markdownObject);

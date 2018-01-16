@@ -1,16 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Composition.Hosting;
-using System.Linq;
-
-using Markdig;
-using Markdig.Syntax;
-using MarkdigEngine.Extensions;
-using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Plugins;
-using Xunit;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Tests
 {
+    using System.Collections.Generic;
+    using System.Composition.Hosting;
+    using System.Linq;
+
+    using MarkdigEngine.Extensions;
+
+    using Markdig;
+    using Markdig.Syntax;
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
+    using Xunit;
+
     public class ValidationTest
     {
         public const string MarkdownValidatePhaseName = "Markdown style";

@@ -1,15 +1,19 @@
-﻿using Markdig.Renderers;
-using Markdig.Renderers.Html;
-using Markdig.Syntax;
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Extensions
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    using Markdig.Renderers;
+    using Markdig.Renderers.Html;
+    using Markdig.Syntax;
+
     public class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNoteBlock>
     {
         private ImmutableDictionary<string, string> _tokens;

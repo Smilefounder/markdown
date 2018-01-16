@@ -1,14 +1,17 @@
-﻿using Markdig.Renderers;
-using Markdig;
-using Markdig.Parsers.Inlines;
-using Markdig.Parsers;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
-using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Plugins;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Extensions
 {
+    using Markdig;
+    using Markdig.Parsers;
+    using Markdig.Parsers.Inlines;
+    using Markdig.Renderers;
+    using Markdig.Syntax;
+    using Markdig.Syntax.Inlines;
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
+
     /// <summary>
     /// Extension to enable extension IncludeFile.
     /// </summary>

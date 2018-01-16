@@ -1,15 +1,19 @@
-﻿using Markdig.Helpers;
-using Markdig.Parsers;
-using Markdig.Syntax;
-using Microsoft.DocAsCode.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Extensions
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    using Markdig.Helpers;
+    using Markdig.Parsers;
+    using Markdig.Syntax;
+    using Microsoft.DocAsCode.Common;
+
     public class QuoteSectionNoteParser : BlockParser
     {
         private List<string> _noteTypes = new List<string>{ "[!NOTE]", "[!TIP]", "[!WARNING]", "[!IMPORTANT]", "[!CAUTION]" };

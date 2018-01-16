@@ -1,16 +1,19 @@
-﻿using System.IO;
-
-using MarkdigEngine.Extensions;
-using Markdig.Extensions.CustomContainers;
-
-using Markdig;
-using Markdig.Parsers;
-using Markdig.Extensions.AutoIdentifiers;
-using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Plugins;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine
 {
+    using System.IO;
+
+    using MarkdigEngine.Extensions;
+
+    using Markdig;
+    using Markdig.Extensions.AutoIdentifiers;
+    using Markdig.Extensions.CustomContainers;
+    using Markdig.Parsers;
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
+
     public static class MarkdownExtensions
     {
         public static MarkdownPipelineBuilder UseMarkdigAdvancedExtensions(this MarkdownPipelineBuilder pipeline)

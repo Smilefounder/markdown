@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
-using System.IO;
-
-using MarkdigEngine.Extensions;
-using Microsoft.DocAsCode.Plugins;
-using Xunit;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Tests
 {
+    using System.Collections.Generic;
+    using System.IO;
+
+    using MarkdigEngine.Extensions;
+
+    using Microsoft.DocAsCode.Plugins;
+    using Xunit;
+
     public class LineNumberTest
     {
         [Fact]

@@ -1,16 +1,20 @@
-﻿using Markdig;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Markdig.Renderers;
-using Markdig.Parsers;
-using Markdig.Renderers.Html;
-using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Plugins;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Extensions
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+
+    using Markdig;
+    using Markdig.Parsers;
+    using Markdig.Renderers;
+    using Markdig.Renderers.Html;
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
+
     public class QuoteSectionNoteExtension : IMarkdownExtension
     {
         private MarkdownServiceParameters _parameters;

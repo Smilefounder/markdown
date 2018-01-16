@@ -1,9 +1,13 @@
-﻿using MarkdigEngine;
-using Microsoft.DocAsCode.Plugins;
-using Xunit;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Tests
 {
+    using MarkdigEngine;
+
+    using Microsoft.DocAsCode.Plugins;
+    using Xunit;
+
     public class YamlHeaderTest
     {
         private static MarkupResult SimpleMarkup(string source)

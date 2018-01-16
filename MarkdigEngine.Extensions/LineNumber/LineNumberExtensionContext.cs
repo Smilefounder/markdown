@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
-using System.IO;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Extensions
 {
+    using System.Collections.Generic;
+    using System.IO;
+
+
     public class LineNumberExtensionContext
     {
         // This two private members are used for quickly getting the line number of one charactor

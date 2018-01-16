@@ -1,12 +1,15 @@
-﻿using System.IO;
-
-using Markdig.Renderers;
-using Markdig.Renderers.Html;
-using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Plugins;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Extensions
 {
+    using System.IO;
+
+    using Markdig.Renderers;
+    using Markdig.Renderers.Html;
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
+
     public class HtmlInclusionInlineRenderer : HtmlObjectRenderer<InclusionInline>
     {
         private IMarkdigCompositor _compositor;

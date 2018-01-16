@@ -1,15 +1,19 @@
-﻿using Markdig.Parsers;
-using Markdig.Renderers.Html;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace MarkdigEngine.Extensions
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    using Markdig.Parsers;
+    using Markdig.Renderers.Html;
+    using Markdig.Syntax;
+    using Markdig.Syntax.Inlines;
+
     public class CodeSnippet : LeafBlock
     {
         public CodeSnippet(BlockParser parser) : base(parser)
