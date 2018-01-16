@@ -33,11 +33,11 @@ namespace MarkdigEngine
                             .Build();
 
             var dependency = new HashSet<string>();
-            var compositor = new MarkdigCompositor(dependency);
+            var engine = new MarkdownEngine(dependency);
 
             return new MarkupResult
             {
-                Html = compositor.Markup(context, _parameters),
+                Html = engine.Markup(context, _parameters),
                 Dependency = dependency.ToImmutableArray()
             };
         }

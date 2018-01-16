@@ -17,13 +17,13 @@ namespace MarkdigEngine.Extensions
     /// </summary>
     public class InclusionExtension : IMarkdownExtension
     {
-        private IMarkdigCompositor _compositor;
+        private IMarkdownEngine _engine;
         private MarkdownContext _context;
         private MarkdownServiceParameters _parameters;
 
-        public InclusionExtension(IMarkdigCompositor compositor, MarkdownContext context, MarkdownServiceParameters parameters)
+        public InclusionExtension(IMarkdownEngine engine, MarkdownContext context, MarkdownServiceParameters parameters)
         {
-            _compositor = compositor;
+            _engine = engine;
             _context = context;
             _parameters = parameters;
         }
@@ -40,12 +40,12 @@ namespace MarkdigEngine.Extensions
             {
                 if (!htmlRenderer.ObjectRenderers.Contains<HtmlInclusionInlineRenderer>())
                 {
-                    htmlRenderer.ObjectRenderers.Insert(0, new HtmlInclusionInlineRenderer(_compositor, _context, _parameters));
+                    htmlRenderer.ObjectRenderers.Insert(0, new HtmlInclusionInlineRenderer(_engine, _context, _parameters));
                 }
 
                 if (!htmlRenderer.ObjectRenderers.Contains<HtmlInclusionBlockRenderer>())
                 {
-                    htmlRenderer.ObjectRenderers.Insert(0, new HtmlInclusionBlockRenderer(_compositor, _context, _parameters));
+                    htmlRenderer.ObjectRenderers.Insert(0, new HtmlInclusionBlockRenderer(_engine, _context, _parameters));
                 }
             }
         }

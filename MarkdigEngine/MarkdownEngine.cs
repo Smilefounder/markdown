@@ -10,11 +10,11 @@ namespace MarkdigEngine
     using Markdig;
     using Microsoft.DocAsCode.Plugins;
 
-    public class MarkdigCompositor : IMarkdigCompositor
+    public class MarkdownEngine : IMarkdownEngine
     {
         private HashSet<string> _dependency;
 
-        public MarkdigCompositor(HashSet<string> dependency)
+        public MarkdownEngine(HashSet<string> dependency)
         {
             _dependency = dependency;
         }

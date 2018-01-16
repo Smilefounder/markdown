@@ -3,11 +3,9 @@
 
 namespace MarkdigEngine.Extensions
 {
-    using System.Collections.Generic;
-
     using Microsoft.DocAsCode.Plugins;
 
-    public interface IMarkdigCompositor
+    public interface IMarkdownEngine
     {
         string Markup(MarkdownContext context, MarkdownServiceParameters parameters);
         void ReportDependency(string file);

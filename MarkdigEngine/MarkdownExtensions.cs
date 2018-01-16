@@ -29,14 +29,14 @@ namespace MarkdigEngine
 
         public static MarkdownPipelineBuilder UseDfmExtensions(
             this MarkdownPipelineBuilder pipeline,
-            MarkdigCompositor compositor,
+            MarkdownEngine engine,
             MarkdownContext context,
             MarkdownServiceParameters parameters)
         {
             return pipeline
                 .UseHeadingIdRewriter()
-                .UseIncludeFile(compositor, context, parameters)
-                .UseCodeSnippet(compositor, context)
+                .UseIncludeFile(engine, context, parameters)
+                .UseCodeSnippet(engine, context)
                 .UseYamlHeader()
                 .UseDFMCodeInfoPrefix()
                 .UseQuoteSectionNote(parameters)
@@ -161,7 +161,7 @@ namespace MarkdigEngine
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseIncludeFile(this MarkdownPipelineBuilder pipeline, MarkdigCompositor compositor, MarkdownContext context, MarkdownServiceParameters parameters)
+        public static MarkdownPipelineBuilder UseIncludeFile(this MarkdownPipelineBuilder pipeline, MarkdownEngine compositor, MarkdownContext context, MarkdownServiceParameters parameters)
         {
             pipeline.Extensions.Insert(0, new InclusionExtension(compositor, context, parameters));
             if (context.InclusionSet != null && !context.InclusionSet.IsEmpty)
@@ -171,7 +171,7 @@ namespace MarkdigEngine
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseCodeSnippet(this MarkdownPipelineBuilder pipeline, MarkdigCompositor compositor, MarkdownContext context)
+        public static MarkdownPipelineBuilder UseCodeSnippet(this MarkdownPipelineBuilder pipeline, MarkdownEngine compositor, MarkdownContext context)
         {
             pipeline.Extensions.Insert(0, new CodeSnippetExtension(compositor, context));
             return pipeline;

@@ -12,13 +12,13 @@ namespace MarkdigEngine.Extensions
 
     public class HtmlInclusionInlineRenderer : HtmlObjectRenderer<InclusionInline>
     {
-        private IMarkdigCompositor _compositor;
+        private IMarkdownEngine _engine;
         private MarkdownContext _context;
         private MarkdownServiceParameters _parameters;
 
-        public HtmlInclusionInlineRenderer(IMarkdigCompositor compositor, MarkdownContext context, MarkdownServiceParameters parameters)
+        public HtmlInclusionInlineRenderer(IMarkdownEngine engine, MarkdownContext context, MarkdownServiceParameters parameters)
         {
-            _compositor = compositor;
+            _engine = engine;
             _context = context;
             _parameters = parameters;
         }
@@ -73,10 +73,10 @@ namespace MarkdigEngine.Extensions
                             .WithAddingIncludedFile(currentFilePath)
                             .Build();
 
-            _compositor.ReportDependency(includeFilePath);
+            _engine.ReportDependency(includeFilePath);
             // Do not need to check if content is a single paragragh
             // context.IsInline = true will force it into a single paragragh and render with no <p></p>
-            var result = _compositor.Markup(context, _parameters);
+            var result = _engine.Markup(context, _parameters);
             renderer.Write(result);
         }
     }

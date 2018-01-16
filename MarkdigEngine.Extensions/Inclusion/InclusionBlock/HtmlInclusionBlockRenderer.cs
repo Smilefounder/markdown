@@ -13,14 +13,14 @@ namespace MarkdigEngine.Extensions
 
     public class HtmlInclusionBlockRenderer : HtmlObjectRenderer<InclusionBlock>
     {
-        private IMarkdigCompositor _compositor;
+        private IMarkdownEngine _engine;
         private MarkdownContext _context;
         private MarkdownServiceParameters _parameters;
         private Regex YamlHeaderRegex = new Regex(@"^<yamlheader[^>]*?>[\s\S]*?<\/yamlheader>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public HtmlInclusionBlockRenderer(IMarkdigCompositor compositor, MarkdownContext context, MarkdownServiceParameters parameters)
+        public HtmlInclusionBlockRenderer(IMarkdownEngine engine, MarkdownContext context, MarkdownServiceParameters parameters)
         {
-            _compositor = compositor;
+            _engine = engine;
             _context = context;
             _parameters = parameters;
         }
@@ -74,8 +74,8 @@ namespace MarkdigEngine.Extensions
                             .WithAddingIncludedFile(currentFilePath)
                             .Build();
 
-            _compositor.ReportDependency(includedFilePath);
-            var result = _compositor.Markup(context, _parameters);
+            _engine.ReportDependency(includedFilePath);
+            var result = _engine.Markup(context, _parameters);
             result = SkipYamlHeader(result);
 
             renderer.Write(result);

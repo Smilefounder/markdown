@@ -8,12 +8,12 @@ namespace MarkdigEngine.Extensions
 
     public class CodeSnippetExtension : IMarkdownExtension
     {
-        private IMarkdigCompositor _compositor;
+        private IMarkdownEngine _engine;
         private MarkdownContext _context;
 
-        public CodeSnippetExtension(IMarkdigCompositor compositor, MarkdownContext context)
+        public CodeSnippetExtension(IMarkdownEngine engine, MarkdownContext context)
         {
-            _compositor = compositor;
+            _engine = engine;
             _context = context;
         }
 
@@ -28,7 +28,7 @@ namespace MarkdigEngine.Extensions
             if (htmlRenderer != null && !htmlRenderer.ObjectRenderers.Contains<HtmlCodeSnippetRenderer>())
             {
                 // Must be inserted before CodeBlockRenderer
-                htmlRenderer.ObjectRenderers.Insert(0, new HtmlCodeSnippetRenderer(_compositor, _context));
+                htmlRenderer.ObjectRenderers.Insert(0, new HtmlCodeSnippetRenderer(_engine, _context));
             }
         }
     }
