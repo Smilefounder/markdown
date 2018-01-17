@@ -38,9 +38,9 @@ This is a file A included by another file.
             var refb = @"
 # Hello Include File B
 ";
-            WriteToFile("r/root.md", root);
-            WriteToFile("r/a.md", refa);
-            WriteToFile("r/b.md", refb);
+            TestUtility.WriteToFile("r/root.md", root);
+            TestUtility.WriteToFile("r/a.md", refa);
+            TestUtility.WriteToFile("r/b.md", refb);
 
             var result = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
@@ -75,8 +75,8 @@ Test Include File
 This is a file A included by another file.
 ";
 
-            WriteToFile("r/root.md", root);
-            WriteToFile("r/a(x).md", refa);
+            TestUtility.WriteToFile("r/root.md", root);
+            TestUtility.WriteToFile("r/a(x).md", refa);
 
             var result = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
@@ -110,8 +110,8 @@ Test Include File
 This is a file A included by another file.
 ";
 
-            WriteToFile("r/root.md", root);
-            WriteToFile("r/a.md", refa);
+            TestUtility.WriteToFile("r/root.md", root);
+            TestUtility.WriteToFile("r/a.md", refa);
 
             var result = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
@@ -153,9 +153,9 @@ This is a file A included by another file.
 
 [!include[refa](a.md)]
 ";
-            WriteToFile("r/root.md", root);
-            WriteToFile("r/a.md", refa);
-            WriteToFile("r/b.md", refb);
+            TestUtility.WriteToFile("r/root.md", root);
+            TestUtility.WriteToFile("r/a.md", refa);
+            TestUtility.WriteToFile("r/b.md", refb);
 
             var result = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
@@ -181,8 +181,8 @@ Test Inline Included File: [!include[refa](~/r/a.md)].
 
             var refa = "This is a **included** token";
 
-            WriteToFile("r/root.md", root);
-            WriteToFile("r/a.md", refa);
+            TestUtility.WriteToFile("r/root.md", root);
+            TestUtility.WriteToFile("r/a.md", refa);
 
             var result = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md"); ;
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
@@ -208,8 +208,8 @@ Test Inline Included File: [!include[refa](~/r/a.md)].
 
             var refa = "This is a **included** token with [!include[root](~/r/root.md)]";
 
-            WriteToFile("r/root.md", root);
-            WriteToFile("r/a.md", refa);
+            TestUtility.WriteToFile("r/root.md", root);
+            TestUtility.WriteToFile("r/a.md", refa);
 
             var result = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
@@ -234,8 +234,8 @@ Test Inline Included File: [!include[refa](~/r/a.md)].
 
 block content in Inline Inclusion.";
 
-            WriteToFile("r/root.md", root);
-            WriteToFile("r/a.md", refa);
+            TestUtility.WriteToFile("r/root.md", root);
+            TestUtility.WriteToFile("r/a.md", refa);
 
             var result = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
@@ -286,13 +286,13 @@ Paragraph1
 			var link2 = @"[link](md/c.md)";
 			var refc = @"[!include[c](../c/c.md ""This is root"")]";
 			var c = @"**Hello**";
-			WriteToFile("r/root.md", root);
+			TestUtility.WriteToFile("r/root.md", root);
 
-			WriteToFile("r/a/refc.md", refc);
-			WriteToFile("r/b/linkAndRefRoot.md", linkAndRefRoot);
-			WriteToFile("r/link/link2.md", link2);
-			WriteToFile("r/c/c.md", c);
-			WriteToFile("r/empty.md", string.Empty);
+			TestUtility.WriteToFile("r/a/refc.md", refc);
+			TestUtility.WriteToFile("r/b/linkAndRefRoot.md", linkAndRefRoot);
+			TestUtility.WriteToFile("r/link/link2.md", link2);
+			TestUtility.WriteToFile("r/c/c.md", c);
+			TestUtility.WriteToFile("r/empty.md", string.Empty);
 			var marked = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
 			var dependency = marked.Dependency;
             var expected = @"<p>Paragraph1
@@ -347,10 +347,10 @@ Paragraph1
 ";
 			var d = @"
 [!include[](../../b/token.md)]";
-			WriteToFile("r/r.md", r);
-			WriteToFile("r/a/a.md", a);
-			WriteToFile("r/b/token.md", token);
-			WriteToFile("r/c/d/d.md", d);
+			TestUtility.WriteToFile("r/r.md", r);
+			TestUtility.WriteToFile("r/a/a.md", a);
+			TestUtility.WriteToFile("r/b/token.md", token);
+			TestUtility.WriteToFile("r/c/d/d.md", d);
 			var marked = TestUtility.MarkupWithoutSourceInfo(a, "r/a/a.md");
 			var expected = @"<p><img src=""%7E/r/img/img.jpg"" alt="""" />
 <a href=""#anchor""></a>
@@ -389,8 +389,8 @@ Paragraph1
 			//  |  |- linkAndRefRoot.md
 			var root = @"[!include[linkAndRefRoot](~/r/b/linkAndRefRoot.md)]";
 			var linkAndRefRoot = @"Paragraph1";
-			WriteToFile("r/root.md", root);
-			WriteToFile("r/b/linkAndRefRoot.md", linkAndRefRoot);
+			TestUtility.WriteToFile("r/root.md", root);
+			TestUtility.WriteToFile("r/b/linkAndRefRoot.md", linkAndRefRoot);
 			var marked = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
 			var expected = @"<p>Paragraph1</p>" + "\n";
 			Assert.Equal(expected, marked.Html);
@@ -435,10 +435,10 @@ markdown token1.md content end.";
 
 			var token2 = @"**1markdown token2.md main content**";
 
-			WriteToFile($"{uniqueFolderName}/root_folder_{uniqueFolderName}/root_{uniqueFolderName}.md", root);
-			WriteToFile($"{uniqueFolderName}/root_folder_{uniqueFolderName}/a_folder_{uniqueFolderName}/a_{uniqueFolderName}.md", a);
-			WriteToFile($"{uniqueFolderName}/root_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token1_{uniqueFolderName}.md", token1);
-			WriteToFile($"{uniqueFolderName}/fallback_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md", token2);
+			TestUtility.WriteToFile($"{uniqueFolderName}/root_folder_{uniqueFolderName}/root_{uniqueFolderName}.md", root);
+			TestUtility.WriteToFile($"{uniqueFolderName}/root_folder_{uniqueFolderName}/a_folder_{uniqueFolderName}/a_{uniqueFolderName}.md", a);
+			TestUtility.WriteToFile($"{uniqueFolderName}/root_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token1_{uniqueFolderName}.md", token1);
+			TestUtility.WriteToFile($"{uniqueFolderName}/fallback_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md", token2);
 
 			var fallbackFolders = new List<string> { { Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/fallback_folder_{uniqueFolderName}") } };
 			var parameter = new MarkdownServiceParameters
@@ -520,11 +520,11 @@ markdown a.md a.md content end.";
 			var sample2 = @"namespace sample2{}";
 
 			var uniqueFolderName = Path.GetRandomFileName();
-			WriteToFile($"{uniqueFolderName}/root_folder/root.md", root);
-			WriteToFile($"{uniqueFolderName}/root_folder/a_folder/a.md", a);
-			WriteToFile($"{uniqueFolderName}/root_folder/code_folder/sample1.cs", sample1);
-			WriteToFile($"{uniqueFolderName}/fallback_folder/a_folder/code_in_a.cs", code_in_a);
-			WriteToFile($"{uniqueFolderName}/fallback_folder/code_folder/sample2.cs", sample2);
+			TestUtility.WriteToFile($"{uniqueFolderName}/root_folder/root.md", root);
+			TestUtility.WriteToFile($"{uniqueFolderName}/root_folder/a_folder/a.md", a);
+			TestUtility.WriteToFile($"{uniqueFolderName}/root_folder/code_folder/sample1.cs", sample1);
+			TestUtility.WriteToFile($"{uniqueFolderName}/fallback_folder/a_folder/code_in_a.cs", code_in_a);
+			TestUtility.WriteToFile($"{uniqueFolderName}/fallback_folder/code_folder/sample2.cs", sample2);
 
 			var fallbackFolders = new List<string> { { Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/fallback_folder") } };
 
@@ -656,8 +656,8 @@ Test Include File
 ";
 
             var rootPath = "r/parent_folder/child_folder/root.md";
-            WriteToFile(rootPath, root);
-            WriteToFile("r/include/a.md", refa);
+            TestUtility.WriteToFile(rootPath, root);
+            TestUtility.WriteToFile("r/include/a.md", refa);
 
             var result = TestUtility.MarkupWithoutSourceInfo(root, rootPath);
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
@@ -691,8 +691,8 @@ a: b
 body";
 
             var rootPath = "r/parent_folder/child_folder/root.md";
-            WriteToFile(rootPath, root);
-            WriteToFile("r/include/a.md", refa);
+            TestUtility.WriteToFile(rootPath, root);
+            TestUtility.WriteToFile("r/include/a.md", refa);
 
             var result = TestUtility.MarkupWithoutSourceInfo(root, rootPath);
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
@@ -705,16 +705,6 @@ body";
             var dependency = result.Dependency;
             var expectedDependency = new List<string> { "~/r/include/a.md" };
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
-        }
-
-        private static void WriteToFile(string file, string content)
-        {
-            var dir = Path.GetDirectoryName(file);
-            if (!string.IsNullOrEmpty(dir))
-            {
-                Directory.CreateDirectory(dir);
-            }
-            File.WriteAllText(file, content);
         }
     }
 }

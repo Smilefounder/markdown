@@ -62,5 +62,19 @@ namespace MarkdigEngine.Tests
 
             File.WriteAllText(file, content);
         }
+
+        public static MarkdigMarkdownService CreateMarkdownService()
+        {
+            var parameter = new MarkdownServiceParameters
+            {
+                BasePath = ".",
+                Extensions = new Dictionary<string, object>
+                {
+                    { LineNumberExtension.EnableSourceInfo, false }
+                }
+            };
+
+            return new MarkdigMarkdownService(parameter);
+        }
     }
 }
